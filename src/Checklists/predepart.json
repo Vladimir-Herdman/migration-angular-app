@@ -5,6 +5,7 @@
             "Get all relevant documents copied and certified",
             "Arrange and Collect birth and marriage certificates",
             "Arrange Visa Photos",
+            "Ensure passports are up to date",
             ""
         ],
         "Children": [
@@ -28,15 +29,25 @@
             "Have the vaccination records on file for all pets"
         ],
         "Phone" : [
-
+            "Cancel or modify your existing plan with your current cell company",
+            "Find a phone plan that fits your new needs in the new location",
+            ""
         ],
         "Realtor" : [
-
+            "Find a realtor near your current location to sell your home",
+            "Go through the process of selling your house",
+            "Find a realtor in your new location to buy a new home in your location",
+            "Find a house to purchase and go through that"
         ],
         "default" : [
             "Downsize belongings and get rid of what is not needed or wanted in the new location",
             "Compile goods to accompany and goods to follow list",
-            ""
+            "Get quotes for shipping goods to new location",
+            "Arrange travel plans (air tickets, etc)",
+            "Arrange travel insurance"
+        ],
+        "landlord" : [
+            "Give notice to landlord and terminate lease"
         ]
     }, 
     "Domestic" : {
@@ -47,10 +58,12 @@
         ],
         "Vehicle" : {
             "Renting": [
-
+                "Find a car rental location to rent a car in the new location",
+                "Pick a rental car and set up a rental for your arrival"
             ],
             "Bringing": [
-
+                "Obtain all documents relevant for the vehicle (Registration, insurance, etc)",
+                ""
             ]
         }, 
         "Pets" : [
@@ -58,15 +71,25 @@
             "Have the vaccination records on file for all pets"
         ],
         "Phone" : [
-
+            "Cancel or modify your existing plan with your current cell company",
+            "Find a phone plan that fits your new needs in the new location",
+            ""
         ],
         "Realtor" : [
-
+            "Find a realtor near your current location to sell your home",
+            "Go through the process of selling your house",
+            "Find a realtor in your new location to buy a new home in your location",
+            "Find a house to purchase and go through that"
         ],
         "default" : [
             "Downsize belongings and get rid of what is not needed or wanted in the new location",
             "Compile goods to accompany and goods to follow list",
-            ""
+            "Get quotes for shipping goods to new location",
+            "Arrange travel plans (air tickets, etc)",
+            "Arrange travel insurance"
+        ],
+        "landlord" : [
+            "Give notice to landlord and terminate lease"
         ]
     }
 
