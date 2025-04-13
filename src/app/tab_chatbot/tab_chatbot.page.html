@@ -1,0 +1,30 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Chat</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div #messages_area class="messages-area"></div>
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar color="light">
+        <ion-textarea 
+            autoGrow 
+            rows="1" 
+            maxlength="150"
+            placeholder="Send message" 
+            class="ion-text-center" 
+            [(ngModel)]="message">
+        </ion-textarea>
+        <ion-buttons slot="end">
+            <ion-fab-button *ngIf="!isLoading" size="small" color="primary" (click)="sendMessage()">
+                <ion-icon name="send"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button *ngIf="isLoading" size="small" color="primary">
+                <ion-spinner name="dots" color="light"></ion-spinner>
+            </ion-fab-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-footer>

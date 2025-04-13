@@ -1,0 +1,14 @@
+.messages_area {
+  border: 5px solid red
+}
+
+ion-footer {
+  ion-toolbar {
+    padding: 0 3px;
+    ion-textarea {
+      border: 1px solid var(--ion-color-medium);
+      border-radius: 20px;
+      margin: 0.5vh 0;
+    }
+  }
+}
