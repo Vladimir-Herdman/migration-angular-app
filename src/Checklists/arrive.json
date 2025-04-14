@@ -10,17 +10,14 @@
             "Change drivers license to a local license",
             "Ensure utilities are set up at new residence",
             "Purchase all needed basic items needed for the household",
-            "If employment not in place, register with local recruitors",
-            ""
+            "If employment not in place, register with local recruitors"
         ],
         "Vehicle" : {
             "Renting" : [
-                "Confirm rental of the car on arrival",
-                ""
+                "Confirm rental of the car on arrival"
             ],
             "Bringing" : [
-                "Confirm the arrival of the vehicle and arrange pickup",
-                ""
+                "Confirm the arrival of the vehicle and arrange pickup"
             ]
         },
         "Pets": [
@@ -29,8 +26,7 @@
             "Find nearby vets to establish patienthood with"
         ],
         "Children" : [
-            "Check in at the school and confirm their registration",
-            ""
+            "Check in at the school and confirm their registration"
         ]
     },
     "Domestic" : {
@@ -44,17 +40,14 @@
             "Change drivers license to a local license",
             "Ensure utilities are set up at new residence",
             "Purchase all needed basic items needed for the household",
-            "If employment not in place, register with local recruitors",
-            ""
+            "If employment not in place, register with local recruitors"
         ],
         "Vehicle" : {
             "Renting" : [
-                "Confirm rental of the car on arrival",
-                ""
+                "Confirm rental of the car on arrival"
             ],
             "Bringing" : [
-                "Confirm the arrival of the vehicle and arrange pickup",
-                ""
+                "Confirm the arrival of the vehicle and arrange pickup"
             ]
         },
         "Pets": [
@@ -63,8 +56,7 @@
             "Find nearby vets to establish patienthood with"
         ],
         "Children" : [
-            "Check in at the school and confirm their registration",
-            ""
+            "Check in at the school and confirm their registration"
         ]
     }
 }
