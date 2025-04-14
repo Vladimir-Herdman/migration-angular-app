@@ -1,0 +1,44 @@
+{
+    "International" : {
+        "default" : [
+            "Arrange accomadation (AirBNB, hotel, rental car, etc.) for the first few nights",
+            "Confirm temporary accomadations before travelling",
+            "Ensure all bags are packed accordingly and with what is needed before shipping arrives",
+            "Prepare a travel pouch with all required documents needed for immigration and arrival",
+            "Confirm flight times and ensure enough time between customs and any layovers",
+            "Allow time for final packing on travel day",
+            "Confirm insurance is accurate and active before leaving",
+            "Check that you are not carrying any disallowed items in transit",
+            "Ensure you have either cash for any unexpected expenses or have banking operations in new country",
+            "Ensure all tasks for pre-departure are completed",
+            "Ensure you have all needed medication and all documentation needed for customs"
+        ],
+        "pets" :[
+            "Confirm the details and flight numbers for pets with agency",
+            "Ask if tracking is available and if so obtain that information"
+        ],
+        "Children" : [
+            "Pack an extended travel bag with toys, meals, snacks, any medications, and entertainment for children"
+        ]
+    },
+    "Domestic" : {
+        "default" : [
+            "Arrange accomadation (AirBNB, hotel, rental car, etc.) for the first few nights",
+            "Confirm temporary accomadations before travelling",
+            "Ensure all bags are packed accordingly and with what is needed before shipping arrives",
+            "If flying, Confirm flight times and ensure enough time between any layovers",
+            "Allow time for final packing on travel day",
+            "Confirm insurance is accurate and active before leaving",
+            "Check that you are not carrying any disallowed items in transit",
+            "Ensure all tasks for pre-departure are completed",
+            "Ensure you have all needed medications"
+        ],
+        "pets" :[
+            "Confirm the details and flight numbers for pets with agency",
+            "Ask if tracking is available and if so obtain that information"
+        ],
+        "Children" : [
+            "Pack an extended travel bag with toys, meals, snacks, any medications, and entertainment for children"
+        ]
+    }
+}
