@@ -16,10 +16,11 @@
         ],
         "Vehicle": {
             "Renting": [
-
+                "Find a car rental location to rent a car in the new location",
+                "Pick a rental car and set up a rental for your arrival"
             ],
             "Bringing": [
-
+                "Obtain all documents relevant for the vehicle (Registration, insurance, etc)"
             ]
         },
         "Pets": [
