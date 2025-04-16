@@ -24,6 +24,10 @@ const routes: Routes = [
         loadChildren: () => import('../tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
       },
       {
+        path: 'tab_checklist',
+        loadChildren: () => import('../tab_checklist/tab_checklist.module').then(m => m.TabChecklistPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tab1',
         pathMatch: 'full'

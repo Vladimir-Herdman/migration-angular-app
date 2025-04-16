@@ -1,0 +1,35 @@
+<ion-header>
+    <ion-toolbar>
+        <div class="header">
+            <h4 id="title">Stage:</h4>
+            <ion-list>
+                <ion-item>
+                    <ion-select
+                        [(ngModel)]="selectedStage"
+                        aria-label="stage"
+                        placeholder="Select stage"
+                        interface="popover"
+                        (ionChange)="handleChange()" >
+                        <ion-select-option value="predeparture" selected>Predeparture</ion-select-option>
+                        <ion-select-option value="departure">Departure</ion-select-option>
+                        <ion-select-option value="arrival">Arrival</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </ion-list>
+        </div>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div #predeparture id="predeparture" class="dep-page">
+        <p>test pre</p>
+    </div>
+
+    <div #departure id="departure" class="dep-page">
+        <p>test dep</p>
+    </div>
+
+    <div #arrival id="arrival" class="dep-page">
+        <p>test arrival</p>
+    </div>
+</ion-content>

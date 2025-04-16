@@ -1,0 +1,23 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#title {
+  padding-left: 20px;
+}
+
+ion-select {
+  --padding-top: 10px;
+  --padding-bottom: 0;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+}
+
+.dep-page {
+  display:none
+}
