@@ -5,14 +5,12 @@
             "Get all relevant documents copied and certified",
             "Arrange and Collect birth and marriage certificates",
             "Arrange Visa Photos",
-            "Ensure passports are up to date",
-            ""
+            "Ensure passports are up to date"
         ],
         "Children": [
             "Ensure children have the necessary documentation as well as parents",
             "Give notice to the school about the move",
-            "Make sure children are vaccinated and have documentation",
-            ""
+            "Make sure children are vaccinated and have documentation"
         ],
         "Vehicle": {
             "Renting": [
@@ -31,8 +29,7 @@
         ],
         "Phone" : [
             "Cancel or modify your existing plan with your current cell company",
-            "Find a phone plan that fits your new needs in the new location",
-            ""
+            "Find a phone plan that fits your new needs in the new location"
         ],
         "Realtor" : [
             "Find a realtor near your current location to sell your home",
@@ -54,8 +51,7 @@
     "Domestic" : {
         "Children" : [
             "Give notice to the school about the move",
-            "Make sure children are vaccinated and have documentation",
-            ""
+            "Make sure children are vaccinated and have documentation"
         ],
         "Vehicle" : {
             "Renting": [
@@ -63,8 +59,7 @@
                 "Pick a rental car and set up a rental for your arrival"
             ],
             "Bringing": [
-                "Obtain all documents relevant for the vehicle (Registration, insurance, etc)",
-                ""
+                "Obtain all documents relevant for the vehicle (Registration, insurance, etc)"
             ]
         }, 
         "Pets" : [
@@ -73,8 +68,7 @@
         ],
         "Phone" : [
             "Cancel or modify your existing plan with your current cell company",
-            "Find a phone plan that fits your new needs in the new location",
-            ""
+            "Find a phone plan that fits your new needs in the new location"
         ],
         "Realtor" : [
             "Find a realtor near your current location to sell your home",
