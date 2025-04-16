@@ -20,10 +20,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/legal-popup/legal-popup.module').then( m => m.LegalPopupPageModule)
   },
   {
-    path: 'quiz',
-    loadChildren: () => import('./pages/quiz/quiz.module').then( m => m.QuizPageModule)
-  },
-  {
       path: '**',
       redirectTo: '',
       pathMatch: 'full'
