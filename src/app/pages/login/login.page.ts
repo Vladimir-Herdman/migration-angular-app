@@ -5,6 +5,7 @@ import { IonicModule, LoadingController, AlertController } from '@ionic/angular'
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { DatabaseService } from 'src/app/services/database.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -57,6 +58,11 @@ export class LoginPage implements OnInit {
         // Good article for this firebase implementation: https://devdactic.com/ionic-firebase-auth-upload
       this.email = this.loginForm.get("email")?.value;
       this.password = this.loginForm.get("password")?.value;
+
+        // NON-PRODUCTION: If email and password are empty, skip authentication
+        if (!environment.production && this.email == "" && this.password == "") {
+            this.router.navigateByUrl('/tabs', { replaceUrl: true });
+        }
       
       // This is purely to make password say 'Invalid password' on incorrect login
       if (this.loginForm.get("email")?.valid) {
