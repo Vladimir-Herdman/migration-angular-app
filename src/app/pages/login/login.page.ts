@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, LoadingController, AlertController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
+import { DatabaseService } from 'src/app/services/database.service';
 
 @Component({
   selector: 'app-login',
@@ -17,12 +19,19 @@ export class LoginPage implements OnInit {
     email: string | null = null;
     password: string | null = null;
     emailError: string = "Invalid email";
-    passwordError: string = "Invalid password";
+    passwordError: string = "6 character minimum";
 
-  constructor(private router: Router, private formBuilder: FormBuilder) {
+  constructor(
+      private router: Router,
+      private formBuilder: FormBuilder,
+      private loadingController: LoadingController,
+      private alertController: AlertController,
+      private authService: AuthService,
+      private databaseService: DatabaseService
+  ) {
       this.loginForm = this.formBuilder.group({
           email: ['', [Validators.required, Validators.email]],
-          password: ['', [Validators.required]]
+          password: ['', [Validators.required, Validators.minLength(4)]]
       });
   }
 
@@ -34,17 +43,18 @@ export class LoginPage implements OnInit {
   }
 
   public forgot_email_password() {
-      //TODO: Open Smooth Migration Forgot email/password web page
+      //TODO: Implement in AuthService forgot email/password from firebase
       console.log("forgot email-password pressed");
   }
 
-  public login() {
+  public async login() {
       /*
        * this.email, this.password -> class variables pointing to input form value, updated at login button press
        * this.emailError, this.passwordError -> binded property from html, links value there with error message we set here
        * this.loginForm[...].valid -> Input validation check to see if current input valid or not
        * this.loginForm[...].setErrors -> Sets an input into error state or not, for custom styling with our errors
        */
+        // Good article for this firebase implementation: https://devdactic.com/ionic-firebase-auth-upload
       this.email = this.loginForm.get("email")?.value;
       this.password = this.loginForm.get("password")?.value;
       
@@ -55,36 +65,60 @@ export class LoginPage implements OnInit {
       }
         
       // Here, input validation for correct style of email (@ symbol with letter after)
-      if (this.loginForm.valid) {
-          //TODO: API Check for account
-          // email && password are actual account
-          if (this.password === "test") {
-              if (1 === 1 /* Individual has never signed in before, open legal */) {
-                  //REMOVE: Get rid of the queryParams part once we have user authentication
-                  this.router.navigate(['/legal-popup']);
-              } else { /* Signed in before, just go to tabs */
-                  this.router.navigate(['/tabs']);
+      // TODO: Make password length above 4
+      if (this.loginForm.valid && this.loginForm.get("password")?.value.length >= 4 ){
+          const loading = await this.loadingController.create();
+          await loading.present();
+
+          const userCredentials = await this.authService.login(this.loginForm.value);
+          await loading.dismiss();
+
+          if (userCredentials) {
+              const userUid = userCredentials.user.uid;
+              this.databaseService.userUid = userUid;
+              await this.databaseService.getUserData();
+              const firstTimeSignIn = this.databaseService.userData?.firstTimeSignIn;
+              //TODO: locally caching userData on successful sign in, so less API
+              //calls to firebase are needed
+              if (firstTimeSignIn) {
+                  this.router.navigateByUrl('/legal-popup', { replaceUrl: true });
+              } else {
+                  console.log(this.databaseService.userData);
+                  this.router.navigateByUrl('/tabs', { replaceUrl: true });
               }
-          } else if (this.password === "root") {
-                this.router.navigate(['/tabs']);
           } else {
-              this.emailError = "Account not found";
-              this.passwordError = "Account not found";
-              this.loginForm.markAllAsTouched();
-              this.loginForm.get("password")?.setErrors({ customError: true });
+              this.showAlert('Login failed', 'Please try again!');
           }
 
       } else {
           this.emailError = "Invalid email";
-          this.passwordError = "Invalid password";
+          this.passwordError = "6 character minimum";
           this.loginForm.markAllAsTouched();
           this.loginForm.get("password")?.setErrors({ customError: true });
       }
   }
 
-  public register() {
-      //TODO: Open SmoothMigration account registry web page
-      console.log("forgot register pressed");
+  public async register() {
+      const loading = await this.loadingController.create();
+      await loading.present();
+
+      const user = await this.authService.register(this.loginForm.value);
+      await loading.dismiss();
+
+      if (user) {
+          this.router.navigateByUrl('/home', { replaceUrl: true });
+      } else {
+          this.showAlert('Registration failed', 'Please try again!');
+      }
+  }
+
+  private async showAlert(header: string, message: string) {
+      const alert = await this.alertController.create({
+          header,
+          message,
+          buttons: ['OK']
+      });
+      await alert.present();
   }
 
 }

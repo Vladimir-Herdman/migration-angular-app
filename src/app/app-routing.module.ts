@@ -1,5 +1,10 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { redirectUnauthorizedTo, redirectLoggedInTo, canActivate } from '@angular/fire/auth-guard';
+
+// Redirection from firebase work
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['']);
+const redirectLoggedInToHome = () => redirectLoggedInTo(['tabs']);
 
 const routes: Routes = [
   {
@@ -14,6 +19,11 @@ const routes: Routes = [
     path: 'legal-popup',
     loadChildren: () => import('./pages/legal-popup/legal-popup.module').then( m => m.LegalPopupPageModule)
   },
+  {
+      path: '**',
+      redirectTo: '',
+      pathMatch: 'full'
+  }
 ];
 @NgModule({
   imports: [

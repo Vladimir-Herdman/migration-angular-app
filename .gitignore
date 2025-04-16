@@ -18,3 +18,9 @@ Thumbs.db
 UserInterfaceState.xcuserstate
 .vscode/
 .idea/
+.env
+
+# Firebase
+.firebase
+*-debug.log
+.runtimeconfig.json

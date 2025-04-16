@@ -2,6 +2,8 @@ import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonicModule, IonContent } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
+import { DatabaseService } from 'src/app/services/database.service';
 
 @Component({
   selector: 'app-legal-popup',
@@ -12,7 +14,7 @@ import { IonicModule, IonContent } from '@ionic/angular';
 export class LegalPopupPage implements  AfterViewInit {
   @ViewChild(IonContent) scrollableContent!: IonContent;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService, private databaseService: DatabaseService) {}
 
   ngAfterViewInit() {
       let acceptButton = document.getElementById('accept-button');
@@ -30,7 +32,12 @@ export class LegalPopupPage implements  AfterViewInit {
       return scrollable_content.scrollHeight - scrollable_content.scrollTop <= scrollable_content.clientHeight + 10;
   }
 
-  public acceptClick() {
+  public async acceptClick() {
+      // falsify the firstTimeSignIn so don't see legal page on subsequent sign in's
+      const userUid = this.databaseService.userUid;
+      await this.authService.falsifyFirstTimeSignIn(userUid);
+        
+      // Navigate away
       this.router.navigate(['/tabs']);
   }
 
