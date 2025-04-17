@@ -17,12 +17,8 @@ export class Tab1Page {
     moveDate: '',
     hasHousing: false,
     family: {
-      partner: false,
       children: false,
-      childrenAges: '',
-      dependents: false,
       pets: false,
-      petTypes: ''
     },
     vehicle: '',
     currentHousing: '',
