@@ -1,7 +1,8 @@
 import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import predep from 'src/Checklists/predepart.json';
-import dep from 'src/Checklists/depart.json';
+import depart from 'src/Checklists/depart.json';
 import arrive from 'src/Checklists/arrive.json';
+import { FormDataService } from 'src/app/tab1/form-data.service';
 
 @Component({
     selector: 'app-tab_checklist',
@@ -10,15 +11,17 @@ import arrive from 'src/Checklists/arrive.json';
     standalone: false,
 })
 export class TabChecklistPage implements AfterViewInit {
+    formData : any;
     selectedStage = "predeparture";
     page_list?: Array<ElementRef>
     @ViewChild('predeparture') predepDiv!: ElementRef;
     @ViewChild('departure') depDiv!: ElementRef;
     @ViewChild('arrival') arrDiv!: ElementRef;
 
-    constructor() {}
+    constructor(private formDataService: FormDataService) {}    
 
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
+        this.formData = await this.formDataService.getForm();
         this.page_list = [this.predepDiv, this.depDiv, this.arrDiv];
         this.updateViewPage();
 
@@ -26,41 +29,59 @@ export class TabChecklistPage implements AfterViewInit {
         //TODO: Make method take an object to go through and add to all pages
         //on page initialization
         // this.insertToDo("predeparture", "Hey man what up")
-        let x = true;
+        let x = this.formData.moveType === "international";
 
         //Domestic or International
         let pre = x ? predep.International : predep.Domestic;
+        let dep = x ? depart.International : depart.Domestic;
+        let arri = x ? arrive.International : arrive.Domestic;
 
         /**
          * Predeparture Checklist generation
          */        
         //Default
         pre.default.forEach(item => this.insertToDo("predeparture",item));
+        dep.default.forEach(item => this.insertToDo("departure", item));
+        arri.default.forEach(item => this.insertToDo("arrival",item));
+
         //Immigration
-        if(pre === predep.International && x){
+        if(x){
             //There is a blank array in domestic to make the code chill out
             pre.Immigration_Documents.forEach(item => this.insertToDo("predeparture",item));
         }
         // Children
-        if(x){
+        if(this.formData.children === 'true'){
             pre.Children.forEach(item => this.insertToDo("predeparture",item));
+            dep.Children.forEach(item => this.insertToDo("departure",item));
+            arri.Children.forEach(item => this.insertToDo("arrival",item));
         }
-        //TODO: Vehicle (need how we store)
-
+        //Vehicle
+        if(this.formData.vehicle === "bring"){
+            pre.Vehicle.Bringing.forEach(item => this.insertToDo("predeparture",item));
+            arri.Vehicle.Bringing.forEach(item => this.insertToDo("arrival",item));
+        }
+        if(this.formData.vehicle === "rent"){
+            pre.Vehicle.Renting.forEach(item => this.insertToDo("predeparture",item));
+            arri.Vehicle.Renting.forEach(item => this.insertToDo("arrival",item));
+        }
         //Pets
-        if(x){
+        if(this.formData.family.pets){
             pre.Pets.forEach(item => this.insertToDo("predeparture",item));
+            dep.pets.forEach(item => this.insertToDo("departure",item));
+            arri.Pets.forEach(item => this.insertToDo("arrival",item));
         }
         //Phone
-        if(x){
+        if(this.formData.services.internet){
             pre.Phone.forEach(item => this.insertToDo("predeparture",item));
         }
         //Realtor
-        if(x){
-            pre.Phone.forEach(item => this.insertToDo("predeparture",item));
+        if(this.formData.currentHousing === "own"){
+            pre.Realtor.forEach(item => this.insertToDo("predeparture",item));
         }
-
-        //
+        //Rent
+        if(this.formData.currentHousing === "rent"){
+            pre.landlord.forEach(item => this.insertToDo("predeparture",item));
+        }
     }
 
     public insertToDo(divName: string, toDoMessage: string) {
