@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
+import { FormDataService } from './form-data.service';
+
 
 @Component({
   selector: 'app-tab1',
@@ -7,6 +9,7 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['tab1.page.scss'],
   standalone: false,
 })
+
 export class Tab1Page {
   form: any = {
     moveType: '',
@@ -34,9 +37,11 @@ export class Tab1Page {
     hasJob: false
   };
 
-  constructor(private toastController: ToastController) {}
+  constructor(private toastController: ToastController, private formDataService: FormDataService) {}
 
   async submitForm() {
+    await this.formDataService.setForm(this.form);
+
     console.log(this.form);
     const toast = await this.toastController.create({
       message: 'Answers saved successfully!',
@@ -46,4 +51,5 @@ export class Tab1Page {
     });
     await toast.present();
   }
+
 }
