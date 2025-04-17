@@ -5,50 +5,44 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Account</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <div class="content-wrapper">
     <!-- Account Info -->
-    <ion-list class="ion-margin-top">
-      <ion-list-header>
-        <ion-label>Account Info</ion-label>
+    <ion-list>
+      <ion-list-header color="light">
+        <ion-label><h1>Account Info</h1></ion-label>
       </ion-list-header>
 
       <ion-item>
         <ion-label position="stacked">Name</ion-label>
-        <ion-input type="text" placeholder="Enter your name"></ion-input>
+        <ion-input [(ngModel)]="form.info.name" name="name" type="text" placeholder="Name"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
-        <ion-input type="email" placeholder="Enter your email"></ion-input>
+        <ion-input [(ngModel)]="form.info.email" name="email" type="email" placeholder="Email"></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-label position="stacked">Phone</ion-label>
-        <ion-input type="tel" placeholder="Enter your phone number"></ion-input>
+        <ion-label position="stacked">Phone number</ion-label>
+        <ion-input [(ngModel)]="form.info.phone" name="phone" type="tel" placeholder="Phone number"></ion-input>
       </ion-item>
     </ion-list>
 
     <!-- Settings -->
-    <ion-list class="ion-margin-top">
-      <ion-list-header>
-        <ion-label>Settings</ion-label>
+    <ion-list>
+      <ion-list-header color="light">
+        <ion-label><h1>Settings</h1></ion-label>
       </ion-list-header>
 
       <ion-item>
         <ion-label>Enable Notifications</ion-label>
-        <ion-checkbox slot="start"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="form.settings.notifications" name="notifications" slot="start"></ion-checkbox>
       </ion-item>
     </ion-list>
 
     <!-- Action Buttons -->
-    <div class="ion-margin-top">
-      <ion-button expand="block" color="primary">Save Changes</ion-button>
+    <div class="button-wrapper">
+      <ion-button expand="block" color="primary" (click)="submitForm()">Save Changes</ion-button>
       <ion-button expand="block" color="danger" fill="outline">Delete Account</ion-button>
     </div>
   </div>
