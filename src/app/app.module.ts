@@ -13,9 +13,11 @@ import { getApp } from 'firebase/app';
 import { getAuth, provideAuth, initializeAuth, indexedDBLocalPersistence } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 
+import { IonicStorageModule } from '@ionic/storage-angular';
+
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot()],
   providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
       provideFirebaseApp(() => initializeApp(environment.fireBaseConfig)),
