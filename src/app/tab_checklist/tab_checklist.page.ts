@@ -1,4 +1,7 @@
 import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import predep from 'src/Checklists/predepart.json';
+import dep from 'src/Checklists/depart.json';
+import arrive from 'src/Checklists/arrive.json';
 
 @Component({
     selector: 'app-tab_checklist',
@@ -22,7 +25,42 @@ export class TabChecklistPage implements AfterViewInit {
         // Insert all the page data
         //TODO: Make method take an object to go through and add to all pages
         //on page initialization
-        this.insertToDo("predeparture", "Hey man what up")
+        // this.insertToDo("predeparture", "Hey man what up")
+        let x = true;
+
+        //Domestic or International
+        let pre = x ? predep.International : predep.Domestic;
+
+        /**
+         * Predeparture Checklist generation
+         */        
+        //Default
+        pre.default.forEach(item => this.insertToDo("predeparture",item));
+        //Immigration
+        if(pre === predep.International && x){
+            //There is a blank array in domestic to make the code chill out
+            pre.Immigration_Documents.forEach(item => this.insertToDo("predeparture",item));
+        }
+        // Children
+        if(x){
+            pre.Children.forEach(item => this.insertToDo("predeparture",item));
+        }
+        //TODO: Vehicle (need how we store)
+
+        //Pets
+        if(x){
+            pre.Pets.forEach(item => this.insertToDo("predeparture",item));
+        }
+        //Phone
+        if(x){
+            pre.Phone.forEach(item => this.insertToDo("predeparture",item));
+        }
+        //Realtor
+        if(x){
+            pre.Phone.forEach(item => this.insertToDo("predeparture",item));
+        }
+
+        //
     }
 
     public insertToDo(divName: string, toDoMessage: string) {
@@ -31,7 +69,7 @@ export class TabChecklistPage implements AfterViewInit {
         // Insert into current div
         if (currentDiv) {
             //TODO: Call to server for data needed for this task (For now dummy data)
-            const dateDue = "11/24/2028";
+            const dateDue = " - 11/24/2028";
             const html = `<p>${toDoMessage}<span>${dateDue}<\span></p>`
 
             // Insert into Given div
@@ -48,7 +86,7 @@ export class TabChecklistPage implements AfterViewInit {
         for (let page of this.page_list!) {
             if (page.nativeElement.id === this.selectedStage) {
                 page.nativeElement.style.display = "block";
-                break;
+                // break;
             } else {
                 page.nativeElement.style.display = "none";
             }

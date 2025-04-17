@@ -1,6 +1,6 @@
 {
     "International" : {
-        "Immigration Documents": [
+        "Immigration_Documents": [
             "Take the IELTS/CELPIP Exams for English Literacy",
             "Get all relevant documents copied and certified",
             "Arrange and Collect birth and marriage certificates",
@@ -85,7 +85,8 @@
         ],
         "landlord" : [
             "Give notice to landlord and terminate lease"
-        ]
+        ],
+        "Immigration_Documents" : []
     }
 
 }
