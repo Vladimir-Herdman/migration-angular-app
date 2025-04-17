@@ -21,24 +21,22 @@ export class TabChecklistPage implements AfterViewInit {
     constructor(private formDataService: FormDataService) {}    
 
     async ngAfterViewInit() {
+        
         this.formData = await this.formDataService.getForm();
+
         this.page_list = [this.predepDiv, this.depDiv, this.arrDiv];
         this.updateViewPage();
 
         // Insert all the page data
         //TODO: Make method take an object to go through and add to all pages
         //on page initialization
-        // this.insertToDo("predeparture", "Hey man what up")
-        let x = this.formData.moveType === "international";
 
         //Domestic or International
+        let x = this.formData.moveType === "international";
         let pre = x ? predep.International : predep.Domestic;
         let dep = x ? depart.International : depart.Domestic;
         let arri = x ? arrive.International : arrive.Domestic;
 
-        /**
-         * Predeparture Checklist generation
-         */        
         //Default
         pre.default.forEach(item => this.insertToDo("predeparture",item));
         dep.default.forEach(item => this.insertToDo("departure", item));
@@ -107,7 +105,6 @@ export class TabChecklistPage implements AfterViewInit {
         for (let page of this.page_list!) {
             if (page.nativeElement.id === this.selectedStage) {
                 page.nativeElement.style.display = "block";
-                // break;
             } else {
                 page.nativeElement.style.display = "none";
             }
