@@ -22,14 +22,30 @@
 
 <ion-content>
     <div #predeparture id="predeparture" class="dep-page">
-        <p>test pre</p>
+        <ion-list>
+            <ion-item *ngFor="let item of preItemList;">
+                <ion-label>{{item}}</ion-label>
+                <ion-button danger (click)="removePre(item)"></ion-button>
+            </ion-item>
+        </ion-list>
     </div>
 
     <div #departure id="departure" class="dep-page">
-        <p>test dep</p>
+        <ion-list>
+            <ion-item *ngFor="let item of depItemList;">
+                <ion-label>{{item}}</ion-label>
+                <ion-button danger (click)="removeDep(item)">
+                </ion-button>
+            </ion-item>
+        </ion-list>
     </div>
 
     <div #arrival id="arrival" class="dep-page">
-        <p>test arrival</p>
+        <ion-list>
+            <ion-item *ngFor="let item of arrItemList;">
+                <ion-label>{{item}}</ion-label>
+                <ion-button danger (click)="removeArr(item)"></ion-button>
+            </ion-item>
+        </ion-list>
     </div>
 </ion-content>

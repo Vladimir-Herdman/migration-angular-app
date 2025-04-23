@@ -17,19 +17,105 @@ export class TabChecklistPage implements AfterViewInit {
     @ViewChild('predeparture') predepDiv!: ElementRef;
     @ViewChild('departure') depDiv!: ElementRef;
     @ViewChild('arrival') arrDiv!: ElementRef;
+    preItemList: string[] = [];
+    depItemList: string[] = [];
+    arrItemList: string[] = [];
 
     constructor(private formDataService: FormDataService) {}    
 
     async ngAfterViewInit() {
-        
-        this.formData = await this.formDataService.getForm();
-
+        // this.formData = await this.formDataService.getForm();
         this.page_list = [this.predepDiv, this.depDiv, this.arrDiv];
         this.updateViewPage();
 
+        //Implements a listener on the formDataService object
+        //This means when it's updated the checklist will update as well
+        this.formDataService.formData$.subscribe(form => {
+            if (form) {
+              this.updateList(form);
+            }
+          });
+        
         // Insert all the page data
         //TODO: Make method take an object to go through and add to all pages
         //on page initialization
+        // this.insertToDo("predeparture", "Hey man what up")
+    }
+
+    public insertToDo(divName: string, toDoMessage: string) {
+        // let currentDiv = this.getDiv(divName)?.nativeElement;
+
+        // // Insert into current div
+        // if (currentDiv) {
+        //     //TODO: Call to server for data needed for this task (For now dummy data)
+        //     const dateDue = " - 11/24/2028";
+        //     const html = `<p>${toDoMessage}<span>${dateDue}<\span></p>`
+
+        //     // Insert into Given div
+        //     currentDiv.insertAdjacentHTML("beforeend", html);
+        // }
+        if(divName === "predeparture"){
+            if(!this.preItemList.includes(toDoMessage)){
+            this.preItemList.push(toDoMessage);
+            }
+        } else if (divName === "departure"){
+            if(!this.depItemList.includes(toDoMessage)){
+            this.depItemList.push(toDoMessage);
+            }
+        } else {
+            if(!this.arrItemList.includes(toDoMessage)){
+            this.arrItemList.push(toDoMessage);
+            }
+        }
+    }
+
+    // On departure select change, change the visible screen
+    public handleChange() {
+        this.updateViewPage();
+    }
+
+    private updateViewPage() {
+        for (let page of this.page_list!) {
+            if (page.nativeElement.id === this.selectedStage) {
+                page.nativeElement.style.display = "block";
+                // break;
+            } else {
+                page.nativeElement.style.display = "none";
+            }
+        }
+    }
+
+    private getDiv(divName: string): ElementRef | null {
+        for (let page of this.page_list!) {
+            if (page.nativeElement.id === divName) {
+                return page;
+            }
+        }
+        return null;
+    }
+
+    removePre(item : string){
+        const index = this.preItemList.indexOf(item);
+        this.preItemList.splice(index,1);
+    }
+    removeDep(item : string){
+        const index = this.depItemList.indexOf(item);
+        this.depItemList.splice(index,1);
+    }
+    removeArr(item : string){
+        const index = this.arrItemList.indexOf(item);
+        this.arrItemList.splice(index,1);
+    }
+
+    public async updateList(form: any){
+        this.formData = form;
+
+        //Reset the checklists when we need to regenerate them
+        this.arrItemList = new Array();
+        this.preItemList = new Array();
+        this.depItemList = new Array();
+
+        let x = this.formData.moveType === "international";
 
         //Domestic or International
         let x = this.formData.moveType === "international";
@@ -81,43 +167,4 @@ export class TabChecklistPage implements AfterViewInit {
             pre.landlord.forEach(item => this.insertToDo("predeparture",item));
         }
     }
-
-    public insertToDo(divName: string, toDoMessage: string) {
-        let currentDiv = this.getDiv(divName)?.nativeElement;
-
-        // Insert into current div
-        if (currentDiv) {
-            //TODO: Call to server for data needed for this task (For now dummy data)
-            const dateDue = " - 11/24/2028";
-            const html = `<p>${toDoMessage}<span>${dateDue}<\span></p>`
-
-            // Insert into Given div
-            currentDiv.insertAdjacentHTML("beforeend", html);
-        }
-    }
-
-    // On departure select change, change the visible screen
-    public handleChange() {
-        this.updateViewPage();
-    }
-
-    private updateViewPage() {
-        for (let page of this.page_list!) {
-            if (page.nativeElement.id === this.selectedStage) {
-                page.nativeElement.style.display = "block";
-            } else {
-                page.nativeElement.style.display = "none";
-            }
-        }
-    }
-
-    private getDiv(divName: string): ElementRef | null {
-        for (let page of this.page_list!) {
-            if (page.nativeElement.id === divName) {
-                return page;
-            }
-        }
-        return null;
-    }
-
 }
