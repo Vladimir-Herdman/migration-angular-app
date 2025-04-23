@@ -12,16 +12,16 @@ const routes: Routes = [
         loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
       },
       {
-        path: 'tab3',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+        path: 'tab_checklist',
+        loadChildren: () => import('../tab_checklist/tab_checklist.module').then(m => m.TabChecklistPageModule)
       },
       {
         path: 'tab_chatbot',
         loadChildren: () => import('../tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
       },
       {
-        path: 'tab_checklist',
-        loadChildren: () => import('../tab_checklist/tab_checklist.module').then(m => m.TabChecklistPageModule)
+        path: 'tab3',
+        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
       },
       {
         path: '',
