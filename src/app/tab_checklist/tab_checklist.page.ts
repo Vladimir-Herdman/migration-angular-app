@@ -118,13 +118,11 @@ export class TabChecklistPage implements AfterViewInit {
         let x = this.formData.moveType === "international";
 
         //Domestic or International
+        let x = this.formData.moveType === "international";
         let pre = x ? predep.International : predep.Domestic;
         let dep = x ? depart.International : depart.Domestic;
         let arri = x ? arrive.International : arrive.Domestic;
 
-        /**
-         * Predeparture Checklist generation
-         */        
         //Default
         pre.default.forEach(item => this.insertToDo("predeparture",item));
         dep.default.forEach(item => this.insertToDo("departure", item));
@@ -169,5 +167,4 @@ export class TabChecklistPage implements AfterViewInit {
             pre.landlord.forEach(item => this.insertToDo("predeparture",item));
         }
     }
-
 }
