@@ -115,8 +115,6 @@ export class TabChecklistPage implements AfterViewInit {
         this.preItemList = new Array();
         this.depItemList = new Array();
 
-        let x = this.formData.moveType === "international";
-
         //Domestic or International
         let x = this.formData.moveType === "international";
         let pre = x ? predep.International : predep.Domestic;
