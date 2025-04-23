@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss'],
+  selector: 'app-tab_account',
+  templateUrl: 'tab_account.page.html',
+  styleUrls: ['tab_account.page.scss'],
   standalone: false,
 })
-export class Tab3Page {
+export class TabAccountPage {
   form: any = {
     info: {
       name: '',

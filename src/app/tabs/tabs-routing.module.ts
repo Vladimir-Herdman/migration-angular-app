@@ -20,8 +20,8 @@ const routes: Routes = [
         loadChildren: () => import('../tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
       },
       {
-        path: 'tab3',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+        path: 'tab_account',
+        loadChildren: () => import('../tab_account/tab_account.module').then(m => m.TabAccountPageModule)
       },
       {
         path: '',
