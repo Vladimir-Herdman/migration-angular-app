@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import predep from 'src/Checklists/predepart.json';
 import depart from 'src/Checklists/depart.json';
 import arrive from 'src/Checklists/arrive.json';
-import { FormDataService } from 'src/app/tab1/form-data.service';
+import { FormDataService } from 'src/app/tab_quiz/form-data.service';
 
 @Component({
     selector: 'app-tab_checklist',
