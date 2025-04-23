@@ -8,28 +8,24 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'tab1',
-        loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
-      },
-      {
-        path: 'tab2',
-        loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule)
-      },
-      {
-        path: 'tab3',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
-      },
-      {
-        path: 'tab_chatbot',
-        loadChildren: () => import('../tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
+        path: 'tab_quiz',
+        loadChildren: () => import('../tab_quiz/tab_quiz.module').then(m => m.TabQuizPageModule)
       },
       {
         path: 'tab_checklist',
         loadChildren: () => import('../tab_checklist/tab_checklist.module').then(m => m.TabChecklistPageModule)
       },
       {
+        path: 'tab_chatbot',
+        loadChildren: () => import('../tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
+      },
+      {
+        path: 'tab_account',
+        loadChildren: () => import('../tab_account/tab_account.module').then(m => m.TabAccountPageModule)
+      },
+      {
         path: '',
-        redirectTo: 'tab1',
+        redirectTo: 'tab_quiz',
         pathMatch: 'full'
       }
     ]

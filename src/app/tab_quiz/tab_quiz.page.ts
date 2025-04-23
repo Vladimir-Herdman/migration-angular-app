@@ -4,13 +4,13 @@ import { FormDataService } from './form-data.service';
 
 
 @Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss'],
+  selector: 'app-tab_quiz',
+  templateUrl: 'tab_quiz.page.html',
+  styleUrls: ['tab_quiz.page.scss'],
   standalone: false,
 })
 
-export class Tab1Page {
+export class TabQuizPage {
   form: any = {
     moveType: '',
     destination: '',
