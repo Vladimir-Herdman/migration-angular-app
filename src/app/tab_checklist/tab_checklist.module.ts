@@ -6,6 +6,7 @@ import { TabChecklistPage } from './tab_checklist.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { TabChecklistPageRoutingModule } from './tab_checklist-routing.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { TabChecklistPageRoutingModule } from './tab_checklist-routing.module';
     CommonModule,
     ExploreContainerComponentModule,
     TabChecklistPageRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   declarations: [TabChecklistPage]
 })

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -17,20 +18,26 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot()],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(),
+    AppRoutingModule,
+    IonicStorageModule.forRoot(),
+    HttpClientModule
+  ],
   providers: [
-      { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-      provideFirebaseApp(() => initializeApp(environment.fireBaseConfig)),
-          provideAuth(() => {
-          if (Capacitor.isNativePlatform()) {
-              return initializeAuth(getApp(), {
-                  persistence: indexedDBLocalPersistence
-              });
-          } else {
-              return getAuth()
-          }
-      }),
-      provideFirestore(() => getFirestore()),
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideFirebaseApp(() => initializeApp(environment.fireBaseConfig)),
+      provideAuth(() => {
+      if (Capacitor.isNativePlatform()) {
+        return initializeAuth(getApp(), {
+          persistence: indexedDBLocalPersistence
+        });
+      } else {
+        return getAuth()
+      }
+    }),
+    provideFirestore(() => getFirestore()),
   ],
   bootstrap: [AppComponent],
 })

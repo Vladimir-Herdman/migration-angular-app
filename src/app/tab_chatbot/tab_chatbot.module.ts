@@ -6,6 +6,7 @@ import { TabChatBotPage } from './tab_chatbot.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { TabChatBotPageRoutingModule } from './tab_chatbot-routing.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { TabChatBotPageRoutingModule } from './tab_chatbot-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    TabChatBotPageRoutingModule
+    TabChatBotPageRoutingModule,
+    HttpClientModule
   ],
   declarations: [TabChatBotPage]
 })

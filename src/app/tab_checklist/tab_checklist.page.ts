@@ -1,168 +1,172 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import predep from 'src/Checklists/predepart.json';
-import depart from 'src/Checklists/depart.json';
-import arrive from 'src/Checklists/arrive.json';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormDataService } from 'src/app/tab_quiz/form-data.service';
+import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+import { LoadingController, ToastController } from '@ionic/angular';
+
+// Define interfaces for the expected task structure from the backend
+interface RelocationTask {
+  task_description: string;
+  priority: 'High' | 'Medium' | 'Low';
+  due_date: string;
+}
+
+interface TaskListResponse {
+  predeparture: RelocationTask[];
+  departure: RelocationTask[];
+  arrival: RelocationTask[];
+}
+
 
 @Component({
-    selector: 'app-tab_checklist',
-    templateUrl: 'tab_checklist.page.html',
-    styleUrls: ['tab_checklist.page.scss'],
-    standalone: false,
+  selector: 'app-tab_checklist',
+  templateUrl: 'tab_checklist.page.html',
+  styleUrls: ['tab_checklist.page.scss'],
+  standalone: false,
 })
-export class TabChecklistPage implements AfterViewInit {
-    formData : any;
-    selectedStage = "predeparture";
-    page_list?: Array<ElementRef>
-    @ViewChild('predeparture') predepDiv!: ElementRef;
-    @ViewChild('departure') depDiv!: ElementRef;
-    @ViewChild('arrival') arrDiv!: ElementRef;
-    preItemList: string[] = [];
-    depItemList: string[] = [];
-    arrItemList: string[] = [];
 
-    constructor(private formDataService: FormDataService) {}    
+export class TabChecklistPage implements AfterViewInit, OnDestroy {
+  formData : any;  // Are we just using any for testing purposes? - Ben
+  selectedStage = "predeparture";
+  page_list?: Array<ElementRef>
+  @ViewChild('predeparture') predepDiv!: ElementRef;
+  @ViewChild('departure') depDiv!: ElementRef;
+  @ViewChild('arrival') arrDiv!: ElementRef;
 
-    async ngAfterViewInit() {
-        // this.formData = await this.formDataService.getForm();
-        this.page_list = [this.predepDiv, this.depDiv, this.arrDiv];
-        this.updateViewPage();
+  // Use the interface for the task lists
+  preItemList: RelocationTask[] = [];
+  depItemList: RelocationTask[] = [];
+  arrItemList: RelocationTask[] = [];
 
-        //Implements a listener on the formDataService object
-        //This means when it's updated the checklist will update as well
-        this.formDataService.formData$.subscribe(form => {
-            if (form) {
-              this.updateList(form);
-            }
-          });
-        
-        // Insert all the page data
-        //TODO: Make method take an object to go through and add to all pages
-        //on page initialization
-        // this.insertToDo("predeparture", "Hey man what up")
+  private formDataSubscription!: Subscription; // To manage the subscription
+
+  // Define the backend API URL
+  private backendUrl = 'http://localhost:8000'; // Make sure this matches your backend port
+
+  constructor(
+    private formDataService: FormDataService,
+    private http: HttpClient,
+    private loadingController: LoadingController,
+    private toastController: ToastController
+  ) {}
+
+  async ngAfterViewInit() {
+    // this.formData = await this.formDataService.getForm();
+    this.page_list = [this.predepDiv, this.depDiv, this.arrDiv];
+    this.updateViewPage();
+
+    this.formDataSubscription = this.formDataService.formData$.subscribe(form => {
+      if (form) {
+        this.formData = form; // Update local formData
+        this.generateChecklist(form); // Call function to generate checklist via backend
+      }
+    });
+
+    // Also load existing form data on init if available
+    const initialForm = await this.formDataService.getForm();
+    if (initialForm) {
+      this.formData = initialForm;
+      this.generateChecklist(initialForm);
     }
+  }
 
-    public insertToDo(divName: string, toDoMessage: string) {
-        // let currentDiv = this.getDiv(divName)?.nativeElement;
+  ngOnDestroy() {
+    // Unsubscribe to prevent memory leaks
+    if (this.formDataSubscription) {
+      this.formDataSubscription.unsubscribe();
+    }
+  }
 
-        // // Insert into current div
-        // if (currentDiv) {
-        //     //TODO: Call to server for data needed for this task (For now dummy data)
-        //     const dateDue = " - 11/24/2028";
-        //     const html = `<p>${toDoMessage}<span>${dateDue}<\span></p>`
+  public async generateChecklist(form: any) {
+    // Show loading indicator
+    const loading = await this.loadingController.create({
+      message: 'Generating your personalized checklist...',
+      spinner: 'dots'
+    });
+    await loading.present();
 
-        //     // Insert into Given div
-        //     currentDiv.insertAdjacentHTML("beforeend", html);
-        // }
-        if(divName === "predeparture"){
-            if(!this.preItemList.includes(toDoMessage)){
-            this.preItemList.push(toDoMessage);
-            }
-        } else if (divName === "departure"){
-            if(!this.depItemList.includes(toDoMessage)){
-            this.depItemList.push(toDoMessage);
-            }
+    // Clear existing lists
+    this.preItemList = [];
+    this.depItemList = [];
+    this.arrItemList = [];
+
+    try {
+      // Send quiz data to the backend
+      const response = await this.http.post<TaskListResponse>(`${this.backendUrl}/generate_tasks`, form).toPromise();
+
+      if (response) {
+        // Populate lists with tasks from the backend response
+        this.preItemList = response.predeparture;
+        this.depItemList = response.departure;
+        this.arrItemList = response.arrival;
+
+        const toast = await this.toastController.create({
+          message: 'Checklist generated successfully!',
+          duration: 2000,
+          color: 'success',
+          position: 'middle'
+        });
+        await toast.present();
+
         } else {
-            if(!this.arrItemList.includes(toDoMessage)){
-            this.arrItemList.push(toDoMessage);
-            }
+          const toast = await this.toastController.create({
+            message: 'Failed to generate checklist. Please try again.',
+            duration: 3000,
+            color: 'danger',
+            position: 'middle'
+          });
+          await toast.present();
         }
+
+    } catch (error) {
+      console.error('Error generating checklist:', error);
+        const toast = await this.toastController.create({
+          message: 'Error connecting to backend. Is the Python server running?',
+          duration: 5000,
+          color: 'danger',
+          position: 'middle'
+      });
+      await toast.present();
+    } finally {
+      // Dismiss loading indicator
+      await loading.dismiss();
     }
+  }
 
-    // On departure select change, change the visible screen
-    public handleChange() {
-        this.updateViewPage();
+
+  // On departure select change, change the visible screen
+  public handleChange() {
+    this.updateViewPage();
+  }
+
+  private updateViewPage() {
+    for (let page of this.page_list!) {
+      // Use ElementRef to access the nativeElement and its id
+      if (page.nativeElement.id === this.selectedStage) {
+        page.nativeElement.style.display = "block";
+      } else {
+        page.nativeElement.style.display = "none";
+      }
     }
+  }
 
-    private updateViewPage() {
-        for (let page of this.page_list!) {
-            if (page.nativeElement.id === this.selectedStage) {
-                page.nativeElement.style.display = "block";
-                // break;
-            } else {
-                page.nativeElement.style.display = "none";
-            }
-        }
+    // Kept remove functions, but they now remove from the generated lists
+  removePre(item : RelocationTask){
+    const index = this.preItemList.indexOf(item);
+    if (index > -1) {
+      this.preItemList.splice(index, 1);
     }
-
-    private getDiv(divName: string): ElementRef | null {
-        for (let page of this.page_list!) {
-            if (page.nativeElement.id === divName) {
-                return page;
-            }
-        }
-        return null;
+  }
+  removeDep(item : RelocationTask){
+    const index = this.depItemList.indexOf(item);
+    if (index > -1) {
+      this.depItemList.splice(index, 1);
     }
-
-    removePre(item : string){
-        const index = this.preItemList.indexOf(item);
-        this.preItemList.splice(index,1);
+  }
+  removeArr(item : RelocationTask){
+    const index = this.arrItemList.indexOf(item);
+    if (index > -1) {
+      this.arrItemList.splice(index, 1);
     }
-    removeDep(item : string){
-        const index = this.depItemList.indexOf(item);
-        this.depItemList.splice(index,1);
-    }
-    removeArr(item : string){
-        const index = this.arrItemList.indexOf(item);
-        this.arrItemList.splice(index,1);
-    }
-
-    public async updateList(form: any){
-        this.formData = form;
-
-        //Reset the checklists when we need to regenerate them
-        this.arrItemList = new Array();
-        this.preItemList = new Array();
-        this.depItemList = new Array();
-
-        //Domestic or International
-        let x = this.formData.moveType === "international";
-        let pre = x ? predep.International : predep.Domestic;
-        let dep = x ? depart.International : depart.Domestic;
-        let arri = x ? arrive.International : arrive.Domestic;
-
-        //Default
-        pre.default.forEach(item => this.insertToDo("predeparture",item));
-        dep.default.forEach(item => this.insertToDo("departure", item));
-        arri.default.forEach(item => this.insertToDo("arrival",item));
-
-        //Immigration
-        if(x){
-            //There is a blank array in domestic to make the code chill out
-            pre.Immigration_Documents.forEach(item => this.insertToDo("predeparture",item));
-        }
-        // Children
-        if(this.formData.children === 'true'){
-            pre.Children.forEach(item => this.insertToDo("predeparture",item));
-            dep.Children.forEach(item => this.insertToDo("departure",item));
-            arri.Children.forEach(item => this.insertToDo("arrival",item));
-        }
-        //Vehicle
-        if(this.formData.vehicle === "bring"){
-            pre.Vehicle.Bringing.forEach(item => this.insertToDo("predeparture",item));
-            arri.Vehicle.Bringing.forEach(item => this.insertToDo("arrival",item));
-        }
-        if(this.formData.vehicle === "rent"){
-            pre.Vehicle.Renting.forEach(item => this.insertToDo("predeparture",item));
-            arri.Vehicle.Renting.forEach(item => this.insertToDo("arrival",item));
-        }
-        //Pets
-        if(this.formData.family.pets){
-            pre.Pets.forEach(item => this.insertToDo("predeparture",item));
-            dep.pets.forEach(item => this.insertToDo("departure",item));
-            arri.Pets.forEach(item => this.insertToDo("arrival",item));
-        }
-        //Phone
-        if(this.formData.services.internet){
-            pre.Phone.forEach(item => this.insertToDo("predeparture",item));
-        }
-        //Realtor
-        if(this.formData.currentHousing === "own"){
-            pre.Realtor.forEach(item => this.insertToDo("predeparture",item));
-        }
-        //Rent
-        if(this.formData.currentHousing === "rent"){
-            pre.landlord.forEach(item => this.insertToDo("predeparture",item));
-        }
-    }
+  }
 }
