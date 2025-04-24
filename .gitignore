@@ -19,6 +19,7 @@ UserInterfaceState.xcuserstate
 .vscode/
 .idea/
 .env
+__pycache__/
 
 # Firebase
 .firebase
