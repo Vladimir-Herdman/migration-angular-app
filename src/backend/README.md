@@ -31,7 +31,7 @@ Next, download the required LLM model using your terminal.
 Open your terminal and run the following command to pull the recommended model:
 
 ```bash
-ollama pull llama3.2:8b-instruct-q5_K_M
+ollama pull llama3.1:8b-instruct-q5_K_M
 ```
 
 Ensure the model name in your `.env` file matches the one you pul*
@@ -41,7 +41,7 @@ Ensure the model name in your `.env` file matches the one you pul*
 If the `q5_K_M` model runs too slowly or uses too much memory on your hardware, you can try the `q4_K_M` quantization.
 
 ```bash
-ollama pull llama3.2:8b-instruct-q4_k_m
+ollama pull llama3.1:8b-instruct-q4_k_m
 ```
 
 Remember to update the `LLM_MODEL_NAME` variable in your `.env` file if you use a different model or quantization.
@@ -87,13 +87,13 @@ Now, set up the Python environment and install the necessary libraries for the b
   pip install fastapi uvicorn ollama pydantic python-dotenv
   ```
   
-  
+
   **`backend/.env` Example:**
 
   ```dotenv
   # Configuration for the LLM Backend
   # Set the name of the Ollama model you want to use
-  LLM_MODEL_NAME=llama3.2:8b-instruct-q5_K_M
+  LLM_MODEL_NAME=llama3.1:8b-instruct-q5_K_M
 
   # Set the port for the FastAPI server
   BACKEND_PORT=8000
