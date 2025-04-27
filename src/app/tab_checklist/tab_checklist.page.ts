@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormDataService } from 'src/app/tab_quiz/form-data.service';
+import { Capacitor } from '@capacitor/core';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { LoadingController, ToastController } from '@ionic/angular';
@@ -41,7 +42,9 @@ export class TabChecklistPage implements AfterViewInit, OnDestroy {
   private formDataSubscription!: Subscription; // To manage the subscription
 
   // Define the backend API URL
-  private backendUrl = 'http://localhost:8000'; // Make sure this matches your backend port
+  // TODO: Use a service to keep same backendURL, or just keep all backend logic and data needed
+  //    Here, this is to connect android, look into apple connection for backend
+  private backendUrl = (Capacitor.getPlatform() === 'android') ?  'http://10.0.2.2:8000' : 'http://localhost:8000';
 
   constructor(
     private formDataService: FormDataService,

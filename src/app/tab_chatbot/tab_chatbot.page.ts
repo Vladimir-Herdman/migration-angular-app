@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { HttpClient } from '@angular/common/http';
 
 interface ChatMessage {
@@ -21,7 +22,7 @@ export class TabChatBotPage implements OnInit {
   chatHistory: ChatMessage[] = [];
 
   // Define the backend API URL
-  private backendUrl = 'http://localhost:8000';
+  private backendUrl = (Capacitor.getPlatform() === 'android') ?  'http://10.0.2.2:8000' : 'http://localhost:8000';
 
   constructor(private http: HttpClient) {}
 
