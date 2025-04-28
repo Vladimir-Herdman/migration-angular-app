@@ -21,6 +21,10 @@ ion-card-content {
   padding: 20px;
 }
 
+ion-item {
+  --inner-border-width: 0;
+}
+
 ion-button[color="dark"] {
   text-transform: initial;
 }
