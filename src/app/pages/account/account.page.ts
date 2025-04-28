@@ -77,16 +77,20 @@ export class AccountPage {
     }
   }
 
+  async showToast(message: string, color: string = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,
+      position: 'top'
+    });
+    await toast.present();
+  }  
+
   async submitForm() {
     console.log(this.form);
     this.oldForm = JSON.parse(JSON.stringify(this.form));
-    const toast = await this.toastController.create({
-      message: 'Account saved successfully!',
-      duration: 2000,
-      color: 'success',
-      position: 'middle'
-    });
-    await toast.present();
+    this.showToast('Account saved successfully!');
   }
 
   async logout() {
@@ -130,14 +134,7 @@ export class AccountPage {
 
               if (user) {
                 await deleteUser(user);
-                const toast = await this.toastController.create({
-                  message: 'Account deleted successfully.',
-                  duration: 2000,
-                  color: 'success',
-                  position: 'middle'
-                });
-
-                await toast.present();
+                this.showToast('Account deleted successfully.');
                 this.router.navigateByUrl('/', { replaceUrl: true });
               }
             } catch (error: any) {
@@ -149,13 +146,7 @@ export class AccountPage {
                 message = 'Please re-login before deleting your account for security reasons.';
               }
             
-              const toast = await this.toastController.create({
-                message: message,
-                duration: 3000,
-                color: 'danger',
-                position: 'middle'
-              });
-              await toast.present();
+              this.showToast(message, 'danger');
             }
           }
         }
