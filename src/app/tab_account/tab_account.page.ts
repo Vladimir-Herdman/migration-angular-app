@@ -10,7 +10,6 @@ import { ToastController } from '@ionic/angular';
 export class TabAccountPage {
   form: any = {
     info: {
-      name: '',
       email: '',
       phone: ''
     },
