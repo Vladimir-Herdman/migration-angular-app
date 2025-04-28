@@ -4,23 +4,21 @@
   </ion-toolbar>
 
   <ion-toolbar>
-    <div class="header">
-      <h4 id="title">Stage:</h4>
-      <ion-list class="stage-select-list">
-        <ion-item>
-          <ion-select [(ngModel)]="selectedStage" aria-label="stage" placeholder="Select stage" interface="popover"
-            (ionChange)="handleChange()">
-            <ion-select-option value="predeparture" selected>Predeparture</ion-select-option>
-            <ion-select-option value="departure">Departure</ion-select-option>
-            <ion-select-option value="arrival">Arrival</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ion-list>
-    </div>
+    <ion-segment [(ngModel)]="selectedStage" (ionChange)="handleChange()">
+      <ion-segment-button value="predeparture">
+        <ion-label>Predeparture</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="departure">
+        <ion-label>Departure</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="arrival">
+        <ion-label>Arrival</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true">
   <div #predeparture id="predeparture" class="dep-page">
     <ion-list>
       <ion-item *ngFor="let item of preItemList;">
