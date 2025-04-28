@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { ToastController, AlertController } from '@ionic/angular';
-import { Auth } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-account',
@@ -20,7 +20,7 @@ export class AccountPage {
     }
   }
   oldForm: any = {};
-  user = this.auth.currentUser;
+  user: any = null;
 
   constructor(
     private toastController: ToastController,
@@ -30,12 +30,15 @@ export class AccountPage {
   ) {}
 
   ionViewWillEnter() {
-    if (this.user) {
-      this.form.info.email = this.user.email ?? '';
-      this.form.settings.notifications = false; // WIP: settings should push to DB
-    }
-    this.oldForm = JSON.parse(JSON.stringify(this.form));
-  }
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.user = user;
+        this.form.info.email = user.email ?? '';
+        this.form.settings.notifications = false; // WIP: settings should push to DB
+      }
+      this.oldForm = JSON.parse(JSON.stringify(this.form));
+    });
+  }  
 
   async handleBack() {
     if (JSON.stringify(this.form) !== JSON.stringify(this.oldForm)) {
