@@ -1,11 +1,27 @@
-.flex-center {
+.login-page-wrapper {
+  height: 100%;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
 }
 
-ion-button[color="dark"]{
+#login-logo {
+  position: absolute;
+  top: 17.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: auto;
+}
+
+ion-card-content {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+ion-button[color="dark"] {
   text-transform: initial;
 }
 
@@ -13,14 +29,8 @@ ion-content {
   --background: var(--ion-color-primary);
 }
 
-#card-border {
-  position: relative;
-  width: fit-content;
-  height: fit-content;
-}
-
-#login-planet {
-  position: absolute;
-  top: -30%;
-  left: -50%;
+@media (max-width: 480px) {
+  #login-logo {
+    width: 150px;
+  }
 }
