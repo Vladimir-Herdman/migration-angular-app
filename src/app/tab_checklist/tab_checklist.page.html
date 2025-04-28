@@ -25,6 +25,7 @@
   <div #predeparture id="predeparture" class="dep-page">
     <ion-list>
       <ion-item *ngFor="let item of preItemList;">
+        <ion-checkbox slot="start" (ionChange)="markCheckPre(item)" [checked]="getCheckStatusPre(item)"></ion-checkbox>
         <ion-label class="ion-text-wrap">
           <h2>{{item.task_description}}</h2>
           <p>
@@ -44,6 +45,7 @@
   <div #departure id="departure" class="dep-page">
     <ion-list>
       <ion-item *ngFor="let item of depItemList;">
+        <ion-checkbox slot="start" (ionChange)="markCheckDep(item)" [checked]=getCheckStatusDep(item)></ion-checkbox>
         <ion-label class="ion-text-wrap">
           <h2>{{item.task_description}}</h2>
           <p>
@@ -63,6 +65,7 @@
   <div #arrival id="arrival" class="dep-page">
     <ion-list>
       <ion-item *ngFor="let item of arrItemList;">
+        <ion-checkbox slot="start" (ionChange)="markCheckArr(item)" [checked]="getCheckStatusArr(item)"></ion-checkbox>
         <ion-label class="ion-text-wrap">
           <h2>{{item.task_description}}</h2>
           <p>
