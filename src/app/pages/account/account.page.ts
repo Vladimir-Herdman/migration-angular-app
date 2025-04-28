@@ -31,8 +31,10 @@ export class AccountPage {
     private router: Router
   ) {}
 
+  authUnsubscribe: (() => void) | null = null;
+
   ionViewWillEnter() {
-    onAuthStateChanged(this.auth, (user) => {
+    this.authUnsubscribe = onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.user = user;
         this.form.info.email = user.email ?? '';
@@ -40,6 +42,13 @@ export class AccountPage {
       }
       this.oldForm = JSON.parse(JSON.stringify(this.form));
     });
+  }
+  
+  ionViewWillLeave() {
+    if (this.authUnsubscribe) {
+      this.authUnsubscribe();
+      this.authUnsubscribe = null;
+    }
   }  
 
   async handleBack() {
@@ -118,7 +127,7 @@ export class AccountPage {
           handler: async () => {
             try {
               const user = this.auth.currentUser;
-              
+
               if (user) {
                 await deleteUser(user);
                 const toast = await this.toastController.create({
