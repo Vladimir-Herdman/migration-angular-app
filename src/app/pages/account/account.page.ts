@@ -32,12 +32,10 @@ export class AccountPage {
   ionViewWillEnter() {
     if (this.user) {
       this.form.info.email = this.user.email ?? '';
-      this.form.info.phone = this.user.phoneNumber ?? '';
       this.form.settings.notifications = false; // WIP: settings should push to DB
     }
     this.oldForm = JSON.parse(JSON.stringify(this.form));
   }
-
 
   async handleBack() {
     if (JSON.stringify(this.form) !== JSON.stringify(this.oldForm)) {
