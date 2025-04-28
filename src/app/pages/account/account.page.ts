@@ -20,6 +20,7 @@ export class AccountPage {
     }
   }
   oldForm: any = {};
+  user = this.auth.currentUser;
 
   constructor(
     private toastController: ToastController,
@@ -29,10 +30,9 @@ export class AccountPage {
   ) {}
 
   ionViewWillEnter() {
-    const user = this.auth.currentUser;
-    if (user) {
-      this.form.info.email = user.email ?? '';
-      this.form.info.phone = user.phoneNumber ?? '';
+    if (this.user) {
+      this.form.info.email = this.user.email ?? '';
+      this.form.info.phone = this.user.phoneNumber ?? '';
       this.form.settings.notifications = false; // WIP: settings should push to DB
     }
     this.oldForm = JSON.parse(JSON.stringify(this.form));
