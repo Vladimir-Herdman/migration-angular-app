@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { ToastController, AlertController } from '@ionic/angular';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged, deleteUser } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-account',
@@ -77,4 +77,51 @@ export class AccountPage {
     });
     await toast.present();
   }
+
+  async handleDeleteAccount() {
+    const alert = await this.alertController.create({
+      header: 'Delete Account',
+      message: 'Are you sure you want to permanently delete your account? This cannot be undone.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            try {
+              const user = this.auth.currentUser;
+              if (user) {
+                await deleteUser(user);
+                const toast = await this.toastController.create({
+                  message: 'Account deleted successfully.',
+                  duration: 2000,
+                  color: 'success',
+                  position: 'middle'
+                });
+                await toast.present();
+  
+                // Redirect to login page
+                this.location.replaceState(''); // Clear history
+                window.location.href = '/'; // Force reload to login
+              }
+            } catch (error) {
+              console.error('Error deleting user:', error);
+              const toast = await this.toastController.create({
+                message: 'Failed to delete account. Please re-login and try again.',
+                duration: 3000,
+                color: 'danger',
+                position: 'middle'
+              });
+              await toast.present();
+            }
+          }
+        }
+      ]
+    });
+  
+    await alert.present();
+  }  
 }
