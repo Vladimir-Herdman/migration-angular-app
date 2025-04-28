@@ -9,15 +9,15 @@ const routes: Routes = [
     children: [
       {
         path: 'tab_quiz',
-        loadChildren: () => import('../tab_quiz/tab_quiz.module').then(m => m.TabQuizPageModule)
+        loadChildren: () => import('./tab_quiz/tab_quiz.module').then(m => m.TabQuizPageModule)
       },
       {
         path: 'tab_checklist',
-        loadChildren: () => import('../tab_checklist/tab_checklist.module').then(m => m.TabChecklistPageModule)
+        loadChildren: () => import('./tab_checklist/tab_checklist.module').then(m => m.TabChecklistPageModule)
       },
       {
         path: 'tab_chatbot',
-        loadChildren: () => import('../tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
+        loadChildren: () => import('./tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
       },
       {
         path: '',
