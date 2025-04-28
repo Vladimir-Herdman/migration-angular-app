@@ -112,7 +112,7 @@ With the setup complete, you can now start the FastAPI backend server.
 2.  **Run the Server:** Execute the following command:
 
   ```bash
-  uvicorn main:app --reload --port 8000
+  uvicorn main:app --reload --host 0.0.0.0 --port 8000
   ```
   (Replace `8000` with your `BACKEND_PORT` if you changed it in `.env`).
 

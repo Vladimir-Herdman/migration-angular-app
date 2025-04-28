@@ -21,7 +21,6 @@ UserInterfaceState.xcuserstate
 .env
 .venv/
 __pycache__/
-personal_scripts/
 
 # Firebase
 .firebase
