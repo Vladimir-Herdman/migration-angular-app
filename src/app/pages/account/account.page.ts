@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { ToastController, AlertController } from '@ionic/angular';
 import { Auth, onAuthStateChanged, deleteUser } from '@angular/fire/auth';
 
@@ -26,11 +27,14 @@ export class AccountPage {
     private toastController: ToastController,
     private alertController: AlertController,
     private auth: Auth,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {}
 
+  authUnsubscribe: (() => void) | null = null;
+
   ionViewWillEnter() {
-    onAuthStateChanged(this.auth, (user) => {
+    this.authUnsubscribe = onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.user = user;
         this.form.info.email = user.email ?? '';
@@ -38,6 +42,13 @@ export class AccountPage {
       }
       this.oldForm = JSON.parse(JSON.stringify(this.form));
     });
+  }
+  
+  ionViewWillLeave() {
+    if (this.authUnsubscribe) {
+      this.authUnsubscribe();
+      this.authUnsubscribe = null;
+    }
   }  
 
   async handleBack() {
@@ -66,19 +77,46 @@ export class AccountPage {
     }
   }
 
+  async showToast(message: string, color: string = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,
+      position: 'top'
+    });
+    await toast.present();
+  }  
+
   async submitForm() {
     console.log(this.form);
     this.oldForm = JSON.parse(JSON.stringify(this.form));
-    const toast = await this.toastController.create({
-      message: 'Account saved successfully!',
-      duration: 2000,
-      color: 'success',
-      position: 'middle'
-    });
-    await toast.present();
+    this.showToast('Account saved successfully!');
   }
 
-  async handleDeleteAccount() {
+  async logout() {
+    const alert = await this.alertController.create({
+      header: 'Confirm Logout',
+      message: 'Are you sure you want to log out?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Log Out',
+          role: 'destructive',
+          handler: async () => {
+            await this.auth.signOut();
+            this.router.navigateByUrl('/', { replaceUrl: true });
+          }
+        }
+      ]
+    });
+  
+    await alert.present();
+  }  
+
+  async deleteAccount() {
     const alert = await this.alertController.create({
       header: 'Delete Account',
       message: 'Are you sure you want to permanently delete your account? This cannot be undone.',
@@ -93,29 +131,22 @@ export class AccountPage {
           handler: async () => {
             try {
               const user = this.auth.currentUser;
+
               if (user) {
                 await deleteUser(user);
-                const toast = await this.toastController.create({
-                  message: 'Account deleted successfully.',
-                  duration: 2000,
-                  color: 'success',
-                  position: 'middle'
-                });
-                await toast.present();
-  
-                // Redirect to login page
-                this.location.replaceState(''); // Clear history
-                window.location.href = '/'; // Force reload to login
+                this.showToast('Account deleted successfully.');
+                this.router.navigateByUrl('/', { replaceUrl: true });
               }
-            } catch (error) {
+            } catch (error: any) {
               console.error('Error deleting user:', error);
-              const toast = await this.toastController.create({
-                message: 'Failed to delete account. Please re-login and try again.',
-                duration: 3000,
-                color: 'danger',
-                position: 'middle'
-              });
-              await toast.present();
+            
+              let message = 'Failed to delete account. Please try again.';
+            
+              if (error.code === 'auth/requires-recent-login') {
+                message = 'Please re-login before deleting your account for security reasons.';
+              }
+            
+              this.showToast(message, 'danger');
             }
           }
         }
@@ -123,5 +154,5 @@ export class AccountPage {
     });
   
     await alert.present();
-  }  
+  }
 }
