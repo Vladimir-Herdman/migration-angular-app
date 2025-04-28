@@ -3,12 +3,12 @@ import { ToastController, AlertController } from '@ionic/angular';
 import { Auth } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-tab_account',
-  templateUrl: 'tab_account.page.html',
-  styleUrls: ['tab_account.page.scss'],
+  selector: 'app-account',
+  templateUrl: 'account.page.html',
+  styleUrls: ['account.page.scss'],
   standalone: false,
 })
-export class TabAccountPage {
+export class AccountPage {
   form: any = {
     info: {
       email: '',
@@ -31,16 +31,16 @@ export class TabAccountPage {
     if (user) {
       this.form.info.email = user.email ?? '';
       this.form.info.phone = user.phoneNumber ?? '';
-      this.form.settings.notifications = false; // WIP: settings should save to DB
+      this.form.settings.notifications = false; // WIP: settings should push to DB
     }
     this.oldForm = JSON.parse(JSON.stringify(this.form));
   }
 
-  async ionViewDidLeave() { // WIP: this should run BEFORE leaving the page
+  async ionViewCanLeave() {
     if (JSON.stringify(this.form) != JSON.stringify(this.oldForm)) {
-      const leave = await this.confirmLeave();
-      if (!leave) event?.preventDefault();
+      return this.confirmLeave();
     }
+    return true;
   }
 
   async submitForm() {
@@ -65,14 +65,14 @@ export class TabAccountPage {
             text: 'Cancel',
             role: 'cancel',
             handler: () => {
-              resolve(false); // User chose to stay
+              resolve(false);
             }
           },
           {
             text: 'Leave',
             role: 'confirm',
             handler: () => {
-              resolve(true); // User chose to leave
+              resolve(true);
             }
           }
         ]

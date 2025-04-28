@@ -16,6 +16,10 @@ const routes: Routes = [
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
   {
+    path: 'account',
+    loadChildren: () => import('./pages/account/account.module').then( m => m.AccountPageModule)
+  },
+  {
     path: 'legal-popup',
     loadChildren: () => import('./pages/legal-popup/legal-popup.module').then( m => m.LegalPopupPageModule)
   },

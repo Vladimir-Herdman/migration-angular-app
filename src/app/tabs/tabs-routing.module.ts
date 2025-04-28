@@ -20,10 +20,6 @@ const routes: Routes = [
         loadChildren: () => import('../tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
       },
       {
-        path: 'tab_account',
-        loadChildren: () => import('../tab_account/tab_account.module').then(m => m.TabAccountPageModule)
-      },
-      {
         path: '',
         redirectTo: 'tab_quiz',
         pathMatch: 'full'
