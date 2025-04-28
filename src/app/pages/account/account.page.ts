@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { ToastController, AlertController } from '@ionic/angular';
 import { Auth, onAuthStateChanged, deleteUser } from '@angular/fire/auth';
 
@@ -26,7 +27,8 @@ export class AccountPage {
     private toastController: ToastController,
     private alertController: AlertController,
     private auth: Auth,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {}
 
   ionViewWillEnter() {
@@ -78,7 +80,30 @@ export class AccountPage {
     await toast.present();
   }
 
-  async handleDeleteAccount() {
+  async logout() {
+    const alert = await this.alertController.create({
+      header: 'Confirm Logout',
+      message: 'Are you sure you want to log out?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Log Out',
+          role: 'destructive',
+          handler: async () => {
+            await this.auth.signOut();
+            this.router.navigateByUrl('/', { replaceUrl: true });
+          }
+        }
+      ]
+    });
+  
+    await alert.present();
+  }  
+
+  async deleteAccount() {
     const alert = await this.alertController.create({
       header: 'Delete Account',
       message: 'Are you sure you want to permanently delete your account? This cannot be undone.',
@@ -93,6 +118,7 @@ export class AccountPage {
           handler: async () => {
             try {
               const user = this.auth.currentUser;
+              
               if (user) {
                 await deleteUser(user);
                 const toast = await this.toastController.create({
@@ -101,11 +127,9 @@ export class AccountPage {
                   color: 'success',
                   position: 'middle'
                 });
+
                 await toast.present();
-  
-                // Redirect to login page
-                this.location.replaceState(''); // Clear history
-                window.location.href = '/'; // Force reload to login
+                this.router.navigateByUrl('/', { replaceUrl: true });
               }
             } catch (error) {
               console.error('Error deleting user:', error);
@@ -123,5 +147,5 @@ export class AccountPage {
     });
   
     await alert.present();
-  }  
+  }
 }
