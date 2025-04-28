@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { FormDataService } from './form-data.service';
-import { Router } from '@angular/router';
 
 
 @Component({
@@ -34,7 +33,7 @@ export class TabQuizPage {
     hasJob: false
   };
 
-  constructor(private toastController: ToastController, private formDataService: FormDataService, private router: Router) {}
+  constructor(private toastController: ToastController, private formDataService: FormDataService) {}
 
   async submitForm() {
     await this.formDataService.setForm(this.form);
@@ -47,8 +46,6 @@ export class TabQuizPage {
       position: 'middle'
     });
     await toast.present();
-
-    this.router.navigateByUrl('/tabs/tab_checklist', { replaceUrl: true });
   }
 
 }
