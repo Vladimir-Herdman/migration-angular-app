@@ -140,10 +140,17 @@ export class AccountPage {
                 await toast.present();
                 this.router.navigateByUrl('/', { replaceUrl: true });
               }
-            } catch (error) {
+            } catch (error: any) {
               console.error('Error deleting user:', error);
+            
+              let message = 'Failed to delete account. Please try again.';
+            
+              if (error.code === 'auth/requires-recent-login') {
+                message = 'Please re-login before deleting your account for security reasons.';
+              }
+            
               const toast = await this.toastController.create({
-                message: 'Failed to delete account. Please re-login and try again.',
+                message: message,
                 duration: 3000,
                 color: 'danger',
                 position: 'middle'
