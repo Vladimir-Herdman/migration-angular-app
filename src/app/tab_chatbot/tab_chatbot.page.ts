@@ -155,4 +155,11 @@ export class TabChatBotPage implements OnInit {
       });
     }
   }
+
+  handleKeydown(event: any) {
+    if (event.key === 'Enter' && !event.shiftKey) { // Pressing Enter without Shift sends the message
+      event.preventDefault(); // Prevent adding a new line
+      this.sendMessage();
+    }
+  }
 }
