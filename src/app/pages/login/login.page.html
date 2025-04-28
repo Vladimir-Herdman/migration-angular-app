@@ -1,26 +1,23 @@
 <ion-content>
-    <div class="flex-center">
-        <div id="card-border">
-            <ion-img src="assets/images/Smooth_Migration_Planet_NoText.png" alt="Smooth Migration Planet" id="login-planet"></ion-img>
-            <ion-card>
-                <ion-card-header>
-                    <ion-card-title color="primary">Smooth Migration</ion-card-title>
-                </ion-card-header>
+  <div class="login-page-wrapper">
 
-                <ion-card-content>
-                    <form [formGroup]="loginForm" (ngSubmit)="login()">
-                        <ion-item>
-                            <ion-input type="email" label="Email" formControlName="email" labelPlacement="floating" [errorText]="emailError"></ion-input>
-                        </ion-item>
-                        <ion-item>
-                            <ion-input type="password" label="Password" formControlName="password" labelPlacement="floating" [errorText]="passwordError"></ion-input>
-                        </ion-item>
-                        <ion-button color="dark" fill="clear" size="full" (click)="forgot_email_password()">Forgot email/password</ion-button>
-                        <ion-button color="primary" size="full" type="submit">Login</ion-button>
-                        <ion-button color="primary" fill="clear" size="full" (click)="register()">Create Account</ion-button>
-                    </form>
-                </ion-card-content>
-            </ion-card>
-        </div>
-    </div>
+    <ion-img src="assets/images/large_logo_white.png" alt="Smooth Migration Logo" id="login-logo"></ion-img>
+
+    <ion-card>
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+          <ion-item>
+            <ion-input type="email" label="Email" formControlName="email" labelPlacement="floating" [errorText]="emailError"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input type="password" label="Password" formControlName="password" labelPlacement="floating" [errorText]="passwordError"></ion-input>
+          </ion-item>
+          <ion-button color="dark" fill="clear" size="full" (click)="forgot_email_password()">Forgot email/password</ion-button>
+          <ion-button color="primary" size="full" type="submit">Login</ion-button>
+          <ion-button color="primary" fill="clear" size="full" (click)="register()">Create Account</ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
 </ion-content>

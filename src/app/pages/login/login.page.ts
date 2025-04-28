@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
   ) {
       this.loginForm = this.formBuilder.group({
           email: ['', [Validators.required, Validators.email]],
-          password: ['', [Validators.required, Validators.minLength(4)]]
+          password: ['', [Validators.required, Validators.minLength(6)]]
       });
   }
 
@@ -71,8 +71,8 @@ export class LoginPage implements OnInit {
       }
         
       // Here, input validation for correct style of email (@ symbol with letter after)
-      // TODO: Make password length above 4
-      if (this.loginForm.valid && this.loginForm.get("password")?.value.length >= 4 ){
+      // TODO: Make password length above 6
+      if (this.loginForm.valid && this.loginForm.get("password")?.value.length >= 6 ){
           const loading = await this.loadingController.create();
           await loading.present();
 
