@@ -80,21 +80,10 @@ export class LoginPage implements OnInit {
           await loading.dismiss();
 
           if (userCredentials) {
-              const userUid = userCredentials.user.uid;
-              this.databaseService.userUid = userUid;
-              await this.databaseService.getUserData();
-              const firstTimeSignIn = this.databaseService.userData?.firstTimeSignIn;
-              //TODO: locally caching userData on successful sign in, so less API
-              //calls to firebase are needed
-              if (firstTimeSignIn) {
-                  this.router.navigateByUrl('/legal-popup', { replaceUrl: true });
-              } else {
-                  console.log(this.databaseService.userData);
-                  this.router.navigateByUrl('/tabs', { replaceUrl: true });
-              }
-          } else {
-              this.showAlert('Login failed', 'Please try again!');
-          }
+            await this.postLoginFlow(userCredentials);
+					} else {
+            this.showAlert('Login failed', 'Please try again!');
+					}
 
       } else {
           this.emailError = "Invalid email";
@@ -112,9 +101,22 @@ export class LoginPage implements OnInit {
       await loading.dismiss();
 
       if (user) {
-          this.router.navigateByUrl('/home', { replaceUrl: true });
+				await this.postLoginFlow(user);
+			} else {
+        this.showAlert('Registration failed', 'Please try again!');
+			}		
+  }
+
+	private async postLoginFlow(userCredentials: any) {
+      const userUid = userCredentials.user.uid;
+      this.databaseService.userUid = userUid;
+      await this.databaseService.getUserData();
+      const firstTimeSignIn = this.databaseService.userData?.firstTimeSignIn;
+
+      if (firstTimeSignIn) {
+        this.router.navigateByUrl('/legal-popup', { replaceUrl: true });
       } else {
-          this.showAlert('Registration failed', 'Please try again!');
+        this.router.navigateByUrl('/tabs', { replaceUrl: true });
       }
   }
 

@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonicModule, IonContent } from '@ionic/angular';
+import { IonicModule, IonContent, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { DatabaseService } from 'src/app/services/database.service';
 
@@ -14,7 +14,12 @@ import { DatabaseService } from 'src/app/services/database.service';
 export class LegalPopupPage implements  AfterViewInit {
   @ViewChild(IonContent) scrollableContent!: IonContent;
 
-  constructor(private router: Router, private authService: AuthService, private databaseService: DatabaseService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private databaseService: DatabaseService,
+    private toastController: ToastController
+  ) {}
 
   ngAfterViewInit() {
       let acceptButton = document.getElementById('accept-button');
@@ -41,7 +46,16 @@ export class LegalPopupPage implements  AfterViewInit {
       this.router.navigate(['/tabs']);
   }
 
-  public declineClick() {
+  public async declineClick() {
+      const toast = await this.toastController.create({
+        message: 'You must accept the terms to continue. Login again to accept.',
+        duration: 5000,
+        color: 'warning',
+        position: 'top'
+      });
+    
+      await toast.present();
+
       this.router.navigate(['/']);
   }
 
