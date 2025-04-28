@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonicModule, LoadingController, AlertController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { AuthService } from 'src/app/services/auth.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { environment } from '../../../environments/environment';
@@ -27,6 +28,7 @@ export class LoginPage implements OnInit {
       private formBuilder: FormBuilder,
       private loadingController: LoadingController,
       private alertController: AlertController,
+      private auth: Auth,
       private authService: AuthService,
       private databaseService: DatabaseService
   ) {
@@ -37,10 +39,11 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
-      //TODO: Implement already signed in check
-      // This OnInit function is used on startup to pull up data and use it in
-      // the rest of the page.  Essentially, this is where we should check if
-      // the user has already signed in before
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.router.navigateByUrl('/tabs', { replaceUrl: true });
+      }
+    });
   }
 
   public forgot_email_password() {
