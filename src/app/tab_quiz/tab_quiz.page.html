@@ -1,10 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Questionnaire</ion-title>
+    <ion-buttons slot="end">
+      <app-account-button></app-account-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="false">
   <form class="content-wrapper">
     <!-- General Information -->
     <ion-list>

@@ -1,6 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Account</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="handleBack()">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Back
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="ion-text-right">Account</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,18 +20,8 @@
       </ion-list-header>
 
       <ion-item>
-        <ion-label position="stacked">Name</ion-label>
-        <ion-input [(ngModel)]="form.info.name" name="name" type="text" placeholder="Name"></ion-input>
-      </ion-item>
-
-      <ion-item>
         <ion-label position="stacked">Email</ion-label>
         <ion-input [(ngModel)]="form.info.email" name="email" type="email" placeholder="Email"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Phone number</ion-label>
-        <ion-input [(ngModel)]="form.info.phone" name="phone" type="tel" placeholder="Phone number"></ion-input>
       </ion-item>
     </ion-list>
 
@@ -43,7 +40,7 @@
     <!-- Action Buttons -->
     <div class="button-wrapper">
       <ion-button expand="block" color="primary" (click)="submitForm()">Save Changes</ion-button>
-      <ion-button expand="block" color="danger" fill="outline">Delete Account</ion-button>
+      <ion-button expand="block" color="danger" fill="outline" (click)="handleDeleteAccount()">Delete Account</ion-button>
     </div>
   </div>
 </ion-content>

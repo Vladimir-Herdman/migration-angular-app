@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { TabQuizPage } from './tab_quiz.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
+import { AccountButtonComponent } from 'src/app/components/account-button/account-button.component';
+
 import { TabQuizPageRoutingModule } from './tab_quiz-routing.module';
 
 @NgModule({
@@ -13,6 +15,7 @@ import { TabQuizPageRoutingModule } from './tab_quiz-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
+    AccountButtonComponent,
     TabQuizPageRoutingModule
   ],
   declarations: [TabQuizPage]

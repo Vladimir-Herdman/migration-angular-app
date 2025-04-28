@@ -1,10 +1,13 @@
 <ion-header>
     <ion-toolbar>
         <ion-title>Chat</ion-title>
+        <ion-buttons slot="end">
+            <app-account-button></app-account-button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="false">
     <div #messages_area class="messages-area"></div>
 </ion-content>
 
