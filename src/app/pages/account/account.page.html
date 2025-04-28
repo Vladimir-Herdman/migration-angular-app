@@ -1,7 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tab_quiz"></ion-back-button>
+      <ion-button (click)="handleBack()">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Back
+      </ion-button>
     </ion-buttons>
 
     <ion-title class="ion-text-right">Account</ion-title>

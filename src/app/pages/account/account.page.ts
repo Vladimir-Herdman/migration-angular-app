@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { ToastController, AlertController } from '@ionic/angular';
 import { Auth } from '@angular/fire/auth';
 
@@ -23,7 +24,8 @@ export class AccountPage {
   constructor(
     private toastController: ToastController,
     private alertController: AlertController,
-    private auth: Auth
+    private auth: Auth,
+    private location: Location
   ) {}
 
   ionViewWillEnter() {
@@ -36,11 +38,31 @@ export class AccountPage {
     this.oldForm = JSON.parse(JSON.stringify(this.form));
   }
 
-  async ionViewCanLeave() {
-    if (JSON.stringify(this.form) != JSON.stringify(this.oldForm)) {
-      return this.confirmLeave();
+
+  async handleBack() {
+    if (JSON.stringify(this.form) !== JSON.stringify(this.oldForm)) {
+      const alert = await this.alertController.create({
+        header: 'Unsaved Changes',
+        message: 'You have unsaved changes. Are you sure you want to leave?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          },
+          {
+            text: 'Leave',
+            role: 'confirm',
+            handler: () => {
+              this.location.back(); // Go back if confirmed
+            }
+          }
+        ]
+      });
+  
+      await alert.present();
+    } else {
+      this.location.back(); // No unsaved changes, just go back
     }
-    return true;
   }
 
   async submitForm() {
@@ -54,31 +76,4 @@ export class AccountPage {
     });
     await toast.present();
   }
-
-  async confirmLeave(): Promise<boolean> {
-    return new Promise(async (resolve) => {
-      const alert = await this.alertController.create({
-        header: 'Unsaved Changes',
-        message: 'You have unsaved changes. Are you sure you want to leave?',
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel',
-            handler: () => {
-              resolve(false);
-            }
-          },
-          {
-            text: 'Leave',
-            role: 'confirm',
-            handler: () => {
-              resolve(true);
-            }
-          }
-        ]
-      });
-  
-      await alert.present();
-    });
-  }  
 }
