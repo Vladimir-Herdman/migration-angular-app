@@ -38,6 +38,10 @@ export class TabChecklistPage implements AfterViewInit, OnDestroy {
   preItemList: RelocationTask[] = [];
   depItemList: RelocationTask[] = [];
   arrItemList: RelocationTask[] = [];
+  preCheckBoxes: boolean[] = [];
+  depCheckBoxes: boolean[] = [];
+  arrCheckBoxes: boolean[] = [];
+
 
   private formDataSubscription!: Subscription; // To manage the subscription
 
@@ -54,6 +58,7 @@ export class TabChecklistPage implements AfterViewInit, OnDestroy {
   ) {}
 
   async ngAfterViewInit() {
+    this.depCheckBoxes.fill(false);
     // this.formData = await this.formDataService.getForm();
     this.page_list = [this.predepDiv, this.depDiv, this.arrDiv];
     this.updateViewPage();
@@ -131,6 +136,7 @@ export class TabChecklistPage implements AfterViewInit, OnDestroy {
       });
       await toast.present();
     } finally {
+      this.depCheckBoxes = new Array(this.depItemList.length).fill(false);
       // Dismiss loading indicator
       await loading.dismiss();
     }
@@ -173,18 +179,53 @@ export class TabChecklistPage implements AfterViewInit, OnDestroy {
     const index = this.preItemList.indexOf(item);
     if (index > -1) {
       this.preItemList.splice(index, 1);
+      this.preCheckBoxes.splice(index,1);
     }
   }
   removeDep(item : RelocationTask){
     const index = this.depItemList.indexOf(item);
     if (index > -1) {
       this.depItemList.splice(index, 1);
+      this.depCheckBoxes.splice(index,1);
     }
   }
   removeArr(item : RelocationTask){
     const index = this.arrItemList.indexOf(item);
     if (index > -1) {
       this.arrItemList.splice(index, 1);
+      this.arrCheckBoxes.splice(index,1);
     }
+  }
+
+  markCheckPre(item : RelocationTask){
+    const index = this.preItemList.indexOf(item);
+    if(index > -1){
+      this.preCheckBoxes[index] = !this.preCheckBoxes[index];
+    }
+  }
+  markCheckDep(item : RelocationTask){
+    const index = this.depItemList.indexOf(item);
+    if(index > -1){
+      this.depCheckBoxes[index] = !this.depCheckBoxes[index];
+    }
+  }
+  markCheckArr(item : RelocationTask){
+    const index = this.arrItemList.indexOf(item);
+    if(index > -1){
+      this.arrCheckBoxes[index] = !this.arrCheckBoxes[index];
+    }
+  }
+
+  getCheckStatusPre(item : RelocationTask): boolean{
+    const index = this.preItemList.indexOf(item);
+    return index > -1 ? this.preCheckBoxes[index] : false;
+  }
+  getCheckStatusDep(item : RelocationTask): boolean{
+    const index = this.depItemList.indexOf(item);
+    return index > -1 ? this.depCheckBoxes[index] : false;
+  }
+  getCheckStatusArr(item : RelocationTask): boolean{
+    const index = this.arrItemList.indexOf(item);
+    return index > -1 ? this.arrCheckBoxes[index] : false;
   }
 }
