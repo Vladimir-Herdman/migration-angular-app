@@ -44,7 +44,7 @@ export class TabChecklistPage implements AfterViewInit, OnDestroy {
   // Define the backend API URL
   // TODO: Use a service to keep same backendURL, or just keep all backend logic and data needed
   //    Here, this is to connect android, look into apple connection for backend
-  private backendUrl = (Capacitor.getPlatform() === 'android') ?  'http://10.0.2.2:8000' : 'http://localhost:8000';
+  private backendUrl = this.getPlatformBackendUrl();
 
   constructor(
     private formDataService: FormDataService,
@@ -136,6 +136,21 @@ export class TabChecklistPage implements AfterViewInit, OnDestroy {
     }
   }
 
+  private getPlatformBackendUrl(): string {
+      const device = Capacitor.getPlatform();
+      switch (device) {
+          case 'android':
+              return 'http://10.0.2.2:8000';
+          //The ios simulator can't access localhost or the android way, so
+          //access local ip address, this is Vova's here at time of coding
+              // Also use 'uvicorn main:app --reload --host 192.168.1.100 --port 8000'
+              // if running for ios
+          case 'ios': 
+              return 'http://192.168.178.167:8000';
+          default:
+              return 'http://localhost:8000';
+      }
+  }
 
   // On departure select change, change the visible screen
   public handleChange() {

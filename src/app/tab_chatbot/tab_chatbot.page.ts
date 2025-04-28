@@ -22,7 +22,7 @@ export class TabChatBotPage implements OnInit {
   chatHistory: ChatMessage[] = [];
 
   // Define the backend API URL
-  private backendUrl = (Capacitor.getPlatform() === 'android') ?  'http://10.0.2.2:8000' : 'http://localhost:8000';
+  private backendUrl = this.getPlatformBackendUrl();
 
   constructor(private http: HttpClient) {}
 
@@ -70,6 +70,7 @@ export class TabChatBotPage implements OnInit {
   async getChatResponse(question: string): Promise<string> {
     try {
       // Send message and history to the backend
+      console.log("Current backend url:",this.backendUrl); //REMOVE
       const response = await this.http.post<{ response: string }>(`${this.backendUrl}/chat`, {
         message: question,
         history: this.chatHistory
@@ -86,6 +87,22 @@ export class TabChatBotPage implements OnInit {
       // Rethrow the error to be caught by the sendMessage function
       throw error;
     }
+  }
+
+  private getPlatformBackendUrl(): string {
+      const device = Capacitor.getPlatform();
+      switch (device) {
+          case 'android':
+              return 'http://10.0.2.2:8000';
+          //The ios simulator can't access localhost or the android way, so
+          //access local ip address, this is Vova's here at time of coding
+              // Also use 'uvicorn main:app --reload --host 192.168.1.100 --port 8000'
+              // if running for ios
+          case 'ios': 
+              return 'http://192.168.178.167:8000';
+          default:
+              return 'http://localhost:8000';
+      }
   }
 
   /**
