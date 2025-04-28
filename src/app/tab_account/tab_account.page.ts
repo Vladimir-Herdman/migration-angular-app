@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-tab_account',
@@ -18,7 +19,18 @@ export class TabAccountPage {
     }
   }
 
-  constructor(private toastController: ToastController) {}
+  constructor(
+    private toastController: ToastController,
+    private auth: Auth
+  ) {}
+
+  ionViewWillEnter() {
+    const user = this.auth.currentUser;
+    if (user) {
+      this.form.info.email = user.email ?? '';
+      this.form.info.phone = user.phoneNumber ?? '';
+    }
+  }
 
   async submitForm() {
     console.log(this.form);
