@@ -2,12 +2,13 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TabQuizPage } from './tab_quiz.page';
-import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import { TabChatBotPage } from './tab_chatbot.page';
+import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
 import { AccountButtonComponent } from 'src/app/components/account-button/account-button.component';
 
-import { TabQuizPageRoutingModule } from './tab_quiz-routing.module';
+import { TabChatBotPageRoutingModule } from './tab_chatbot-routing.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -16,8 +17,9 @@ import { TabQuizPageRoutingModule } from './tab_quiz-routing.module';
     FormsModule,
     ExploreContainerComponentModule,
     AccountButtonComponent,
-    TabQuizPageRoutingModule
+    TabChatBotPageRoutingModule,
+    HttpClientModule
   ],
-  declarations: [TabQuizPage]
+  declarations: [TabChatBotPage]
 })
-export class TabQuizPageModule {}
+export class TabChatBotPageModule { }
