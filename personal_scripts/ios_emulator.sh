@@ -20,6 +20,16 @@ main() {
     local -r venvPythonExecutable="$rootDirectoryPath/src/backend/.venv/bin/python3"
     local -r killScriptExecutable="$rootDirectoryPath/personal_scripts/helpers/kill.sh"
 
+    local -r envPath="$backendDirPath/.env"
+    local -r databaseServicePath="$rootDirectoryPath/src/app/services/database.service.ts"
+    local -r replacementIp=$(ipconfig getifaddr en0)
+
+    #Switch out computer ip address in .env file, as well as chatbot and checklist ts pages
+    #   Temporarily mark out the 10.0.2.2 and put it back in after
+    sed -E -i '' "s/10\.0\.2\.2/__ANDROID_IP__/g" "$envPath" "$databaseServicePath"
+    sed -E -i '' "s/[0-9]{1,3}(\.[0-9]{1,3}){3}/$replacementIp/g" "$envPath" "$databaseServicePath"
+    sed -E -i '' "s/__ANDROID_IP__/10\.0\.2\.2/g" "$envPath" "$databaseServicePath"
+
     # Start doing work
     osascript -e 'tell application "Ollama" to activate'
     sleep 1

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { HttpClient } from '@angular/common/http';
+import { DatabaseService } from 'src/app/services/database.service';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -22,11 +23,12 @@ export class TabChatBotPage implements OnInit {
   chatHistory: ChatMessage[] = [];
 
   // Define the backend API URL
-  private backendUrl = this.getPlatformBackendUrl();
+  private backendUrl: string = ''
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private databaseService: DatabaseService) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+  this.backendUrl = await this.databaseService.getPlatformBackendUrl();
   this.displayMessage("Hello! How can I help you with your relocation today?", 'bot');
   }
 
@@ -87,22 +89,6 @@ export class TabChatBotPage implements OnInit {
       // Rethrow the error to be caught by the sendMessage function
       throw error;
     }
-  }
-
-  private getPlatformBackendUrl(): string {
-      const device = Capacitor.getPlatform();
-      switch (device) {
-          case 'android':
-              return 'http://10.0.2.2:8000';
-          //The ios simulator can't access localhost or the android way, so
-          //access local ip address, this is Vova's here at time of coding
-              // Also use 'uvicorn main:app --reload --host 192.168.1.100 --port 8000'
-              // if running for ios
-          case 'ios': 
-              return 'http://192.168.178.167:8000';
-          default:
-              return 'http://localhost:8000';
-      }
   }
 
   /**

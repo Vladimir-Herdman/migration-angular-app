@@ -1,9 +1,10 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormDataService } from 'src/app/tabs/tab_quiz/form-data.service';
 import { Capacitor } from '@capacitor/core';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { LoadingController, ToastController } from '@ionic/angular';
+import { DatabaseService } from 'src/app/services/database.service';
 
 // Define interfaces for the expected task structure from the backend
 interface RelocationTask {
@@ -26,7 +27,7 @@ interface TaskListResponse {
   standalone: false,
 })
 
-export class TabChecklistPage implements AfterViewInit, OnDestroy {
+export class TabChecklistPage implements OnInit, AfterViewInit, OnDestroy {
   formData : any;  // Are we just using any for testing purposes? - Ben
   selectedStage = "predeparture";
   page_list?: Array<ElementRef>
@@ -48,14 +49,19 @@ export class TabChecklistPage implements AfterViewInit, OnDestroy {
   // Define the backend API URL
   // TODO: Use a service to keep same backendURL, or just keep all backend logic and data needed
   //    Here, this is to connect android, look into apple connection for backend
-  private backendUrl = this.getPlatformBackendUrl();
+  private backendUrl: string = ''
 
   constructor(
     private formDataService: FormDataService,
     private http: HttpClient,
     private loadingController: LoadingController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private databaseService: DatabaseService
   ) {}
+
+  async ngOnInit() {
+    this.backendUrl = await this.databaseService.getPlatformBackendUrl();
+  }
 
   async ngAfterViewInit() {
     this.depCheckBoxes.fill(false);
@@ -140,22 +146,6 @@ export class TabChecklistPage implements AfterViewInit, OnDestroy {
       // Dismiss loading indicator
       await loading.dismiss();
     }
-  }
-
-  private getPlatformBackendUrl(): string {
-      const device = Capacitor.getPlatform();
-      switch (device) {
-          case 'android':
-              return 'http://10.0.2.2:8000';
-          //The ios simulator can't access localhost or the android way, so
-          //access local ip address, this is Vova's here at time of coding
-              // Also use 'uvicorn main:app --reload --host 192.168.1.100 --port 8000'
-              // if running for ios
-          case 'ios': 
-              return 'http://192.168.178.167:8000';
-          default:
-              return 'http://localhost:8000';
-      }
   }
 
   // On departure select change, change the visible screen
