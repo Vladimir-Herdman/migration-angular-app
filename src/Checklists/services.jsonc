@@ -31,9 +31,25 @@
         }
     },
     "International Transfers" : {
-        "Wise" : "https://wise.prf.hn/click/camref:1011lq4nL",
-        "Remitly" : "https://remitly.tod8mp.net/Jr6DAv",
-        "XE" : "https://xe-money-transfer.sjv.io/9WNvNe"
+        /*
+        Basically:
+        Wise: If you know what your doing and want business. Slower but better market value for transfer
+        Remitly: If you need it fast and need multiple methods of cash retrieval (bank, cash pickup, etc). Not a business
+        XE: Not a business and you need a lot of different currencies.
+        XE and Remitly are pretty similar tbh from what I can tell
+        */
+        "Wise" : [ 
+            "https://wise.prf.hn/click/camref:1011lq4nL",
+            "This is the primary one for business related money transfers. Works for personal but less prioritized for them"
+            ],
+        "Remitly" : [
+            "https://remitly.tod8mp.net/Jr6DAv",
+            "This is a lot more for personal money transfers, it is very quick and has many different retrieval options. Not for business"
+            ],
+        "XE" : [
+            "https://xe-money-transfer.sjv.io/9WNvNe",
+            "This is also for personal only. No business features. It has a large support for a bunch of currencies" 
+            ]
     },
     "International shipping" : {
         "Experts in Moving" : "https://www.expertsinmoving.com/?so=a&ca=8ddabfceef8192200632f66a00293f9c"
