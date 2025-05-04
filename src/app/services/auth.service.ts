@@ -4,6 +4,7 @@ import {
     signInWithEmailAndPassword,
     signInWithPopup,
     createUserWithEmailAndPassword,
+    sendPasswordResetEmail,
     signOut,
     GoogleAuthProvider,
 } from '@angular/fire/auth';
@@ -17,7 +18,11 @@ export class AuthService {
     userStartingData: UserData = {
         email: '',
         firstTimeSignIn: true
-    }
+    };
+    public registration_info = {
+        email: '',
+        password: ''
+    };
 
     constructor(private auth: Auth, private firestore: Firestore) {}
 
@@ -67,6 +72,15 @@ export class AuthService {
             return userCredentials; 
         } catch (e) {
             return null;
+        }
+    }
+
+    async sendPasswordReset(email: string) {
+        try {
+           const test = await sendPasswordResetEmail(this.auth, email);
+           return true;
+        } catch (e) {
+            return false;
         }
     }
 

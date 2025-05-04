@@ -43,7 +43,7 @@ export class LegalPopupPage implements  AfterViewInit {
       await this.authService.falsifyFirstTimeSignIn(userUid);
         
       // Navigate away
-      this.router.navigate(['/tabs']);
+      this.router.navigateByUrl('/tabs', { replaceUrl: true });
   }
 
   public async declineClick() {
