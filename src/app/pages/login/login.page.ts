@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonicModule, LoadingController, AlertController } from '@ionic/angular';
+import { IonicModule, LoadingController, AlertController, ViewWillEnter } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { AuthService } from 'src/app/services/auth.service';
@@ -16,10 +16,10 @@ import { environment } from '../../../environments/environment';
   imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule],
 })
 
-export class LoginPage implements OnInit {
-    loginForm: FormGroup;
-    email: string | null = null;
-    password: string | null = null;
+export class LoginPage implements OnInit, ViewWillEnter {
+    loginForm!: FormGroup;
+    email: string | null = this.authService.registration_info.email;
+    password: string | null = this.authService.registration_info.password;
     emailError: string = "Invalid email";
     passwordError: string = "6 character minimum";
 
@@ -33,22 +33,30 @@ export class LoginPage implements OnInit {
       private databaseService: DatabaseService
   ) {
       this.loginForm = this.formBuilder.group({
-          email: ['', [Validators.required, Validators.email]],
-          password: ['', [Validators.required, Validators.minLength(6)]]
+          email: [this.authService.registration_info.email, [Validators.required, Validators.email]],
+          password: [this.authService.registration_info.password, [Validators.required, Validators.minLength(6)]]
+      });
+  }
+
+  ionViewWillEnter() {
+      this.loginForm = this.formBuilder.group({
+          email: [this.authService.registration_info.email, [Validators.required, Validators.email]],
+          password: [this.authService.registration_info.password, [Validators.required, Validators.minLength(6)]]
       });
   }
 
   ngOnInit() {
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.router.navigateByUrl('/tabs', { replaceUrl: true });
-      }
-    });
+    //onAuthStateChanged(this.auth, (user) => {
+    //  if (user) {
+    //    this.router.navigateByUrl('/tabs', { replaceUrl: true });
+    //  }
+    //});
+      this.email = this.authService.registration_info.email;
+      this.password = this.authService.registration_info.password;
   }
 
   public forgot_email_password() {
-      //TODO: Implement in AuthService forgot email/password from firebase
-      console.log("forgot email-password pressed");
+      this.router.navigateByUrl('/forgotpassword')
   }
 
   public async login() {
@@ -97,17 +105,8 @@ export class LoginPage implements OnInit {
   }
 
   public async register() {
-      const loading = await this.loadingController.create();
-      await loading.present();
-
-      const user = await this.authService.register(this.loginForm.value);
-      await loading.dismiss();
-
-      if (user) {
-				await this.postLoginFlow(user);
-			} else {
-        this.showAlert('Registration failed', 'Please try again!');
-			}		
+      this.router.navigateByUrl('/register', { replaceUrl: false });
+      //REMOVE: Put in registration page
   }
 
 	private async postLoginFlow(userCredentials: any) {
@@ -130,6 +129,19 @@ export class LoginPage implements OnInit {
           buttons: ['OK']
       });
       await alert.present();
+  }
+
+  async google_signin() {
+      const google = await this.authService.loginGoogle();
+      if (google?.user) {
+          this.router.navigateByUrl('/tabs', { replaceUrl: true });
+      } else {
+          console.error("Google did not through - frontend");
+      }
+  }
+
+  skip() {
+      this.router.navigateByUrl('/tabs', { replaceUrl: true });
   }
 
 }

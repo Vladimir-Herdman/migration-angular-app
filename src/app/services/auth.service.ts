@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import {
     Auth,
     signInWithEmailAndPassword,
+    signInWithRedirect,
     signInWithPopup,
     createUserWithEmailAndPassword,
+    sendPasswordResetEmail,
     signOut,
     GoogleAuthProvider,
 } from '@angular/fire/auth';
@@ -17,7 +19,11 @@ export class AuthService {
     userStartingData: UserData = {
         email: '',
         firstTimeSignIn: true
-    }
+    };
+    public registration_info = {
+        email: '',
+        password: ''
+    };
 
     constructor(private auth: Auth, private firestore: Firestore) {}
 
@@ -64,9 +70,19 @@ export class AuthService {
         try {
             const provider = new GoogleAuthProvider();
             const userCredentials = await signInWithPopup(this.auth, provider);
-            return userCredentials; 
+            return userCredentials;
         } catch (e) {
+            console.error(e);
             return null;
+        }
+    }
+
+    async sendPasswordReset(email: string) {
+        try {
+           const test = await sendPasswordResetEmail(this.auth, email);
+           return true;
+        } catch (e) {
+            return false;
         }
     }
 

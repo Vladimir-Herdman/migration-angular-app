@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-tabs',
@@ -6,8 +7,17 @@ import { Component } from '@angular/core';
   styleUrls: ['tabs.page.scss'],
   standalone: false,
 })
-export class TabsPage {
+export class TabsPage implements OnInit {
 
-  constructor() {}
+  constructor(
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+      this.authService.registration_info = {
+          email: '',
+          password: ''
+      };
+  }
 
 }
