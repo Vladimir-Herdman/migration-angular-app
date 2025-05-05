@@ -13,4 +13,9 @@ export class TabDashboardPage implements OnInit {
   ngOnInit() {
   }
 
+  goToRelocation() {}
+  goToHoliday() {}
+  goToServices() {}
+  goToContact() {}
+
 }

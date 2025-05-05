@@ -1,0 +1,45 @@
+$icon-size: 150px;
+$icon-gap: 32px;
+$max-width: ($icon-size * 4) + ($icon-gap * 3);
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $icon-gap;
+    justify-items: center;
+    justify-content: center;
+    max-width: $max-width;
+    margin: 0 auto;
+}
+
+@media (max-width: $max-width) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.dashboard-option {
+    width: $icon-size;
+    height: $icon-size;
+    background-color: var(--ion-color-primary);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    font-size: inherit;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+    cursor: pointer;
+    will-change: transform;
+}
+
+.dashboard-option:hover {
+    transform: scale(1.05);
+}
+
+.dashboard-option ion-icon {
+    font-size: 32px;
+}

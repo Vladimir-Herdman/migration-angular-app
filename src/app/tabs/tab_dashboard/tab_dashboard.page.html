@@ -7,10 +7,23 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">tab_dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="false" class="ion-padding">
+  <div class="dashboard-grid">
+    <button class="dashboard-option" (click)="goToRelocation()" type="button">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <p>Relocation Plan</p>
+    </button>
+    <button class="dashboard-option" (click)="goToHoliday()" type="button">
+      <ion-icon name="airplane-outline"></ion-icon>
+      <p>Holiday Travel</p>
+    </button>
+    <button class="dashboard-option" (click)="goToServices()" type="button">
+      <ion-icon name="construct-outline"></ion-icon>
+      <p>Services</p>
+    </button>
+    <button class="dashboard-option" (click)="goToContact()" type="button">
+      <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+      <p>Contact Us</p>
+    </button>
+  </div>
 </ion-content>
