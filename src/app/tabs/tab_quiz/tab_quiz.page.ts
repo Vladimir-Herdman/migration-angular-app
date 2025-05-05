@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { FormDataService } from './form-data.service';
+import { FormDataService } from '../../components/quiz/form-data.service';
 import { Router } from '@angular/router';
 
 
@@ -12,27 +12,7 @@ import { Router } from '@angular/router';
 })
 
 export class TabQuizPage {
-  form: any = {
-    moveType: '',
-    destination: '',
-    moveDate: '',
-    hasHousing: false,
-    family: {
-      children: false,
-      pets: false,
-    },
-    vehicle: '',
-    currentHousing: '',
-    newHousing: '',
-    services: {
-      internet: false,
-      utilities: false,
-      healthInsurance: false,
-      homeInsurance: false,
-      carInsurance: false
-    },
-    hasJob: false
-  };
+  form = this.formDataService.getDefaultForm();
 
   constructor(private toastController: ToastController, private formDataService: FormDataService, private router: Router) {}
 

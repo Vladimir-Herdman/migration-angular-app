@@ -32,5 +32,29 @@ export class FormDataService {
   async getForm(): Promise<any> {
     return await this._storage?.get('formData');
   }
+
+  public getDefaultForm() {
+    return {
+      moveType: '',
+      destination: '',
+      moveDate: '',
+      family: {
+        children: false,
+        pets: false
+      },
+      currentHousing: '',
+      hasHousing: false,
+      newHousing: '',
+      vehicle: '',
+      services: {
+        internet: false,
+        utilities: false,
+        healthInsurance: false,
+        homeInsurance: false,
+        carInsurance: false
+      },
+      hasJob: false
+    };
+  }
 }
 

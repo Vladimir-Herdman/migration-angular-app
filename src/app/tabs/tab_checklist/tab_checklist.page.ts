@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormDataService } from 'src/app/tabs/tab_quiz/form-data.service';
+import { FormDataService } from 'src/app/components/quiz/form-data.service';
 import { Capacitor } from '@capacitor/core';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
