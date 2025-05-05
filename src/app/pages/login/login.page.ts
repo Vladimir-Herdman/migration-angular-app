@@ -46,13 +46,13 @@ export class LoginPage implements OnInit, ViewWillEnter {
   }
 
   ngOnInit() {
-    //onAuthStateChanged(this.auth, (user) => {
-    //  if (user) {
-    //    this.router.navigateByUrl('/tabs', { replaceUrl: true });
-    //  }
-    //});
-      this.email = this.authService.registration_info.email;
-      this.password = this.authService.registration_info.password;
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.router.navigateByUrl('/tabs', { replaceUrl: true });
+      }
+    });
+    this.email = this.authService.registration_info.email;
+    this.password = this.authService.registration_info.password;
   }
 
   public forgot_email_password() {
