@@ -10,7 +10,6 @@ import { Device } from '@capacitor/device';
 
 export interface UserData {
     email: string;
-    firstTimeSignIn: boolean;
 }
 
 @Injectable({
@@ -52,13 +51,13 @@ export class DatabaseService {
                 if (isEmulated) {
                     return 'http://10.0.2.2:8000';
                 }
-                return 'http://192.168.178.11:8000';
+                return 'http://192.168.176.236:8000';
             //The ios simulator can't access localhost or the android way, so
             //access local ip address, this is Vova's here at time of coding
-            // Also use 'uvicorn main:app --reload --host 192.168.178.11 --port 8000'
+            // Also use 'uvicorn main:app --reload --host 192.168.176.236 --port 8000'
             // if running for ios
             case 'ios': 
-                return 'http://192.168.178.11:8000';
+                return 'http://192.168.176.236:8000';
             default:
                 return 'http://localhost:8000';
         }

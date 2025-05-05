@@ -4,7 +4,6 @@ import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } 
 import { IonicModule, LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { DatabaseService } from 'src/app/services/database.service';
 
 @Component({
   selector: 'app-register',
@@ -33,28 +32,40 @@ export class RegisterPage implements OnInit {
   }
 
   ngOnInit() {
+      const form = this.authService.registration_info.form;
+      if (form) {
+        this.loginForm.setValue({
+          email: form.email || '',
+          password: form.password || ''
+        });
+      }
+  }
+
+  async ionViewWillEnter() {
+      // If returning from legal page after agreeing, register and sign in the user
+      if (this.authService.registration_info.agreedToLegal) {
+        const loading = await this.loadingController.create();
+        await loading.present();
+
+        const user = await this.authService.register(this.authService.registration_info.form);
+        await loading.dismiss();
+
+        if (user) {
+          this.router.navigateByUrl('/tabs', { replaceUrl: true });
+        } else {
+          this.showAlert('Registration failed', 'Please try again!');
+        }
+      }
   }
 
   async register() {
-      const loading = await this.loadingController.create();
-      await loading.present();
-
-      const user = await this.authService.register(this.loginForm.value);
-      await loading.dismiss();
-
-      if (user) {
-          this.authService.registration_info = {
-              email: this.loginForm.get('email')?.value,
-              password: this.loginForm.get('password')?.value
-          };
-          this.router.navigateByUrl('/login', { replaceUrl: true, });
-      } else {
-          this.showAlert('Registration failed', 'Please try again!');
-	  }		
+      // Save form to remember registration info after going to legal page
+      this.authService.registration_info.form = this.loginForm.value;
+      this.router.navigateByUrl('/legal-popup', { replaceUrl: true });
   }
 
   back() {
-      this.router.navigateByUrl('login', { replaceUrl: true });
+      this.router.navigateByUrl('/login', { replaceUrl: true });
   }
 
   private async showAlert(header: string, message: string) {
