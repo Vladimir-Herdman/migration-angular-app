@@ -43,7 +43,7 @@ export class LegalPopupPage implements  AfterViewInit {
 
   public async declineClick() {
       const toast = await this.toastController.create({
-        message: 'You must accept the terms to continue.',
+        message: 'You must accept the terms to create an account.',
         duration: 5000,
         color: 'warning',
         position: 'top'
