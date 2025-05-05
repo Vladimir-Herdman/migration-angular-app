@@ -10,7 +10,6 @@ import { Device } from '@capacitor/device';
 
 export interface UserData {
     email: string;
-    firstTimeSignIn: boolean;
 }
 
 @Injectable({

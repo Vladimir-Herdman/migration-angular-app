@@ -17,8 +17,7 @@ import { UserData } from './database.service';
 })
 export class AuthService {
     userStartingData: UserData = {
-        email: '',
-        firstTimeSignIn: true
+        email: ''
     };
     public registration_info = this.defaultRegistrationInfo();
 
@@ -55,15 +54,6 @@ export class AuthService {
             return userCredentials;
         } catch (e) {
             return null;
-        }
-    }
-
-    async falsifyFirstTimeSignIn(userUid: string) {
-        try {
-            const userDocRef = doc(this.firestore, "users", userUid);
-            await updateDoc(userDocRef, {firstTimeSignIn: false});
-        } catch (e) {
-            console.error("Could not update user firstTimeSignIn to false");
         }
     }
 
