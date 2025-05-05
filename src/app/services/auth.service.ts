@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import {
     Auth,
     signInWithEmailAndPassword,
-    signInWithRedirect,
     signInWithPopup,
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
     signOut,
     GoogleAuthProvider,
 } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc } from '@angular/fire/firestore';
 import { UserData } from './database.service';
 
 
@@ -17,16 +16,25 @@ import { UserData } from './database.service';
 })
 export class AuthService {
     userStartingData: UserData = {
-        email: '',
-        firstTimeSignIn: true
+        email: ''
     };
-    public registration_info = {
-        email: '',
-        password: ''
-    };
+    public registration_info = this.defaultRegistrationInfo();
 
     constructor(private auth: Auth, private firestore: Firestore) {}
 
+    public resetRegistrationInfo() {
+        this.registration_info = this.defaultRegistrationInfo();
+    }
+
+    private defaultRegistrationInfo() {
+        return {
+            form: {
+                email: '',
+                password: ''
+            },
+            agreedToLegal: false
+        }
+    }
 
     async register({ email, password }: {email: string, password: string}) {
         try {
@@ -45,15 +53,6 @@ export class AuthService {
             return userCredentials;
         } catch (e) {
             return null;
-        }
-    }
-
-    async falsifyFirstTimeSignIn(userUid: string) {
-        try {
-            const userDocRef = doc(this.firestore, "users", userUid);
-            await updateDoc(userDocRef, {firstTimeSignIn: false});
-        } catch (e) {
-            console.error("Could not update user firstTimeSignIn to false");
         }
     }
 

@@ -30,7 +30,7 @@ ion-card-content {
 }
 
 ion-item {
-  --min-height: 40px;
+  --min-height: 80px;
   --inner-border-width: 0;
 }
 
@@ -44,7 +44,7 @@ ion-content {
 
 h1 {
   position: relative;
-  color: black;
+  color: var(--ion-text-color, #000);
   text-align: center;
   width: 100%;
 }
