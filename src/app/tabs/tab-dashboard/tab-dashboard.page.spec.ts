@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TabDashboardPage } from './tab_dashboard.page';
+import { TabDashboardPage } from './tab-dashboard.page';
 
 describe('TabDashboardPage', () => {
   let component: TabDashboardPage;

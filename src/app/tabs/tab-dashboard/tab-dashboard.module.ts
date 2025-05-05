@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { TabDashboardPageRoutingModule } from './tab_dashboard-routing.module';
+import { TabDashboardPageRoutingModule } from './tab-dashboard-routing.module';
 
-import { TabDashboardPage } from './tab_dashboard.page';
+import { TabDashboardPage } from './tab-dashboard.page';
 
 import { AccountButtonComponent } from 'src/app/components/account-button/account-button.component';
 

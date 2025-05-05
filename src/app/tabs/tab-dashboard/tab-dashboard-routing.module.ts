@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { TabDashboardPage } from './tab_dashboard.page';
+import { TabDashboardPage } from './tab-dashboard.page';
 
 const routes: Routes = [
   {

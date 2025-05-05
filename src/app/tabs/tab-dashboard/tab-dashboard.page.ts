@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab_dashboard',
-  templateUrl: './tab_dashboard.page.html',
-  styleUrls: ['./tab_dashboard.page.scss'],
+  templateUrl: './tab-dashboard.page.html',
+  styleUrls: ['./tab-dashboard.page.scss'],
   standalone: false,
 })
 export class TabDashboardPage implements OnInit {
