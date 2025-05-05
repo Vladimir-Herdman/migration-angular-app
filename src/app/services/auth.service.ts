@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import {
     Auth,
     signInWithEmailAndPassword,
-    signInWithRedirect,
     signInWithPopup,
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
     signOut,
     GoogleAuthProvider,
 } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc } from '@angular/fire/firestore';
 import { UserData } from './database.service';
 
 
