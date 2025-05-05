@@ -41,7 +41,7 @@ export class LoginPage implements OnInit {
   ngOnInit() {
       // If already signed in, skip the login page
       onAuthStateChanged(this.auth, (user) => {
-        if (user) this.skip();
+        if (user) this.skipToTabs();
       });
   }
 
@@ -72,7 +72,6 @@ export class LoginPage implements OnInit {
       }
         
       // Here, input validation for correct style of email (@ symbol with letter after)
-      // TODO: Make password length above 6
       if (this.loginForm.valid && this.loginForm.get("password")?.value.length >= 6 ){
           const loading = await this.loadingController.create();
           await loading.present();
@@ -82,9 +81,9 @@ export class LoginPage implements OnInit {
 
           if (userCredentials) {
             await this.postLoginFlow(userCredentials);
-					} else {
+          } else {
             this.showAlert('Login failed', 'Please try again!');
-					}
+          }
 
       } else {
           this.emailError = "Invalid email";
@@ -98,11 +97,11 @@ export class LoginPage implements OnInit {
       this.router.navigateByUrl('/register', { replaceUrl: false });
   }
 
-	private async postLoginFlow(userCredentials: any) {
+  private async postLoginFlow(userCredentials: any) {
       const userUid = userCredentials.user.uid;
       this.databaseService.userUid = userUid;
       await this.databaseService.getUserData();
-      this.skip();
+      this.skipToTabs();
   }
 
   private async showAlert(header: string, message: string) {
@@ -123,7 +122,7 @@ export class LoginPage implements OnInit {
       }
   }
 
-  skip() {
+  skipToTabs() {
       this.router.navigateByUrl('/tabs', { replaceUrl: true });
   }
 
