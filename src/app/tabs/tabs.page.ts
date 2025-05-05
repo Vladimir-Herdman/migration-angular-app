@@ -14,10 +14,7 @@ export class TabsPage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-      this.authService.registration_info = {
-          email: '',
-          password: ''
-      };
+      this.authService.resetRegistrationInfo();
   }
 
 }

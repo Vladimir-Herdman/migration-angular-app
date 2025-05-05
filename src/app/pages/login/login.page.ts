@@ -16,10 +16,10 @@ import { environment } from '../../../environments/environment';
   imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule],
 })
 
-export class LoginPage implements OnInit, ViewWillEnter {
+export class LoginPage implements OnInit {
     loginForm!: FormGroup;
-    email: string | null = this.authService.registration_info.email;
-    password: string | null = this.authService.registration_info.password;
+    email: string | null = null;
+    password: string | null = null;
     emailError: string = "Invalid email";
     passwordError: string = "6 character minimum";
 
@@ -33,26 +33,16 @@ export class LoginPage implements OnInit, ViewWillEnter {
       private databaseService: DatabaseService
   ) {
       this.loginForm = this.formBuilder.group({
-          email: [this.authService.registration_info.email, [Validators.required, Validators.email]],
-          password: [this.authService.registration_info.password, [Validators.required, Validators.minLength(6)]]
-      });
-  }
-
-  ionViewWillEnter() {
-      this.loginForm = this.formBuilder.group({
-          email: [this.authService.registration_info.email, [Validators.required, Validators.email]],
-          password: [this.authService.registration_info.password, [Validators.required, Validators.minLength(6)]]
+          email: ['', [Validators.required, Validators.email]],
+          password: ['', [Validators.required, Validators.minLength(6)]]
       });
   }
 
   ngOnInit() {
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.router.navigateByUrl('/tabs', { replaceUrl: true });
-      }
-    });
-    this.email = this.authService.registration_info.email;
-    this.password = this.authService.registration_info.password;
+      // If already signed in, skip the login page
+      onAuthStateChanged(this.auth, (user) => {
+        if (user) this.skip();
+      });
   }
 
   public forgot_email_password() {
@@ -106,20 +96,13 @@ export class LoginPage implements OnInit, ViewWillEnter {
 
   public async register() {
       this.router.navigateByUrl('/register', { replaceUrl: false });
-      //REMOVE: Put in registration page
   }
 
 	private async postLoginFlow(userCredentials: any) {
       const userUid = userCredentials.user.uid;
       this.databaseService.userUid = userUid;
       await this.databaseService.getUserData();
-      const firstTimeSignIn = this.databaseService.userData?.firstTimeSignIn;
-
-      if (firstTimeSignIn) {
-        this.router.navigateByUrl('/legal-popup', { replaceUrl: true });
-      } else {
-        this.router.navigateByUrl('/tabs', { replaceUrl: true });
-      }
+      this.skip();
   }
 
   private async showAlert(header: string, message: string) {

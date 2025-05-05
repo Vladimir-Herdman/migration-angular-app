@@ -20,13 +20,23 @@ export class AuthService {
         email: '',
         firstTimeSignIn: true
     };
-    public registration_info = {
-        email: '',
-        password: ''
-    };
+    public registration_info = this.defaultRegistrationInfo();
 
     constructor(private auth: Auth, private firestore: Firestore) {}
 
+    public resetRegistrationInfo() {
+        this.registration_info = this.defaultRegistrationInfo();
+    }
+
+    private defaultRegistrationInfo() {
+        return {
+            form: {
+                email: '',
+                password: ''
+            },
+            agreedToLegal: false
+        }
+    }
 
     async register({ email, password }: {email: string, password: string}) {
         try {
