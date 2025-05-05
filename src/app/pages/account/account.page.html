@@ -11,7 +11,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="false">
   <div class="content-wrapper">
     <!-- Account Info -->
     <ion-list>
@@ -21,7 +21,7 @@
 
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
-        <ion-input [(ngModel)]="form.info.email" name="email" type="email" placeholder="Email"></ion-input>
+        <ion-input [(ngModel)]="account.info.email" name="email" type="email" placeholder="Email"></ion-input>
       </ion-item>
     </ion-list>
 
@@ -33,9 +33,12 @@
 
       <ion-item>
         <ion-label>Enable Notifications</ion-label>
-        <ion-checkbox [(ngModel)]="form.settings.notifications" name="notifications" slot="start"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="account.settings.notifications" name="notifications" slot="start"></ion-checkbox>
       </ion-item>
     </ion-list>
+
+    <!-- Quiz Component -->
+    <app-quiz [form]="account.quiz"></app-quiz>
 
     <!-- Action Buttons -->
     <div class="button-wrapper">

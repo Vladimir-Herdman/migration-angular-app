@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 
 import { AccountPage } from './account.page';
 
+import { QuizComponent } from 'src/app/components/quiz/quiz.component';
+
 import { AccountPageRoutingModule } from './account-routing.module';
 
 @NgModule({
@@ -12,6 +14,7 @@ import { AccountPageRoutingModule } from './account-routing.module';
     IonicModule,
     CommonModule,
     FormsModule,
+    QuizComponent,
     AccountPageRoutingModule,
   ],
   declarations: [AccountPage]

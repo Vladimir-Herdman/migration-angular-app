@@ -8,11 +8,13 @@
 </ion-header>
 
 <ion-content [fullscreen]="false">
-  <!-- Quiz Component -->
-  <app-quiz [form]="form"></app-quiz>
+  <div class="content-wrapper">
+    <!-- Quiz Component -->
+    <app-quiz [form]="form"></app-quiz>
 
-  <!-- Save Answers -->
-  <div class="button-wrapper">
-    <ion-button expand="block" (click)="submitForm()">Submit Questionnaire</ion-button>
+    <!-- Save Answers -->
+    <div class="button-wrapper">
+      <ion-button expand="block" (click)="submitForm()">Submit Questionnaire</ion-button>
+    </div>
   </div>
 </ion-content>

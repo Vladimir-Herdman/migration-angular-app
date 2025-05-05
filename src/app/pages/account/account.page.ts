@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ToastController, AlertController } from '@ionic/angular';
 import { Auth, onAuthStateChanged, deleteUser } from '@angular/fire/auth';
+import { FormDataService } from 'src/app/components/quiz/form-data.service';
 
 @Component({
   selector: 'app-account',
@@ -11,14 +12,15 @@ import { Auth, onAuthStateChanged, deleteUser } from '@angular/fire/auth';
   standalone: false,
 })
 export class AccountPage {
-  form: any = {
+  account: any = {
     info: {
       email: '',
       phone: ''
     },
     settings: {
       notifications: false
-    }
+    },
+    quiz: this.formDataService.getDefaultForm()
   }
   oldForm: any = {};
   user: any = null;
@@ -28,7 +30,8 @@ export class AccountPage {
     private alertController: AlertController,
     private auth: Auth,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private formDataService: FormDataService
   ) {}
 
   authUnsubscribe: (() => void) | null = null;
@@ -37,10 +40,10 @@ export class AccountPage {
     this.authUnsubscribe = onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.user = user;
-        this.form.info.email = user.email ?? '';
-        this.form.settings.notifications = false; // WIP: settings should push to DB
+        this.account.info.email = user.email ?? '';
+        this.account.settings.notifications = false; // WIP: settings should push to DB
       }
-      this.oldForm = JSON.parse(JSON.stringify(this.form));
+      this.oldForm = JSON.parse(JSON.stringify(this.account));
     });
   }
   
@@ -52,7 +55,7 @@ export class AccountPage {
   }  
 
   async handleBack() {
-    if (JSON.stringify(this.form) !== JSON.stringify(this.oldForm)) {
+    if (JSON.stringify(this.account) !== JSON.stringify(this.oldForm)) {
       const alert = await this.alertController.create({
         header: 'Unsaved Changes',
         message: 'You have unsaved changes. Are you sure you want to leave?',
@@ -88,9 +91,9 @@ export class AccountPage {
   }  
 
   async submitForm() {
-    console.log(this.form);
-    this.oldForm = JSON.parse(JSON.stringify(this.form));
-    this.showToast('Account saved successfully!');
+    console.log(this.account);
+    this.oldForm = JSON.parse(JSON.stringify(this.account));
+    this.showToast('Account saved successfully! WIP: Doesn\'t do anything yet.');
   }
 
   async logout() {
