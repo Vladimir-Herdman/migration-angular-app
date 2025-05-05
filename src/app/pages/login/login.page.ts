@@ -46,11 +46,11 @@ export class LoginPage implements OnInit, ViewWillEnter {
   }
 
   ngOnInit() {
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.router.navigateByUrl('/tabs', { replaceUrl: true });
-      }
-    });
+    //onAuthStateChanged(this.auth, (user) => {
+    //  if (user) {
+    //    this.router.navigateByUrl('/tabs', { replaceUrl: true });
+    //  }
+    //});
       this.email = this.authService.registration_info.email;
       this.password = this.authService.registration_info.password;
   }
@@ -129,6 +129,15 @@ export class LoginPage implements OnInit, ViewWillEnter {
           buttons: ['OK']
       });
       await alert.present();
+  }
+
+  async google_signin() {
+      const google = await this.authService.loginGoogle();
+      if (google?.user) {
+          this.router.navigateByUrl('/tabs', { replaceUrl: true });
+      } else {
+          console.error("Google did not through - frontend");
+      }
   }
 
   skip() {

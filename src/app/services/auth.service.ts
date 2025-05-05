@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
     Auth,
     signInWithEmailAndPassword,
+    signInWithRedirect,
     signInWithPopup,
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
@@ -69,8 +70,9 @@ export class AuthService {
         try {
             const provider = new GoogleAuthProvider();
             const userCredentials = await signInWithPopup(this.auth, provider);
-            return userCredentials; 
+            return userCredentials;
         } catch (e) {
+            console.error(e);
             return null;
         }
     }
