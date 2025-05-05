@@ -18,8 +18,16 @@ export class TabDashboardPage implements OnInit {
     this.router.navigateByUrl('/tabs/tab_checklist', { replaceUrl: false });
   }
 
-  goToHoliday() {}
-  goToServices() {}
-  goToContact() {}
+  goToServices() {
+    this.router.navigateByUrl('/tabs/tab-services', { replaceUrl: false });
+  }
+
+  goToHoliday() {
+    this.router.navigateByUrl('/tabs/tab-holiday', { replaceUrl: false });
+  }
+
+  goToContact() {
+    this.router.navigateByUrl('/tabs/tab-contact', { replaceUrl: false });
+  }
 
 }

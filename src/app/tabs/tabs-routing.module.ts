@@ -24,6 +24,18 @@ const routes: Routes = [
         loadChildren: () => import('./tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
       },
       {
+        path: 'tab-services',
+        loadChildren: () => import('./tab-services/tab-services.module').then( m => m.TabServicesPageModule)
+      },
+      {
+        path: 'tab-holiday',
+        loadChildren: () => import('./tab-holiday/tab-holiday.module').then( m => m.TabHolidayPageModule)
+      },
+      {
+        path: 'tab-contact',
+        loadChildren: () => import('./tab-contact/tab-contact.module').then( m => m.TabContactPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tab_dashboard',
         pathMatch: 'full'
