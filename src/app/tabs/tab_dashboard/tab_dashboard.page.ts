@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab_dashboard',
@@ -8,12 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TabDashboardPage implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
-  goToRelocation() {}
+  goToRelocation() {
+    this.router.navigateByUrl('/tabs/tab_checklist', { replaceUrl: false });
+  }
+
   goToHoliday() {}
   goToServices() {}
   goToContact() {}

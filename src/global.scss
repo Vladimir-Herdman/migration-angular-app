@@ -107,6 +107,14 @@
   z-index: 1;
 }
 
+.centered-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  text-align: center;
+}
+
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
