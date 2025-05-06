@@ -1,0 +1,266 @@
+[
+  {
+    "id": "realtor_locator",
+    "name": "Realtor Locator",
+    "description": "Find a realtor to help with buying or selling property in your new location.",
+    "url": "mailto:realtor@smoothmigration.net",
+    "relevant_categories": [
+      "Housing",
+      "Realtor"
+    ],
+    "keywords": [
+      "realtor",
+      "real estate",
+      "buy house",
+      "sell house",
+      "find property"
+    ]
+  },
+  {
+    "id": "mortgage_lender",
+    "name": "Mortgage Lender",
+    "description": "Find a mortgage lender for financing your new home purchase.",
+    "url": "mailto:realtor@smoothmigration.net",
+    "relevant_categories": [
+      "Housing",
+      "Financial Services"
+    ],
+    "keywords": [
+      "mortgage",
+      "home loan",
+      "financing",
+      "property finance"
+    ]
+  },
+  {
+    "id": "airalo_esim",
+    "name": "Airalo e-sim",
+    "description": "Purchase international eSIMs for mobile data plans when you arrive.",
+    "url": "https://airalo.pxf.io/7m4YGA",
+    "relevant_categories": [
+      "Phone",
+      "Services",
+      "Arrival Logistics"
+    ],
+    "keywords": [
+      "esim",
+      "mobile data",
+      "phone plan",
+      "international phone",
+      "connectivity"
+    ]
+  },
+  {
+    "id": "boost_mobile",
+    "name": "Boost Mobile",
+    "description": "Mobile phone service provider options.",
+    "url": "https://boostmobile.sjv.io/5bvKPn",
+    "relevant_categories": [
+      "Phone",
+      "Services"
+    ],
+    "keywords": [
+      "mobile provider",
+      "phone service",
+      "cell plan",
+      "new phone plan"
+    ]
+  },
+  {
+    "id": "visible_mobile",
+    "name": "Visible",
+    "description": "Mobile phone service provider options.",
+    "url": "https://visible.pxf.io/WD7BJZ",
+    "relevant_categories": [
+      "Phone",
+      "Services"
+    ],
+    "keywords": [
+      "mobile provider",
+      "phone service",
+      "cell plan",
+      "new phone plan"
+    ]
+  },
+  {
+    "id": "chime_bank",
+    "name": "Chime Bank",
+    "description": "Online banking services to set up accounts in your new country.",
+    "url": "https://chime.pxf.io/7aOqAd",
+    "relevant_categories": [
+      "Financial Services",
+      "Banking",
+      "Arrival Logistics"
+    ],
+    "keywords": [
+      "bank account",
+      "online banking",
+      "financial services",
+      "set up bank"
+    ]
+  },
+  {
+    "id": "visitors_coverage_travel_insurance",
+    "name": "Visitors Coverage (Travel Insurance)",
+    "description": "Travel insurance for international moves.",
+    "url": "https://visitorscoverageinc.pxf.io/Qjbxvz",
+    "relevant_categories": [
+      "Insurance",
+      "Travel",
+      "Predeparture Planning"
+    ],
+    "keywords": [
+      "travel insurance",
+      "visitor insurance",
+      "medical insurance",
+      "health insurance"
+    ]
+  },
+  {
+    "id": "lemonade_tenant_insurance",
+    "name": "Lemonade (Tenant Insurance)",
+    "description": "Tenant and homeowners insurance for your new residence.",
+    "url": "https://imp.i146998.net/xk33Vdlemonade",
+    "relevant_categories": [
+      "Insurance",
+      "Housing",
+      "Arrival Logistics"
+    ],
+    "keywords": [
+      "tenant insurance",
+      "renters insurance",
+      "homeowners insurance",
+      "housing insurance",
+      "property insurance"
+    ]
+  },
+  {
+    "id": "figo_pet_insurance",
+    "name": "Figo Pet (Pet Insurance)",
+    "description": "Pet insurance to cover healthcare costs for your pets.",
+    "url": "https://figopetinsurance.com/?p=J9H5C",
+    "relevant_categories": [
+      "Insurance",
+      "Pets"
+    ],
+    "keywords": [
+      "pet insurance",
+      "animal insurance",
+      "vet bills",
+      "pet health"
+    ]
+  },
+  {
+    "id": "international_autosource_car_sales",
+    "name": "International Autosource (Car Sales)",
+    "description": "Car sales and leasing for expats and international arrivals.",
+    "url": "https://go.intlauto.com/smooth-migration.html",
+    "relevant_categories": [
+      "Vehicle",
+      "Car Sales",
+      "Arrival Logistics"
+    ],
+    "keywords": [
+      "buy car",
+      "car purchase",
+      "international car sales",
+      "vehicle acquisition"
+    ]
+  },
+  {
+    "id": "rentcars_car_rental",
+    "name": "Rencars.com (Car Rental)",
+    "description": "Car rental services for temporary transportation needs.",
+    "url": "https://www.rentcars.com/en/?requestorid=9323&utm_source=smoothmigration.ca&utm_medium=afiliado",
+    "relevant_categories": [
+      "Vehicle",
+      "Car Rental",
+      "Departure Logistics",
+      "Arrival Logistics"
+    ],
+    "keywords": [
+      "rent car",
+      "car rental",
+      "temporary vehicle",
+      "transportation"
+    ]
+  },
+  {
+    "id": "wise_money_transfer",
+    "name": "Wise (Money Transfer)",
+    "description": "Primary service for business related money transfers. Also works for personal.",
+    "url": "https://wise.prf.hn/click/camref:1011lq4nL",
+    "relevant_categories": [
+      "Financial Services",
+      "Money Transfer",
+      "Predeparture Planning",
+      "Arrival Logistics"
+    ],
+    "keywords": [
+      "money transfer",
+      "international transfer",
+      "business transfer",
+      "send money",
+      "receive money",
+      "currency exchange"
+    ]
+  },
+  {
+    "id": "remitly_money_transfer",
+    "name": "Remitly (Money Transfer)",
+    "description": "Quick personal money transfers with many retrieval options. Not for business.",
+    "url": "https://remitly.tod8mp.net/Jr6DAv",
+    "relevant_categories": [
+      "Financial Services",
+      "Money Transfer",
+      "Predeparture Planning",
+      "Arrival Logistics"
+    ],
+    "keywords": [
+      "money transfer",
+      "personal transfer",
+      "send money",
+      "receive money",
+      "cash pickup"
+    ]
+  },
+  {
+    "id": "xe_money_transfer",
+    "name": "XE (Money Transfer)",
+    "description": "Personal money transfers with support for a large number of currencies.",
+    "url": "https://xe-money-transfer.sjv.io/9WNvNe",
+    "relevant_categories": [
+      "Financial Services",
+      "Money Transfer",
+      "Predeparture Planning",
+      "Arrival Logistics"
+    ],
+    "keywords": [
+      "money transfer",
+      "international transfer",
+      "currency exchange",
+      "send money",
+      "receive money"
+    ]
+  },
+  {
+    "id": "experts_in_moving_shipping",
+    "name": "Experts in Moving (Shipping)",
+    "description": "International shipping services for moving your belongings.",
+    "url": "https://www.expertsinmoving.com/?so=a&ca=8ddabfceef8192200632f66a00293f9c",
+    "relevant_categories": [
+      "Transportation",
+      "Shipping",
+      "Predeparture Planning",
+      "Departure Logistics"
+    ],
+    "keywords": [
+      "international shipping",
+      "move belongings",
+      "ship furniture",
+      "relocation shipping",
+      "movers",
+      "packing"
+    ]
+  }
+]

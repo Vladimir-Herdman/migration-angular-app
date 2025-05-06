@@ -1,44 +1,359 @@
 {
-    "International" : {
-        "default" : [
-            "Arrange accomadation (AirBNB, hotel, rental car, etc.) for the first few nights",
-            "Confirm temporary accomadations before travelling",
-            "Ensure all bags are packed accordingly and with what is needed before shipping arrives",
-            "Prepare a travel pouch with all required documents needed for immigration and arrival",
-            "Confirm flight times and ensure enough time between customs and any layovers",
-            "Allow time for final packing on travel day",
-            "Confirm insurance is accurate and active before leaving",
-            "Check that you are not carrying any disallowed items in transit",
-            "Ensure you have either cash for any unexpected expenses or have banking operations in new country",
-            "Ensure all tasks for pre-departure are completed",
-            "Ensure you have all needed medication and all documentation needed for customs"
-        ],
-        "pets" :[
-            "Confirm the details and flight numbers for pets with agency",
-            "Ask if tracking is available and if so obtain that information"
-        ],
-        "Children" : [
-            "Pack an extended travel bag with toys, meals, snacks, any medications, and entertainment for children"
+  "International": {
+    "default": [
+      {
+        "task_description": "Arrange temporary accommodation (AirBNB, hotel) for the first few nights",
+        "priority": "High",
+        "due_date": "1-2 days before move",
+        "importance_explanation": "Having a place to stay immediately upon arrival provides stability while you handle initial logistics.",
+        "service_keywords": [
+          "Housing",
+          "temporary stay",
+          "AirBNB",
+          "hotel",
+          "arrival logistics"
         ]
-    },
-    "Domestic" : {
-        "default" : [
-            "Arrange accomadation (AirBNB, hotel, rental car, etc.) for the first few nights",
-            "Confirm temporary accomadations before travelling",
-            "Ensure all bags are packed accordingly and with what is needed before shipping arrives",
-            "If flying, Confirm flight times and ensure enough time between any layovers",
-            "Allow time for final packing on travel day",
-            "Confirm insurance is accurate and active before leaving",
-            "Check that you are not carrying any disallowed items in transit",
-            "Ensure all tasks for pre-departure are completed",
-            "Ensure you have all needed medications"
-        ],
-        "pets" :[
-            "Confirm the details and flight numbers for pets with agency",
-            "Ask if tracking is available and if so obtain that information"
-        ],
-        "Children" : [
-            "Pack an extended travel bag with toys, meals, snacks, any medications, and entertainment for children"
+      },
+      {
+        "task_description": "Confirm temporary accommodations before travelling",
+        "priority": "High",
+        "due_date": "1 day before move",
+        "importance_explanation": "Double-checking your booking prevents unexpected issues upon arrival.",
+        "service_keywords": [
+          "Housing",
+          "temporary stay",
+          "AirBNB",
+          "hotel",
+          "arrival logistics"
         ]
-    }
+      },
+      {
+        "task_description": "Ensure all bags are packed accordingly with essentials needed before shipping arrives",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Packing essential items in your checked or carry-on luggage ensures you have immediate access to necessities like toiletries, medications, and a change of clothes.",
+        "service_keywords": [
+          "Packing",
+          "luggage",
+          "essentials",
+          "traveling"
+        ]
+      },
+      {
+        "task_description": "Prepare a travel pouch with all required documents needed for immigration and arrival",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Keeping all critical travel and immigration documents together and easily accessible is vital for clearing customs and navigating arrival procedures.",
+        "service_keywords": [
+          "Immigration_Documents",
+          "documents",
+          "travel documents",
+          "passport",
+          "visa",
+          "customs"
+        ]
+      },
+      {
+        "task_description": "Confirm flight times and ensure enough time between customs and any layovers",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Verifying flight details and connection times minimizes the risk of missing flights due to delays or lengthy immigration processes.",
+        "service_keywords": [
+          "Travel",
+          "flights",
+          "layover",
+          "customs",
+          "airport"
+        ]
+      },
+      {
+        "task_description": "Allow time for final packing and securing your current residence on travel day",
+        "priority": "High",
+        "due_date": "Day of move",
+        "importance_explanation": "Ensure your home is secure, final packing is complete, and you have enough time to get to the airport or departure point without rushing.",
+        "service_keywords": [
+          "Packing",
+          "Departure Logistics",
+          "securing home"
+        ]
+      },
+      {
+        "task_description": "Confirm all insurance policies are accurate and active before leaving",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Double-checking your travel, health, and property insurance ensures you have coverage from the moment you depart.",
+        "service_keywords": [
+          "Insurance",
+          "travel insurance",
+          "health insurance",
+          "home insurance"
+        ]
+      },
+      {
+        "task_description": "Check that you are not carrying any disallowed items for transit or import",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Reviewing customs regulations for prohibited items prevents confiscation and potential penalties upon arrival.",
+        "service_keywords": [
+          "Travel",
+          "customs",
+          "prohibited items",
+          "regulations"
+        ]
+      },
+      {
+        "task_description": "Ensure you have readily accessible funds (cash or accessible banking) for initial expenses",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Having local currency or access to funds is essential for transportation, food, and unforeseen costs immediately upon arrival.",
+        "service_keywords": [
+          "Financial Services",
+          "Banking",
+          "Money Transfer",
+          "currency exchange",
+          "cash"
+        ]
+      },
+      {
+        "task_description": "Ensure all tasks for pre-departure are completed",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Completing all necessary pre-departure steps ensures you are fully prepared for the complexities of international relocation.",
+        "service_keywords": [
+          "Predeparture Planning",
+          "task management"
+        ]
+      },
+      {
+        "task_description": "Ensure you have all needed medication and documentation for customs/travel",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Having necessary medications and accompanying prescriptions or doctor's notes is crucial for health and clearing customs.",
+        "service_keywords": [
+          "health",
+          "medication",
+          "documents",
+          "customs",
+          "traveling"
+        ]
+      }
+    ],
+    "pets": [
+      {
+        "task_description": "Confirm the details and arrangements for pet travel with the agency/airline",
+        "priority": "High",
+        "due_date": "1-2 days before move",
+        "importance_explanation": "Verifying all pet travel logistics ensures a smooth and safe journey for your animals.",
+        "service_keywords": [
+          "Pets",
+          "Travel",
+          "pet transport",
+          "airline",
+          "pet relocation service"
+        ]
+      },
+      {
+        "task_description": "Prepare pet for travel (final health check if required, appropriate carrier, food/water for journey)",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Ensuring your pet is comfortable and has necessary supplies for the journey is vital for their well-being.",
+        "service_keywords": [
+          "Pets",
+          "Travel",
+          "pet health",
+          "pet carrier",
+          "pet supplies"
+        ]
+      }
+    ],
+    "Children": [
+      {
+        "task_description": "Pack an extended travel bag with essentials and entertainment for children",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Having easy access to items like snacks, toys, medications, and comfort items makes the travel day much smoother for children.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "Travel",
+          "Packing",
+          "essentials",
+          "entertainment"
+        ]
+      },
+      {
+        "task_description": "Explain the travel process to children in an age-appropriate way",
+        "priority": "Low",
+        "due_date": "Few days before move",
+        "importance_explanation": "Preparing children emotionally for the travel day can help reduce anxiety and make the experience more positive.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "moving with children",
+          "emotional preparation"
+        ]
+      }
+    ]
+  },
+  "Domestic": {
+    "default": [
+      {
+        "task_description": "Arrange temporary accommodation (hotel) for the first few nights if needed",
+        "priority": "High",
+        "due_date": "1-2 days before move",
+        "importance_explanation": "Having a place to stay immediately upon arrival provides stability while you handle initial setup.",
+        "service_keywords": [
+          "Housing",
+          "temporary stay",
+          "hotel",
+          "arrival logistics"
+        ]
+      },
+      {
+        "task_description": "Confirm temporary accommodations before travelling",
+        "priority": "High",
+        "due_date": "1 day before move",
+        "importance_explanation": "Double-checking your booking prevents unexpected issues upon arrival.",
+        "service_keywords": [
+          "Housing",
+          "temporary stay",
+          "hotel",
+          "arrival logistics"
+        ]
+      },
+      {
+        "task_description": "Ensure all bags are packed accordingly with essentials needed before shipped items arrive",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Packing essential items ensures you have immediate access to necessities like toiletries, medications, and a change of clothes.",
+        "service_keywords": [
+          "Packing",
+          "luggage",
+          "essentials",
+          "traveling"
+        ]
+      },
+      {
+        "task_description": "If flying, confirm flight times and ensure enough time between any layovers",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Verifying flight details and connection times minimizes the risk of missing flights.",
+        "service_keywords": [
+          "Travel",
+          "flights",
+          "layover",
+          "airport"
+        ]
+      },
+      {
+        "task_description": "Allow time for final packing and securing your current residence on travel day",
+        "priority": "High",
+        "due_date": "Day of move",
+        "importance_explanation": "Ensure your home is secure and final packing is complete.",
+        "service_keywords": [
+          "Packing",
+          "Departure Logistics",
+          "securing home"
+        ]
+      },
+      {
+        "task_description": "Confirm all insurance policies are accurate and active before leaving",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Double-checking your insurance ensures you have coverage from the moment you depart.",
+        "service_keywords": [
+          "Insurance",
+          "travel insurance",
+          "health insurance",
+          "home insurance"
+        ]
+      },
+      {
+        "task_description": "Check that you are not carrying any disallowed items in transit",
+        "priority": "Medium",
+        "due_date": "Day before move",
+        "importance_explanation": "Reviewing airline or transportation regulations for prohibited items prevents issues during your journey.",
+        "service_keywords": [
+          "Travel",
+          "regulations"
+        ]
+      },
+      {
+        "task_description": "Ensure all tasks for pre-departure are completed",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Completing all necessary pre-departure steps ensures you are fully prepared for your move.",
+        "service_keywords": [
+          "Predeparture Planning",
+          "task management"
+        ]
+      },
+      {
+        "task_description": "Ensure you have all needed medications",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Having necessary medications readily available is crucial for your health during the move.",
+        "service_keywords": [
+          "health",
+          "medication",
+          "traveling"
+        ]
+      }
+    ],
+    "pets": [
+      {
+        "task_description": "Confirm the details and arrangements for pet travel with the agency/airline if applicable",
+        "priority": "High",
+        "due_date": "1-2 days before move",
+        "importance_explanation": "Verifying all pet travel logistics ensures a smooth and safe journey for your animals.",
+        "service_keywords": [
+          "Pets",
+          "Travel",
+          "pet transport",
+          "airline"
+        ]
+      },
+      {
+        "task_description": "Prepare pet for travel (final health check if required, appropriate carrier, food/water for journey)",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Ensuring your pet is comfortable and has necessary supplies for the journey is vital for their well-being.",
+        "service_keywords": [
+          "Pets",
+          "Travel",
+          "pet health",
+          "pet carrier",
+          "pet supplies"
+        ]
+      }
+    ],
+    "Children": [
+      {
+        "task_description": "Pack an extended travel bag with essentials and entertainment for children",
+        "priority": "High",
+        "due_date": "Day before move",
+        "importance_explanation": "Having easy access to items like snacks, toys, medications, and comfort items makes the travel day much smoother for children.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "Travel",
+          "Packing",
+          "essentials",
+          "entertainment"
+        ]
+      },
+      {
+        "task_description": "Explain the travel process to children in an age-appropriate way",
+        "priority": "Low",
+        "due_date": "Few days before move",
+        "importance_explanation": "Preparing children emotionally for the travel day can help reduce anxiety.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "moving with children",
+          "emotional preparation"
+        ]
+      }
+    ]
+  }
 }
