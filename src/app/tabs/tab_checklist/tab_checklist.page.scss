@@ -78,7 +78,7 @@ ion-label {
 
   h3 {
     position: relative;
-    color: black;
+    color: var(--ion-text-color, black);;
     font-size: 1rem;
     font-weight: normal;
     margin-top: 0;
