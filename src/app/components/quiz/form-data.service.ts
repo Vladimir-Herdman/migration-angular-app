@@ -21,7 +21,10 @@ export class FormDataService {
     if (savedForm) {
       this.formDataSubject.next(savedForm);
     }
+  }
 
+  isFilled(form: any): boolean {
+    return !!(form && form.moveType && form.destination && form.moveDate);
   }
 
   async setForm(data: any) {

@@ -1,5 +1,11 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button routerLink="/tabs/tab-dashboard">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Dashboard
+      </ion-button>
+    </ion-buttons>
     <ion-title class="centered-title">Questionnaire</ion-title>
     <ion-buttons slot="end">
       <app-account-button></app-account-button>
@@ -9,8 +15,12 @@
 
 <ion-content [fullscreen]="false">
   <div class="content-wrapper">
+    <h3>Please fill out this questionnaire. We will generate a list of tasks based on your responses.</h3>
+
     <!-- Quiz Component -->
     <app-quiz [form]="form"></app-quiz>
+
+    <h3>You may change your answers later in your account settings.</h3>
 
     <!-- Save Answers -->
     <div class="button-wrapper">

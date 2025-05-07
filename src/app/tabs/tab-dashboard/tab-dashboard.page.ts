@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormDataService } from 'src/app/components/quiz/form-data.service';
 
 @Component({
   selector: 'app-tab_dashboard',
@@ -9,13 +10,16 @@ import { Router } from '@angular/router';
 })
 export class TabDashboardPage implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private formDataService: FormDataService) { }
 
   ngOnInit() {
   }
 
-  goToRelocation() {
-    this.router.navigateByUrl('/tabs/tab_checklist', { replaceUrl: false });
+  async goToRelocation() {
+    const form = await this.formDataService.getForm();
+    let quizDone = this.formDataService.isFilled(form);
+    let nextTab = quizDone ? 'checklist' : 'quiz';
+    this.router.navigateByUrl(`/tabs/tab_${nextTab}`, { replaceUrl: false });
   }
 
   goToServices() {

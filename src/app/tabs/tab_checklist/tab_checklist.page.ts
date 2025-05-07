@@ -146,7 +146,7 @@ export class TabChecklistPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   checkIfQuestionnaireFilled(form: any): boolean {
-      return form && form.moveType && form.destination && form.moveDate;
+      return this.formDataService.isFilled(form);
   }
 
   async loadCachedChecklistOrGenerate(currentForm: any) {
