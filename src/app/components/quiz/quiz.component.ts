@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { FormDataService } from '../../components/quiz/form-data.service';
 
 @Component({
   selector: 'app-quiz',
@@ -13,8 +14,13 @@ export class QuizComponent  implements OnInit {
 
   @Input() form: any;
 
-  constructor() { }
+  constructor(private formDataService: FormDataService) { }
 
   ngOnInit() {}
+
+  async updateForm() {
+    this.form = await this.formDataService.getForm();
+    return this.form;
+  }
 
 }

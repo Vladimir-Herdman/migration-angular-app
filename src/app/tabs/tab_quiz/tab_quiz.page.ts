@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { Component, ViewChild } from '@angular/core';
+import { ToastController, ViewWillEnter } from '@ionic/angular';
 import { FormDataService } from '../../components/quiz/form-data.service';
+import { QuizComponent } from 'src/app/components/quiz/quiz.component';
 import { Router } from '@angular/router';
 
 
@@ -11,10 +12,16 @@ import { Router } from '@angular/router';
   standalone: false,
 })
 
-export class TabQuizPage {
+export class TabQuizPage implements ViewWillEnter {
+  @ViewChild(QuizComponent)
+  quizComponent!: QuizComponent;
   form = this.formDataService.getDefaultForm();
 
   constructor(private toastController: ToastController, private formDataService: FormDataService, private router: Router) {}
+
+  async ionViewWillEnter() {
+    this.form = await this.quizComponent.updateForm();
+  }
 
   async submitForm() {
     await this.formDataService.setForm(this.form);

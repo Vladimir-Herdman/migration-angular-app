@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { ToastController, AlertController } from '@ionic/angular';
+import { ToastController, AlertController, ViewWillEnter } from '@ionic/angular';
 import { Auth, onAuthStateChanged, deleteUser } from '@angular/fire/auth';
 import { FormDataService } from 'src/app/components/quiz/form-data.service';
+import { QuizComponent } from 'src/app/components/quiz/quiz.component';
 
 @Component({
   selector: 'app-account',
@@ -11,7 +12,10 @@ import { FormDataService } from 'src/app/components/quiz/form-data.service';
   styleUrls: ['account.page.scss'],
   standalone: false,
 })
-export class AccountPage {
+export class AccountPage implements ViewWillEnter {
+  @ViewChild(QuizComponent)
+  quizComponent!: QuizComponent;
+  
   account: any = {
     info: {
       email: '',
@@ -36,7 +40,8 @@ export class AccountPage {
 
   authUnsubscribe: (() => void) | null = null;
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
+    this.account.quiz = await this.quizComponent.updateForm();
     this.authUnsubscribe = onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.user = user;
