@@ -19,7 +19,7 @@ export class QuizComponent  implements OnInit {
   ngOnInit() {}
 
   async updateForm() {
-    this.form = await this.formDataService.getForm();
+    this.form = (await this.formDataService.getForm()) ?? this.formDataService.getDefaultForm(); // If first time, use the default empty form
     return this.form;
   }
 
