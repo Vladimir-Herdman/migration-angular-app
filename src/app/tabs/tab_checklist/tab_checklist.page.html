@@ -45,7 +45,7 @@
     <div *ngFor="let stage of ['predeparture', 'departure', 'arrival']" [id]="stage" [hidden]="selectedStage !== stage">
       <ion-list *ngIf="$any(checklistData)[stage]?.length > 0">
         <ion-list-header>
-          <ion-label>Total {{stage | titlecase}} Tasks: {{ stageProgress[stage]?.total || 0 }}</ion-label>
+          <ion-label>Total {{stage | titlecase}} Tasks: {{ stageProgress[stage].total || 0 }}</ion-label>
           <ion-buttons slot="end">
             <ion-button fill="clear" size="small" (click)="sortTasks('priority')">Sort by Priority</ion-button>
             <ion-button fill="clear" size="small" (click)="sortTasks('dueDate')">Sort by Time</ion-button>
