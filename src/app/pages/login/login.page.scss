@@ -24,6 +24,10 @@
   height: auto;
 }
 
+ion-card {
+  border-radius: 20px;
+}
+
 ion-card-content {
   width: 275px;
   max-width: 400px;
@@ -40,7 +44,7 @@ ion-button[color="dark"] {
 }
 
 ion-content {
-  --background: var(--ion-color-primary);
+  --background: linear-gradient(167deg,rgba(11, 53, 71, 1) 0%, rgba(35, 121, 158, 1) 66%, rgba(16, 66, 87, 1) 100%);
 }
 
 h3 {
@@ -96,7 +100,6 @@ svg {
 /* .ios to target android devices css */
 .ios .card-wrapper {
   margin-top: 180px;
-  transform: scale(1.05, 0.95);
 }
 
 .ios #login-logo {

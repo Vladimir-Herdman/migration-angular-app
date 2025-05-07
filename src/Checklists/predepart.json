@@ -1,92 +1,953 @@
 {
-    "International" : {
-        "Immigration_Documents": [
-            "Take the IELTS/CELPIP Exams for English Literacy",
-            "Get all relevant documents copied and certified",
-            "Arrange and Collect birth and marriage certificates",
-            "Arrange Visa Photos",
-            "Ensure passports are up to date"
-        ],
-        "Children": [
-            "Ensure children have the necessary documentation as well as parents",
-            "Give notice to the school about the move",
-            "Make sure children are vaccinated and have documentation"
-        ],
-        "Vehicle": {
-            "Renting": [
-                "Find a car rental location to rent a car in the new location",
-                "Pick a rental car and set up a rental for your arrival"
-            ],
-            "Bringing": [
-                "Obtain all documents relevant for the vehicle (Registration, insurance, etc)"
-            ]
-        },
-        "Pets": [
-            "Make sure to have Pet Documentation as needed by your travel agency, such as vaccination records",
-            "Get Pet Passports cleared for flight",
-            "Make sure they have all needed and relevant shots",
-            "Have the vaccination records on file for all pets"
-        ],
-        "Phone" : [
-            "Cancel or modify your existing plan with your current cell company",
-            "Find a phone plan that fits your new needs in the new location"
-        ],
-        "Realtor" : [
-            "Find a realtor near your current location to sell your home",
-            "Go through the process of selling your house",
-            "Find a realtor in your new location to buy a new home in your location",
-            "Find a house to purchase and go through that"
-        ],
-        "default" : [
-            "Downsize belongings and get rid of what is not needed or wanted in the new location",
-            "Compile goods to accompany and goods to follow list",
-            "Get quotes for shipping goods to new location",
-            "Arrange travel plans (air tickets, etc)",
-            "Arrange travel insurance"
-        ],
-        "landlord" : [
-            "Give notice to landlord and terminate lease"
+  "International": {
+    "default": [
+      {
+        "task_description": "Downsize belongings and get rid of what is not needed or wanted in the new location",
+        "priority": "Medium",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "Reducing the volume of belongings will lower shipping costs and simplify packing.",
+        "service_keywords": [
+          "packing",
+          "moving",
+          "downsizing",
+          "decluttering"
         ]
-    }, 
-    "Domestic" : {
-        "Children" : [
-            "Give notice to the school about the move",
-            "Make sure children are vaccinated and have documentation"
-        ],
-        "Vehicle" : {
-            "Renting": [
-                "Find a car rental location to rent a car in the new location",
-                "Pick a rental car and set up a rental for your arrival"
-            ],
-            "Bringing": [
-                "Obtain all documents relevant for the vehicle (Registration, insurance, etc)"
-            ]
-        }, 
-        "Pets" : [
-            "Make sure they have all needed and relevant shots",
-            "Have the vaccination records on file for all pets"
-        ],
-        "Phone" : [
-            "Cancel or modify your existing plan with your current cell company",
-            "Find a phone plan that fits your new needs in the new location"
-        ],
-        "Realtor" : [
-            "Find a realtor near your current location to sell your home",
-            "Go through the process of selling your house",
-            "Find a realtor in your new location to buy a new home in your location",
-            "Find a house to purchase and go through that"
-        ],
-        "default" : [
-            "Downsize belongings and get rid of what is not needed or wanted in the new location",
-            "Compile goods to accompany and goods to follow list",
-            "Get quotes for shipping goods to new location",
-            "Arrange travel plans (air tickets, etc)",
-            "Arrange travel insurance"
-        ],
-        "landlord" : [
-            "Give notice to landlord and terminate lease"
-        ],
-        "Immigration_Documents" : []
-    }
-
+      },
+      {
+        "task_description": "Compile goods to accompany and goods to follow list",
+        "priority": "Medium",
+        "due_date": "4-6 weeks before move",
+        "importance_explanation": "Planning which items you need immediately upon arrival versus those that can be shipped separately is crucial for initial setup.",
+        "service_keywords": [
+          "packing",
+          "shipping",
+          "moving",
+          "logistics"
+        ]
+      },
+      {
+        "task_description": "Get quotes for international shipping of goods",
+        "priority": "High",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "International shipping requires significant planning and scheduling, and getting quotes early helps in budgeting and choosing a mover.",
+        "service_keywords": [
+          "Transportation",
+          "international moving",
+          "shipping",
+          "movers",
+          "packing"
+        ]
+      },
+      {
+        "task_description": "Arrange international travel plans (flights, etc)",
+        "priority": "High",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "Booking international flights well in advance is often necessary to secure desired dates and potentially better prices.",
+        "service_keywords": [
+          "Travel",
+          "flights",
+          "international travel"
+        ]
+      },
+      {
+        "task_description": "Arrange travel insurance for the move",
+        "priority": "High",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "Travel insurance provides crucial coverage for unexpected events during your international journey, including medical emergencies and lost luggage.",
+        "service_keywords": [
+          "Insurance",
+          "travel insurance",
+          "medical insurance",
+          "baggage insurance"
+        ]
+      },
+      {
+        "task_description": "Notify banks and financial institutions of your move",
+        "priority": "Medium",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "Informing your bank prevents potential holds on your accounts due to unusual international activity.",
+        "service_keywords": [
+          "Financial Services",
+          "Banking",
+          "money transfer"
+        ]
+      },
+      {
+        "task_description": "Forward mail to your new address or a trusted contact",
+        "priority": "Medium",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Ensuring your mail is forwarded prevents important documents from being lost and helps manage the transition.",
+        "service_keywords": [
+          "utilities",
+          "mail forwarding"
+        ]
+      }
+    ],
+    "Immigration_Documents": [
+      {
+        "task_description": "Research visa and entry requirements for destination country",
+        "priority": "High",
+        "due_date": "8-12 weeks before move",
+        "importance_explanation": "Understanding and securing the correct visa and meeting entry requirements is fundamental for a legal international move.",
+        "service_keywords": [
+          "Immigration_Documents",
+          "visa",
+          "entry requirements",
+          "permits"
+        ]
+      },
+      {
+        "task_description": "Take language proficiency exams (e.g., IELTS/CELPIP) if required for visa",
+        "priority": "High",
+        "due_date": "10-14 weeks before move",
+        "importance_explanation": "Some countries require proof of language proficiency for immigration purposes, and these tests need to be scheduled in advance.",
+        "service_keywords": [
+          "Immigration_Documents",
+          "language test",
+          "visa",
+          "skill assessment"
+        ]
+      },
+      {
+        "task_description": "Get all relevant personal documents copied and certified",
+        "priority": "High",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "Certified copies of important documents are often required for visa applications, registration, and other procedures in the new country.",
+        "service_keywords": [
+          "Immigration_Documents",
+          "documents",
+          "certification",
+          "legal documents"
+        ]
+      },
+      {
+        "task_description": "Arrange and Collect birth and marriage certificates",
+        "priority": "High",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "These foundational documents are frequently needed for identification and registration purposes abroad.",
+        "service_keywords": [
+          "Immigration_Documents",
+          "documents",
+          "certificates",
+          "personal records"
+        ]
+      },
+      {
+        "task_description": "Obtain required visa photos",
+        "priority": "Medium",
+        "due_date": "4-6 weeks before move",
+        "importance_explanation": "Visa applications have specific photo requirements that must be met precisely.",
+        "service_keywords": [
+          "Immigration_Documents",
+          "visa",
+          "photos",
+          "passport photos"
+        ]
+      },
+      {
+        "task_description": "Ensure passports are up to date and valid for duration of stay",
+        "priority": "High",
+        "due_date": "8-12 weeks before move",
+        "importance_explanation": "An expired or soon-to-expire passport can halt international travel and visa processes.",
+        "service_keywords": [
+          "Immigration_Documents",
+          "passport",
+          "travel documents"
+        ]
+      }
+    ],
+    "Children": [
+      {
+        "task_description": "Ensure children have the necessary travel documentation",
+        "priority": "High",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "Children require their own valid passports and potentially visas depending on the destination country's regulations.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "documents",
+          "Immigration_Documents",
+          "passport",
+          "visa"
+        ]
+      },
+      {
+        "task_description": "Give notice to the children's current school about the move",
+        "priority": "Medium",
+        "due_date": "4-6 weeks before move",
+        "importance_explanation": "Informing the school allows for proper withdrawal procedures and collection of necessary academic records.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "school",
+          "education"
+        ]
+      },
+      {
+        "task_description": "Collect children's academic records and transfer certificates",
+        "priority": "Medium",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "These documents will be essential for enrolling children in a new school in the destination country.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "school",
+          "education",
+          "documents"
+        ]
+      },
+      {
+        "task_description": "Make sure children are vaccinated according to destination country requirements and have documentation",
+        "priority": "High",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "Proof of specific vaccinations may be mandatory for school enrollment or immigration in the new country.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "health",
+          "vaccination",
+          "documents"
+        ]
+      },
+      {
+        "task_description": "Research schooling options in the new location and begin enrollment process",
+        "priority": "High",
+        "due_date": "8-12 weeks before move",
+        "importance_explanation": "Finding and enrolling children in a suitable school can take time and may involve waiting lists or specific application periods.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "school",
+          "enrollment",
+          "education"
+        ]
+      }
+    ],
+    "Vehicle": {
+      "Renting": [
+        {
+          "task_description": "Find a car rental location at or near the new location airport/arrival point",
+          "priority": "Medium",
+          "due_date": "2-4 weeks before move",
+          "importance_explanation": "Arranging for temporary transportation upon arrival is important for initial mobility.",
+          "service_keywords": [
+            "Vehicle",
+            "Car Rental",
+            "transportation",
+            "arrival logistics"
+          ]
+        },
+        {
+          "task_description": "Book a rental car for your arrival",
+          "priority": "Medium",
+          "due_date": "1-2 weeks before move",
+          "importance_explanation": "Confirming your rental ensures a vehicle is available upon your arrival, especially during peak travel times.",
+          "service_keywords": [
+            "Vehicle",
+            "Car Rental",
+            "transportation",
+            "arrival logistics"
+          ]
+        }
+      ],
+      "Bringing": [
+        {
+          "task_description": "Research requirements for importing your vehicle into the destination country",
+          "priority": "High",
+          "due_date": "8-12 weeks before move",
+          "importance_explanation": "Importing a vehicle involves customs regulations, taxes, and potentially modifications to meet local standards.",
+          "service_keywords": [
+            "Vehicle",
+            "importing car",
+            "customs",
+            "car registration",
+            "documents"
+          ]
+        },
+        {
+          "task_description": "Obtain all necessary documents relevant for exporting your vehicle (Registration, title, etc)",
+          "priority": "High",
+          "due_date": "6-8 weeks before move",
+          "importance_explanation": "Proper documentation is required for customs clearance when exporting your vehicle.",
+          "service_keywords": [
+            "Vehicle",
+            "documents",
+            "car registration",
+            "car title",
+            "exporting car"
+          ]
+        },
+        {
+          "task_description": "Arrange for international shipping of your vehicle",
+          "priority": "High",
+          "due_date": "4-6 weeks before move",
+          "importance_explanation": "Shipping a vehicle internationally is a complex logistical process that needs to be scheduled well in advance.",
+          "service_keywords": [
+            "Vehicle",
+            "shipping",
+            "international shipping",
+            "car transport"
+          ]
+        },
+        {
+          "task_description": "Obtain international driving permit if required",
+          "priority": "Medium",
+          "due_date": "2-4 weeks before move",
+          "importance_explanation": "An International Driving Permit (IDP) may be required or recommended for driving in the destination country before you obtain a local license.",
+          "service_keywords": [
+            "Vehicle",
+            "drivers license",
+            "documents",
+            "IDP"
+          ]
+        }
+      ]
+    },
+    "Pets": [
+      {
+        "task_description": "Research pet import regulations for the destination country",
+        "priority": "High",
+        "due_date": "8-12 weeks before move",
+        "importance_explanation": "Countries have strict regulations regarding importing pets, including quarantine requirements, vaccinations, and documentation.",
+        "service_keywords": [
+          "Pets",
+          "importing pets",
+          "regulations",
+          "documents"
+        ]
+      },
+      {
+        "task_description": "Schedule necessary vet appointments for health checks and vaccinations",
+        "priority": "High",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "Pets need to meet specific health requirements and have up-to-date vaccinations for international travel.",
+        "service_keywords": [
+          "Pets",
+          "vet",
+          "health",
+          "vaccination",
+          "pet documents"
+        ]
+      },
+      {
+        "task_description": "Obtain required pet documentation (health certificates, vaccination records, pet passport)",
+        "priority": "High",
+        "due_date": "4-6 weeks before move",
+        "importance_explanation": "Official health certificates and vaccination records are mandatory for clearing customs with your pets.",
+        "service_keywords": [
+          "Pets",
+          "documents",
+          "health certificate",
+          "vaccination records",
+          "pet passport"
+        ]
+      },
+      {
+        "task_description": "Arrange pet travel with an airline or pet relocation service",
+        "priority": "High",
+        "due_date": "4-6 weeks before move",
+        "importance_explanation": "Traveling with pets internationally requires specific arrangements with airlines or specialized relocation services to ensure their safety and compliance.",
+        "service_keywords": [
+          "Pets",
+          "Travel",
+          "pet transport",
+          "pet relocation service",
+          "airline"
+        ]
+      },
+      {
+        "task_description": "Prepare a travel carrier and essentials for your pet's journey",
+        "priority": "Medium",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Ensuring your pet has a comfortable and compliant carrier with necessary supplies is vital for their well-being during travel.",
+        "service_keywords": [
+          "Pets",
+          "Travel",
+          "pet carrier",
+          "pet supplies"
+        ]
+      }
+    ],
+    "Phone": [
+      {
+        "task_description": "Cancel or modify your existing mobile phone plan",
+        "priority": "Medium",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Cancelling your current plan avoids unnecessary charges. Consider options for temporary international service or switching providers.",
+        "service_keywords": [
+          "Phone",
+          "Services",
+          "mobile plan",
+          "cancel service"
+        ]
+      },
+      {
+        "task_description": "Research mobile phone providers and plans in the new location",
+        "priority": "Medium",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "Setting up a new phone plan upon arrival is crucial for communication and accessing local services.",
+        "service_keywords": [
+          "Phone",
+          "Services",
+          "mobile plan",
+          "esim",
+          "connectivity"
+        ]
+      }
+    ],
+    "Realtor": [
+      {
+        "task_description": "Engage a realtor to sell your current home",
+        "priority": "High",
+        "due_date": "8-12 weeks before move",
+        "importance_explanation": "Selling a property is a lengthy process that requires professional assistance and market knowledge.",
+        "service_keywords": [
+          "Housing",
+          "Realtor",
+          "sell house",
+          "real estate"
+        ]
+      },
+      {
+        "task_description": "Complete the process of selling your current house",
+        "priority": "High",
+        "due_date": "0-2 weeks before move",
+        "importance_explanation": "Finalizing the sale of your current property provides funds for your move and future housing.",
+        "service_keywords": [
+          "Housing",
+          "Realtor",
+          "sell house",
+          "real estate",
+          "closing"
+        ]
+      },
+      {
+        "task_description": "Engage a realtor to find a new home in your destination location",
+        "priority": "High",
+        "due_date": "8-12 weeks before move",
+        "importance_explanation": "Finding suitable housing in a new country requires local expertise and can take considerable time.",
+        "service_keywords": [
+          "Housing",
+          "Realtor",
+          "buy house",
+          "real estate",
+          "find property"
+        ]
+      },
+      {
+        "task_description": "Complete the process of purchasing a new house",
+        "priority": "High",
+        "due_date": "0-4 weeks before move",
+        "importance_explanation": "Finalizing the purchase of your new home secures your long-term accommodation in the destination country.",
+        "service_keywords": [
+          "Housing",
+          "Realtor",
+          "buy house",
+          "real estate",
+          "closing",
+          "property finance"
+        ]
+      }
+    ],
+    "landlord": [
+      {
+        "task_description": "Give notice to your current landlord and terminate your lease",
+        "priority": "High",
+        "due_date": "Based on lease terms (usually 30-60 days before move)",
+        "importance_explanation": "Properly terminating your lease according to the agreement avoids penalties and ensures a smooth departure from your current residence.",
+        "service_keywords": [
+          "Housing",
+          "rent",
+          "landlord",
+          "lease termination",
+          "rental agreement"
+        ]
+      },
+      {
+        "task_description": "Arrange for the return of your security deposit",
+        "priority": "Medium",
+        "due_date": "Within specified timeframe after move-out",
+        "importance_explanation": "Following proper move-out procedures helps ensure the timely return of your security deposit.",
+        "service_keywords": [
+          "Housing",
+          "rent",
+          "landlord",
+          "security deposit"
+        ]
+      }
+    ],
+    "Financial Services": [
+      {
+        "task_description": "Research options for transferring money internationally",
+        "priority": "Medium",
+        "due_date": "4-6 weeks before move",
+        "importance_explanation": "Understanding international money transfer services helps you move funds efficiently and cost-effectively.",
+        "service_keywords": [
+          "Financial Services",
+          "Money Transfer",
+          "international transfer",
+          "currency exchange"
+        ]
+      },
+      {
+        "task_description": "Inform your bank of your move and inquire about international banking services",
+        "priority": "Medium",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "Notifying your bank about your move prevents potential issues with accessing funds abroad. Discuss options for international access or opening a local account.",
+        "service_keywords": [
+          "Financial Services",
+          "Banking",
+          "international banking"
+        ]
+      }
+    ],
+    "Utilities": [
+      {
+        "task_description": "Notify current utility providers (electricity, water, gas, internet) of your move and arrange disconnection",
+        "priority": "High",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Ensuring utilities are disconnected at your old address prevents continued billing and simplifies closing accounts.",
+        "service_keywords": [
+          "Utilities",
+          "internet",
+          "electricity",
+          "water",
+          "gas",
+          "disconnect service"
+        ]
+      }
+    ],
+    "Employment": [
+      {
+        "task_description": "Give notice to your current employer",
+        "priority": "High",
+        "due_date": "As per employment contract (usually 2-4 weeks before last day)",
+        "importance_explanation": "Providing proper notice to your employer is professional and may be required by your contract. Collect necessary employment records.",
+        "service_keywords": [
+          "Employment",
+          "leaving job",
+          "employment records"
+        ]
+      },
+      {
+        "task_description": "Collect necessary employment records and references",
+        "priority": "Medium",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "These documents may be needed for future job applications or verification in the new country.",
+        "service_keywords": [
+          "Employment",
+          "employment records",
+          "references"
+        ]
+      }
+    ]
+  },
+  "Domestic": {
+    "default": [
+      {
+        "task_description": "Downsize belongings and get rid of what is not needed or wanted in the new location",
+        "priority": "Medium",
+        "due_date": "4-6 weeks before move",
+        "importance_explanation": "Reducing the volume of belongings simplifies packing and moving logistics, potentially reducing costs.",
+        "service_keywords": [
+          "packing",
+          "moving",
+          "downsizing",
+          "decluttering"
+        ]
+      },
+      {
+        "task_description": "Compile goods to accompany and goods to follow list",
+        "priority": "Medium",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "Planning which items you need immediately upon arrival versus those that can be moved separately is crucial for initial setup.",
+        "service_keywords": [
+          "packing",
+          "moving",
+          "logistics"
+        ]
+      },
+      {
+        "task_description": "Get quotes for domestic moving services",
+        "priority": "High",
+        "due_date": "4-6 weeks before move",
+        "importance_explanation": "Hiring professional movers can save time and effort, and getting quotes helps in budgeting.",
+        "service_keywords": [
+          "Transportation",
+          "moving",
+          "movers",
+          "packing"
+        ]
+      },
+      {
+        "task_description": "Arrange domestic travel plans (flights, driving route, etc)",
+        "priority": "Medium",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "Planning your travel to the new location ensures a smooth journey.",
+        "service_keywords": [
+          "Travel",
+          "flights",
+          "driving route"
+        ]
+      },
+      {
+        "task_description": "Arrange travel insurance if applicable (e.g., for road trip or valuable items)",
+        "priority": "Low",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Consider travel insurance for domestic moves if you have specific concerns about your journey or valuable belongings.",
+        "service_keywords": [
+          "Insurance",
+          "travel insurance"
+        ]
+      },
+      {
+        "task_description": "Notify banks and financial institutions of your move",
+        "priority": "Medium",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Informing your bank helps prevent potential issues with accessing funds in a new location.",
+        "service_keywords": [
+          "Financial Services",
+          "Banking"
+        ]
+      },
+      {
+        "task_description": "Forward mail to your new address",
+        "priority": "High",
+        "due_date": "1 week before move",
+        "importance_explanation": "Setting up mail forwarding ensures you receive important correspondence at your new address.",
+        "service_keywords": [
+          "utilities",
+          "mail forwarding"
+        ]
+      }
+    ],
+    "Children": [
+      {
+        "task_description": "Give notice to the children's current school about the move",
+        "priority": "Medium",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "Informing the school allows for proper withdrawal procedures and collection of necessary academic records.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "school",
+          "education"
+        ]
+      },
+      {
+        "task_description": "Collect children's academic records and transfer certificates",
+        "priority": "Medium",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "These documents will be essential for enrolling children in a new school in the destination city.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "school",
+          "education",
+          "documents"
+        ]
+      },
+      {
+        "task_description": "Make sure children are vaccinated according to local requirements and have documentation",
+        "priority": "High",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "Proof of vaccinations may be required for school enrollment in the new district.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "health",
+          "vaccination",
+          "documents"
+        ]
+      },
+      {
+        "task_description": "Research schooling options in the new location and begin enrollment process",
+        "priority": "High",
+        "due_date": "4-6 weeks before move",
+        "importance_explanation": "Finding and enrolling children in a suitable school can take time and may involve waiting lists or specific application periods.",
+        "service_keywords": [
+          "Family",
+          "Children",
+          "school",
+          "enrollment",
+          "education"
+        ]
+      }
+    ],
+    "Vehicle": {
+      "Renting": [
+        {
+          "task_description": "Find a car rental location at or near the new location airport/arrival point",
+          "priority": "Medium",
+          "due_date": "1-2 weeks before move",
+          "importance_explanation": "Arranging for temporary transportation upon arrival is important for initial mobility.",
+          "service_keywords": [
+            "Vehicle",
+            "Car Rental",
+            "transportation",
+            "arrival logistics"
+          ]
+        },
+        {
+          "task_description": "Book a rental car for your arrival",
+          "priority": "Medium",
+          "due_date": "Few days before move",
+          "importance_explanation": "Confirming your rental ensures a vehicle is available upon your arrival, especially during peak travel times.",
+          "service_keywords": [
+            "Vehicle",
+            "Car Rental",
+            "transportation",
+            "arrival logistics"
+          ]
+        }
+      ],
+      "Bringing": [
+        {
+          "task_description": "Obtain all documents relevant for your vehicle (Registration, insurance, maintenance records, etc)",
+          "priority": "Medium",
+          "due_date": "1-2 weeks before move",
+          "importance_explanation": "Having your vehicle's documents organized is important for registration and insurance in the new location.",
+          "service_keywords": [
+            "Vehicle",
+            "documents",
+            "car registration",
+            "car insurance",
+            "maintenance records"
+          ]
+        },
+        {
+          "task_description": "Schedule any necessary maintenance for your vehicle before a long drive",
+          "priority": "Medium",
+          "due_date": "1-2 weeks before move",
+          "importance_explanation": "Ensuring your vehicle is in good condition is crucial for a safe and smooth road trip.",
+          "service_keywords": [
+            "Vehicle",
+            "maintenance",
+            "car service"
+          ]
+        },
+        {
+          "task_description": "Plan your driving route and overnight stops if necessary",
+          "priority": "Medium",
+          "due_date": "1-2 weeks before move",
+          "importance_explanation": "Planning your route helps estimate travel time and ensures you have accommodations for longer drives.",
+          "service_keywords": [
+            "Vehicle",
+            "driving route",
+            "travel planning"
+          ]
+        }
+      ]
+    },
+    "Pets": [
+      {
+        "task_description": "Schedule necessary vet appointments for health checks and vaccinations",
+        "priority": "High",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "Ensuring your pets are healthy and up-to-date on vaccinations is important for their well-being and potentially required by local regulations.",
+        "service_keywords": [
+          "Pets",
+          "vet",
+          "health",
+          "vaccination",
+          "pet documents"
+        ]
+      },
+      {
+        "task_description": "Obtain required pet documentation (health certificates, vaccination records)",
+        "priority": "High",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Having your pet's health records readily available is important for finding a new vet and potentially for housing.",
+        "service_keywords": [
+          "Pets",
+          "documents",
+          "health certificate",
+          "vaccination records"
+        ]
+      },
+      {
+        "task_description": "Arrange pet travel if not traveling by car",
+        "priority": "Medium",
+        "due_date": "2-4 weeks before move",
+        "importance_explanation": "If traveling by air or other means, make necessary arrangements for your pet's transport.",
+        "service_keywords": [
+          "Pets",
+          "Travel",
+          "pet transport",
+          "airline"
+        ]
+      },
+      {
+        "task_description": "Prepare a travel carrier and essentials for your pet's journey",
+        "priority": "Medium",
+        "due_date": "Few days before move",
+        "importance_explanation": "Ensuring your pet has a comfortable carrier with necessary supplies is vital for their well-being during travel.",
+        "service_keywords": [
+          "Pets",
+          "Travel",
+          "pet carrier",
+          "pet supplies"
+        ]
+      }
+    ],
+    "Phone": [
+      {
+        "task_description": "Notify your current mobile phone provider of your move",
+        "priority": "Low",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Informing your provider helps ensure a smooth transition of service or cancellation.",
+        "service_keywords": [
+          "Phone",
+          "Services",
+          "mobile plan"
+        ]
+      },
+      {
+        "task_description": "Research mobile phone providers and plans in the new location",
+        "priority": "Medium",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Finding a suitable phone plan in your new city is crucial for staying connected.",
+        "service_keywords": [
+          "Phone",
+          "Services",
+          "mobile plan",
+          "connectivity"
+        ]
+      }
+    ],
+    "Realtor": [
+      {
+        "task_description": "Engage a realtor to sell your current home",
+        "priority": "High",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "Selling a property is a significant process that benefits from professional assistance.",
+        "service_keywords": [
+          "Housing",
+          "Realtor",
+          "sell house",
+          "real estate"
+        ]
+      },
+      {
+        "task_description": "Complete the process of selling your current house",
+        "priority": "High",
+        "due_date": "0-2 weeks before move",
+        "importance_explanation": "Finalizing the sale of your current property is a major step in your relocation.",
+        "service_keywords": [
+          "Housing",
+          "Realtor",
+          "sell house",
+          "real estate",
+          "closing"
+        ]
+      },
+      {
+        "task_description": "Engage a realtor to find a new home in your destination location",
+        "priority": "High",
+        "due_date": "6-8 weeks before move",
+        "importance_explanation": "Finding suitable housing in a new city benefits from local expertise.",
+        "service_keywords": [
+          "Housing",
+          "Realtor",
+          "buy house",
+          "real estate",
+          "find property"
+        ]
+      },
+      {
+        "task_description": "Complete the process of purchasing a new house",
+        "priority": "High",
+        "due_date": "0-4 weeks before move",
+        "importance_explanation": "Finalizing the purchase of your new home secures your accommodation.",
+        "service_keywords": [
+          "Housing",
+          "Realtor",
+          "buy house",
+          "real estate",
+          "closing",
+          "property finance"
+        ]
+      }
+    ],
+    "landlord": [
+      {
+        "task_description": "Give notice to your current landlord and terminate your lease",
+        "priority": "High",
+        "due_date": "Based on lease terms (usually 30-60 days before move)",
+        "importance_explanation": "Properly terminating your lease avoids penalties.",
+        "service_keywords": [
+          "Housing",
+          "rent",
+          "landlord",
+          "lease termination",
+          "rental agreement"
+        ]
+      },
+      {
+        "task_description": "Arrange for the return of your security deposit",
+        "priority": "Medium",
+        "due_date": "Within specified timeframe after move-out",
+        "importance_explanation": "Following proper move-out procedures helps ensure the return of your security deposit.",
+        "service_keywords": [
+          "Housing",
+          "rent",
+          "landlord",
+          "security deposit"
+        ]
+      }
+    ],
+    "Financial Services": [
+      {
+        "task_description": "Inform your bank of your move",
+        "priority": "Medium",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "Notifying your bank helps prevent potential issues with accessing funds in a new location.",
+        "service_keywords": [
+          "Financial Services",
+          "Banking"
+        ]
+      }
+    ],
+    "Utilities": [
+      {
+        "task_description": "Notify current utility providers (electricity, water, gas, internet) of your move and arrange disconnection",
+        "priority": "High",
+        "due_date": "1 week before move",
+        "importance_explanation": "Ensuring utilities are disconnected prevents continued billing.",
+        "service_keywords": [
+          "Utilities",
+          "internet",
+          "electricity",
+          "water",
+          "gas",
+          "disconnect service"
+        ]
+      }
+    ],
+    "Employment": [
+      {
+        "task_description": "Give notice to your current employer",
+        "priority": "High",
+        "due_date": "As per employment contract (usually 2-4 weeks before last day)",
+        "importance_explanation": "Providing proper notice to your employer is professional.",
+        "service_keywords": [
+          "Employment",
+          "leaving job",
+          "employment records"
+        ]
+      },
+      {
+        "task_description": "Collect necessary employment records and references",
+        "priority": "Medium",
+        "due_date": "1-2 weeks before move",
+        "importance_explanation": "These documents may be needed for future job applications.",
+        "service_keywords": [
+          "Employment",
+          "employment records",
+          "references"
+        ]
+      }
+    ],
+    "Immigration_Documents": []
+  }
 }

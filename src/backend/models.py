@@ -1,5 +1,12 @@
 from pydantic import BaseModel, Field
-from typing import List, Literal, Dict, Any
+from typing import List, Literal, Dict, Any, Optional
+
+# New model for Service Information
+class ServiceRecommendation(BaseModel):
+  service_id: str = Field(..., description="Unique identifier for the service")
+  name: str = Field(..., description="Name of the recommended service")
+  description: str = Field(..., description="Description of the recommended service")
+  url: str = Field(..., description="URL for the recommended service")
 
 # Pydantic model for the structure of a single relocation task
 class RelocationTask(BaseModel):

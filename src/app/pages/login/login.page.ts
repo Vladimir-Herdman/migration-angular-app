@@ -7,6 +7,8 @@ import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { AuthService } from 'src/app/services/auth.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { environment } from '../../../environments/environment';
+//REMOVE
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +32,8 @@ export class LoginPage implements OnInit {
       private alertController: AlertController,
       private auth: Auth,
       private authService: AuthService,
-      private databaseService: DatabaseService
+      private databaseService: DatabaseService,
+      private storage: Storage, /* REMOVE */
   ) {
       this.loginForm = this.formBuilder.group({
           email: ['', [Validators.required, Validators.email]],
@@ -40,8 +43,12 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
       // If already signed in, skip the login page
-      onAuthStateChanged(this.auth, (user) => {
-        if (user) this.skipToTabs();
+      onAuthStateChanged(this.auth, async (user) => {
+        if (user) {
+            this.authService.email_key = user.email ?? 'noEmailDetected';
+            this.skipToTabs();
+        }
+      await this.storage.create()
       });
   }
 
@@ -100,6 +107,7 @@ export class LoginPage implements OnInit {
   private async postLoginFlow(userCredentials: any) {
       const userUid = userCredentials.user.uid;
       this.databaseService.userUid = userUid;
+      this.authService.email_key = userCredentials.user.email ?? 'noEmailDetected';
       await this.databaseService.getUserData();
       this.skipToTabs();
   }

@@ -1,3 +1,4 @@
+// src/app/tabs/tab_checklist/tab_checklist.page.scss
 .header {
   display: flex;
   flex-direction: row;
@@ -7,6 +8,17 @@
 
 #title {
   margin-right: 10px;
+}
+
+ion-header {
+  ion-segment ion-segment-button {
+    --color-checked: #ffffff;
+    --color: #cccccc;
+
+    &.segment-button-checked {
+      font-weight: bold;
+    }
+  }
 }
 
 .stage-select-list {
@@ -20,7 +32,6 @@
   }
 }
 
-
 ion-select {
   --padding-top: 10px;
   --padding-bottom: 0;
@@ -31,10 +42,6 @@ ion-select {
   font-size: 1.1rem;
   font-weight: bold;
   color: var(--ion-color-primary);
-}
-
-.dep-page {
-  display: none
 }
 
 ion-list {
@@ -50,17 +57,54 @@ ion-item {
   align-items: flex-start;
   padding-top: 10px;
   padding-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  &.expanded {
+    --background: var(--ion-color-white);
+  }
 }
 
 ion-label {
   margin-top: 0;
   margin-bottom: 0;
+  width: 100%;
 
   h2 {
     font-size: 1rem;
     font-weight: bold;
     margin-top: 0;
     margin-bottom: 4px;
+  }
+
+  h3 {
+    position: relative;
+    color: black;
+    font-size: 1rem;
+    font-weight: normal;
+    margin-top: 0;
+    margin-bottom: 4px;
+    width: fit-content;
+    transition: all 0.45s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: black;
+      z-index: 2;
+      transition: all 0.45s ease;
+    }
+
+    &.checked {
+      color: grey;
+
+      &::after {
+        width: 100%;
+      }
+    }
   }
 
   p {
@@ -89,4 +133,71 @@ ion-label {
   color: var(--ion-color-medium);
   font-style: italic;
   margin-top: 20px;
+}
+
+
+.task-details {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ion-color-medium);
+  font-size: 0.9rem;
+  width: 100%;
+
+  .importance-explanation {
+    margin-bottom: 10px;
+  }
+
+  .recommended-services {
+    margin-top: 8px;
+
+    strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    ion-list {
+      margin-top: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .service-item {
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      --min-height: auto;
+      align-items: flex-start;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      --inner-border-width: 0;
+      cursor: initial;
+
+      ion-label {
+        margin-right: 10px;
+
+        h4 {
+          font-size: 1rem;
+          font-weight: normal;
+          margin: 0;
+        }
+
+        p {
+          font-size: 0.85rem;
+          margin-top: 2px;
+        }
+      }
+
+      ion-button {
+        --padding-start: 8px;
+        --padding-end: 8px;
+        font-size: 0.75rem;
+      }
+    }
+  }
+}
+
+ion-footer ion-toolbar ion-progress-bar {
+  width: 100%;
+  height: 5px;
+  --background: #e0e0e0;
+  --progress-background: var(--ion-color-primary);
 }
