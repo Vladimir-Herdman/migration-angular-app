@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ToastController, AlertController, ViewWillEnter } from '@ionic/angular';
@@ -12,7 +12,7 @@ import { QuizComponent } from 'src/app/components/quiz/quiz.component';
   styleUrls: ['account.page.scss'],
   standalone: false,
 })
-export class AccountPage implements ViewWillEnter {
+export class AccountPage implements OnInit, ViewWillEnter {
   @ViewChild(QuizComponent)
   quizComponent!: QuizComponent;
   
@@ -28,6 +28,7 @@ export class AccountPage implements ViewWillEnter {
   }
   oldForm: any = {};
   user: any = null;
+  canShowQuiz: boolean = false;
 
   constructor(
     private toastController: ToastController,
@@ -39,6 +40,11 @@ export class AccountPage implements ViewWillEnter {
   ) {}
 
   authUnsubscribe: (() => void) | null = null;
+
+  async ngOnInit() {
+    const form = await this.formDataService.getForm();
+    this.canShowQuiz = this.formDataService.isFilled(form);
+  }
 
   async ionViewWillEnter() {
     this.account.quiz = await this.quizComponent.updateForm();
@@ -57,7 +63,7 @@ export class AccountPage implements ViewWillEnter {
       this.authUnsubscribe();
       this.authUnsubscribe = null;
     }
-  }  
+  }
 
   async handleBack() {
     if (JSON.stringify(this.account) !== JSON.stringify(this.oldForm)) {
