@@ -61,7 +61,7 @@
               <ion-checkbox slot="start" (ionChange)="markCheck(item, stage, category.name); $event.stopPropagation()"
                 [checked]="getCheckStatus(item)"></ion-checkbox>
               <ion-label class="ion-text-wrap">
-                <h3>{{item.task_description}}</h3>
+                <h3 [class.checked]="getCheckStatus(item)">{{item.task_description}}</h3>
                 <p>
                   Priority: <span
                     [ngClass]="{'high-priority': item.priority === 'High', 'medium-priority': item.priority === 'Medium', 'low-priority': item.priority === 'Low'}">{{item.priority}}</span>

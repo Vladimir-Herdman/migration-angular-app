@@ -20,6 +20,8 @@ export class AuthService {
     };
     public registration_info = this.defaultRegistrationInfo();
 
+    public email_key: string = ''
+
     constructor(private auth: Auth, private firestore: Firestore) {}
 
     public resetRegistrationInfo() {
@@ -45,6 +47,7 @@ export class AuthService {
                 const user = userCredentials.user;
                 const userDocRef = doc(this.firestore, "users", user.uid);
                 this.userStartingData.email = user.email ?? '';
+                this.email_key = user.email ?? 'noEmailDetected';
                 //NOTE: use {merge: true} as the final argument below to only
                 //add/update, not overwrite whole document with setDoc */);
                 await setDoc(userDocRef, this.userStartingData);
@@ -69,6 +72,7 @@ export class AuthService {
         try {
             const provider = new GoogleAuthProvider();
             const userCredentials = await signInWithPopup(this.auth, provider);
+            this.email_key = userCredentials.user.email ?? 'noEmailDetected';
             return userCredentials;
         } catch (e) {
             console.error(e);

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { LoadingController, ToastController, AlertController } from '@ionic/angular';
 import { DatabaseService } from 'src/app/services/database.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { Storage } from '@ionic/storage-angular';
 
 interface ServiceRecommendation {
@@ -72,8 +73,8 @@ export class TabChecklistPage implements OnInit, AfterViewInit, OnDestroy {
   arrivalLabel: string = 'Arrival';
 
   private cachedFormData: any = null;
-  private readonly CACHED_CHECKLIST_KEY = 'cachedChecklist';
-  private readonly CACHED_FORM_DATA_KEY = 'cachedFormDataForChecklist';
+  private readonly CACHED_CHECKLIST_KEY = `${this.authService.email_key}_cachedChecklist`;
+  private readonly CACHED_FORM_DATA_KEY = `${this.authService.email_key}_cachedFormDataForChecklist`;
 
   currentSort: 'none' | 'priority' | 'dueDate' = 'none';
 
@@ -85,7 +86,8 @@ export class TabChecklistPage implements OnInit, AfterViewInit, OnDestroy {
     private alertController: AlertController,
     private databaseService: DatabaseService,
     private storage: Storage,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private authService: AuthService,
   ) {}
 
   async ngOnInit() {

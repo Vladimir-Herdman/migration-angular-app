@@ -6,14 +6,23 @@
     padding: 20px 0;
 }
 
-ion-list-header h1 {
+ion-header {
+  ion-toolbar {
+    --background: var(--primary-gradient);
+    color: white;
+  }
+}
+
+ion-list-header {
+  h1 {
     font-size: 1.2rem;
     font-weight: bold;
     margin: 0;
-}  
+  }
+}
 
 ion-list, .button-wrapper {
-    width: 90%;
-    max-width: 600px;
-    margin-bottom: 20px;
+  width: 90%;
+  max-width: 600px;
+  margin-bottom: 20px;
 }
