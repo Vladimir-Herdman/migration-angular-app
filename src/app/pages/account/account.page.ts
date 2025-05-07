@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { ToastController, AlertController, ViewWillEnter } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 import { Auth, onAuthStateChanged, deleteUser } from '@angular/fire/auth';
 import { FormDataService } from 'src/app/components/quiz/form-data.service';
 import { QuizComponent } from 'src/app/components/quiz/quiz.component';
@@ -12,7 +12,7 @@ import { QuizComponent } from 'src/app/components/quiz/quiz.component';
   styleUrls: ['account.page.scss'],
   standalone: false,
 })
-export class AccountPage implements OnInit, ViewWillEnter {
+export class AccountPage implements OnInit {
   @ViewChild(QuizComponent)
   quizComponent!: QuizComponent;
   
@@ -44,9 +44,6 @@ export class AccountPage implements OnInit, ViewWillEnter {
   async ngOnInit() {
     const form = await this.formDataService.getForm();
     this.canShowQuiz = this.formDataService.isFilled(form);
-  }
-
-  async ionViewWillEnter() {
     this.account.quiz = await this.quizComponent.updateForm();
     this.authUnsubscribe = onAuthStateChanged(this.auth, (user) => {
       if (user) {
