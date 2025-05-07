@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ToastController, AlertController } from '@ionic/angular';
-import { Auth, onAuthStateChanged, deleteUser } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged, deleteUser, EmailAuthProvider, reauthenticateWithCredential } from '@angular/fire/auth';
 import { FormDataService } from 'src/app/components/quiz/form-data.service';
 import { QuizComponent } from 'src/app/components/quiz/quiz.component';
 
@@ -127,9 +127,9 @@ export class AccountPage implements OnInit {
     });
   
     await alert.present();
-  }  
+  }
 
-  async deleteAccount() {
+  async handleDelete() {
     const alert = await this.alertController.create({
       header: 'Delete Account',
       message: 'Are you sure you want to permanently delete your account? This cannot be undone.',
@@ -142,30 +142,62 @@ export class AccountPage implements OnInit {
           text: 'Delete',
           role: 'destructive',
           handler: async () => {
+            this.deleteAccount()
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async deleteAccount() {
+    try {
+      const user = this.auth.currentUser;
+      if (user) {
+        await deleteUser(user);
+        this.showToast('Account deleted successfully.');
+        this.router.navigateByUrl('/', { replaceUrl: true });
+      }
+    } catch (error: any) {
+      if (error.code === 'auth/requires-recent-login') {
+        this.reauth();
+      } else {
+        this.showToast('Failed to delete account. Please try again.', 'danger');
+      }
+    }
+  }
+
+  async reauth() {
+    const alert = await this.alertController.create({
+      header: 'Re-authenticate',
+      inputs: [
+        { name: 'password', type: 'password', placeholder: 'Password' }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Confirm',
+          handler: async (data) => {
             try {
               const user = this.auth.currentUser;
-
-              if (user) {
-                await deleteUser(user);
-                this.showToast('Account deleted successfully.');
-                this.router.navigateByUrl('/', { replaceUrl: true });
+              if (user && data.password) {
+                const credential = EmailAuthProvider.credential(user.email!, data.password);
+                await reauthenticateWithCredential(user, credential);
+                this.deleteAccount();
+              } else {
+                this.showToast('Missing password', 'danger');
               }
-            } catch (error: any) {
-              console.error('Error deleting user:', error);
-            
-              let message = 'Failed to delete account. Please try again.';
-            
-              if (error.code === 'auth/requires-recent-login') {
-                message = 'Please re-login before deleting your account for security reasons.';
-              }
-            
-              this.showToast(message, 'danger');
+            } catch (err: any) {
+              console.error('Re-authentication failed:', err);
+              this.showToast('Re-authentication failed. Please try again.', 'danger');
             }
           }
         }
       ]
     });
-  
     await alert.present();
   }
 }
