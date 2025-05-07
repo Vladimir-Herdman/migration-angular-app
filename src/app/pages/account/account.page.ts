@@ -96,9 +96,11 @@ export class AccountPage implements ViewWillEnter {
   }  
 
   async submitForm() {
+    await this.formDataService.setForm(this.account.quiz); // Store questionnaire answers
+
     console.log(this.account);
     this.oldForm = JSON.parse(JSON.stringify(this.account));
-    this.showToast('Account saved successfully! WIP: Doesn\'t do anything yet.');
+    this.showToast('Account saved successfully!');
   }
 
   async logout() {
