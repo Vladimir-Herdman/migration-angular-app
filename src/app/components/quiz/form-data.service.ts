@@ -21,7 +21,10 @@ export class FormDataService {
     if (savedForm) {
       this.formDataSubject.next(savedForm);
     }
+  }
 
+  isFilled(form: any): boolean {
+    return !!(form && form.moveType && form.destination && form.moveDate);
   }
 
   async setForm(data: any) {
@@ -31,6 +34,30 @@ export class FormDataService {
 
   async getForm(): Promise<any> {
     return await this._storage?.get('formData');
+  }
+
+  public getDefaultForm() {
+    return {
+      moveType: '',
+      destination: '',
+      moveDate: '',
+      family: {
+        children: false,
+        pets: false
+      },
+      currentHousing: '',
+      hasHousing: false,
+      newHousing: '',
+      vehicle: '',
+      services: {
+        internet: false,
+        utilities: false,
+        healthInsurance: false,
+        homeInsurance: false,
+        carInsurance: false
+      },
+      hasJob: false
+    };
   }
 }
 

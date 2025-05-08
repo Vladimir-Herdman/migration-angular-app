@@ -1,6 +1,12 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Checklist</ion-title>
+    <ion-buttons slot="start">
+      <ion-button routerLink="/tabs/tab-dashboard">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Dashboard
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="centered-title">Relocation Plan</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="presentFilterPopover()" [disabled]="isGeneratingChecklist || !isQuestionnaireFilled">
         <ion-icon slot="icon-only" name="filter-outline"></ion-icon>

@@ -1,6 +1,5 @@
-// src/app/tabs/tab_checklist/tab_checklist.page.ts
 import { Component, ElementRef, ViewChild, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormDataService } from 'src/app/tabs/tab_quiz/form-data.service';
+import { FormDataService } from 'src/app/components/quiz/form-data.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { LoadingController, ToastController, AlertController, ModalController, IonicModule } from '@ionic/angular';
@@ -218,7 +217,7 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
 
 
   checkIfQuestionnaireFilled(form: any): boolean {
-      return form && form.moveType && form.destination && form.moveDate;
+      return this.formDataService.isFilled(form);
   }
 
   generateSummary(explanation: string | undefined, maxLength: number = 100): string {

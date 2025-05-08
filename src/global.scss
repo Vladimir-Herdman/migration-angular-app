@@ -373,3 +373,45 @@
   transform: scaleX(-1);
   z-index: 1;
 }
+
+.centered-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  text-align: center;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px 0 0;
+}
+
+ion-header {
+  --background: var(--primary-gradient);
+  background: var(--primary-gradient);
+  color: white;
+
+  ion-toolbar {
+    --background: transparent;
+    background: transparent;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import "@ionic/angular/css/palettes/dark.system.css";

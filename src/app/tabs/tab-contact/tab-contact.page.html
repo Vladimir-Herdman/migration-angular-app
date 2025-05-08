@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button routerLink="/tabs/tab-dashboard">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Dashboard
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="centered-title">Contact Us</ion-title>
+    <ion-buttons slot="end">
+      <app-account-button></app-account-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="false">
+  <form [formGroup]="contactForm" (ngSubmit)="submitForm()" class="content-wrapper">
+    <ion-item>
+      <ion-label position="stacked">Name</ion-label>
+      <ion-input formControlName="name" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Subject</ion-label>
+      <ion-input formControlName="subject" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Message</ion-label>
+      <ion-textarea formControlName="message" autoGrow="true" rows="10" required></ion-textarea>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" [disabled]="contactForm.invalid" class="submit-button">Send Email</ion-button>
+  </form>
+
+  <div class="company-info">
+    <p>
+      Contact&#64;smoothmigration.net<br><br>
+      🇨🇦 #1011, 5307 Victoria Drive, Vancouver, BC, Canada V5P 3V6<br><br>
+      🇬🇧 Streatham, London, SW16 2BA
+    </p>
+  </div>
+</ion-content>

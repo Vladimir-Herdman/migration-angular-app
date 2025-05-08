@@ -11,9 +11,10 @@
 }
 
 ion-header {
-  --background: var(--primary-gradient);
-  background: var(--primary-gradient);
-  padding-top: 12px;
+  ion-segment ion-segment-button {
+    --color-checked: #ffffff;
+    --color: #cccccc;
+  }
 
   ion-toolbar {
     --color: white;

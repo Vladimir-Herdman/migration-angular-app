@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="centered-title">Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <app-account-button></app-account-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="false" class="ion-padding">
+  <div class="dashboard-grid">
+    <button class="dashboard-option" (click)="goToRelocation()" type="button">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <p>Relocation Plan</p>
+    </button>
+
+    <button class="dashboard-option" (click)="goToServices()" type="button">
+      <ion-icon name="construct-outline"></ion-icon>
+      <p>Services</p>
+    </button>
+
+    <button class="dashboard-option" (click)="goToHoliday()" type="button">
+      <ion-icon name="airplane-outline"></ion-icon>
+      <p>Holiday Travel</p>
+    </button>
+
+    <button class="dashboard-option" (click)="goToContact()" type="button">
+      <ion-icon name="mail-outline"></ion-icon>
+      <p>Contact Us</p>
+    </button>
+  </div>
+</ion-content>
