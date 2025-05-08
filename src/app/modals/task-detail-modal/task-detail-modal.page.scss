@@ -1,0 +1,174 @@
+ion-header ion-toolbar {
+  --background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-header ion-toolbar {
+    --background: var(--ion-toolbar-background);
+    color: var(--ion-text-color);
+  }
+
+  ion-content {
+    --background: var(--ion-background-color);
+  }
+
+  ion-card {
+    --background: var(--ion-item-background);
+  }
+
+  ion-card-title,
+  ion-card-subtitle,
+  .detail-section h4,
+  .detail-section p,
+  .service-item-modal h5,
+  .service-item-modal p {
+    color: var(--ion-text-color);
+  }
+
+  .explanation-text {
+    color: var(--ion-color-step-850);
+  }
+
+  .service-item-modal {
+    --background: transparent;
+  }
+
+  ion-footer ion-toolbar {
+    --background: var(--ion-toolbar-background);
+  }
+
+  .notes-textarea {
+    border-color: var(--ion-border-color);
+    background-color: var(--ion-item-background); // Ensure contrast for textarea itself
+  }
+}
+
+ion-card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+ion-card-subtitle {
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  display: flex; // For aligning datetime button
+  align-items: center; // For aligning datetime button
+}
+
+.high-priority {
+  font-weight: bold;
+  color: var(--ion-color-danger);
+}
+
+.medium-priority {
+  font-weight: bold;
+  color: var(--ion-color-warning);
+}
+
+.low-priority {
+  font-weight: normal;
+  color: var(--ion-color-success);
+}
+
+.detail-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--ion-border-color);
+
+  &:first-of-type {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--ion-color-primary);
+  }
+
+  p.explanation-text {
+    line-height: 1.6;
+    white-space: pre-line;
+    color: var(--ion-color-step-850);
+  }
+}
+
+.service-item-modal {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 10px;
+  --background: rgba(var(--ion-color-primary-rgb), 0.03);
+  border-radius: 4px;
+  padding: 8px;
+
+  h5 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 4px 0;
+    color: var(--ion-color-primary);
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: var(--ion-color-step-850);
+    white-space: normal;
+  }
+
+  ion-button {
+    height: auto;
+    font-size: 0.8rem;
+
+    ion-icon {
+      margin-left: 4px;
+    }
+  }
+}
+
+ion-footer {
+  border-top: 1px solid var(--ion-border-color);
+
+  ion-toolbar {
+    --min-height: 50px;
+  }
+}
+
+// Styles for notes textarea
+.notes-textarea {
+  border: 1px solid var(--ion-color-medium-shade);
+  border-radius: 6px;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  margin-top: 4px;
+  width: 100%;
+  min-height: 80px; // Ensure a decent size
+}
+
+// Inline datetime button styling
+ion-datetime-button {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 5px; // Space after "Due: "
+
+  &::part(native) {
+    // Style the button itself
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    color: var(--ion-color-primary); // Make it look like a link
+    text-decoration: underline;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-start; // Or center, space-around
+  margin-top: 16px;
+}

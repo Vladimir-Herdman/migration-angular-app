@@ -1,0 +1,209 @@
+- id: "realtor_locator"
+  name: "Realtor Locator"
+  description: "Find a qualified realtor to help with buying or selling property in your current or new location."
+  url: "mailto:realtor@smoothmigration.net" # Example, replace with actual
+  relevant_categories:
+    - "Housing: Selling, Buying & Lease Termination (Pre-Departure)"
+    - "Arrival: Confirm Housing"
+  keywords:
+    - "realtor to sell house"
+    - "realtor to buy house"
+    - "real estate agent"
+    - "find property"
+    - "international property search"
+    - "buyer's agent"
+
+- id: "mortgage_lender"
+  name: "Mortgage Lender Access"
+  description: "Connect with mortgage lenders for financing your new home purchase, including options for international buyers."
+  url: "mailto:realtor@smoothmigration.net" # Example, replace with actual
+  relevant_categories:
+    - "Housing: Selling, Buying & Lease Termination (Pre-Departure)" # For pre-approval
+    - "Finances & Banking (Pre-Departure)"
+  keywords:
+    - "mortgage pre-approval"
+    - "home loan financing"
+    - "international mortgage"
+    - "property finance"
+    - "expat mortgage"
+
+- id: "airalo_esim"
+  name: "Airalo e-SIM"
+  description: "Purchase international eSIMs for mobile data plans to get connected as soon as you arrive in your new country."
+  url: "https://airalo.pxf.io/7m4YGA"
+  relevant_categories:
+    - "Communication: Phone & Internet (Pre-Departure)" # For research
+    - "Arrival: Local Communication Setup"
+  keywords:
+    - "eSIM for travel"
+    - "international mobile data"
+    - "phone plan on arrival"
+    - "global SIM card"
+    - "connectivity abroad"
+
+- id: "boost_mobile" # Primarily US-based
+  name: "Boost Mobile"
+  description: "Mobile phone service provider options, particularly for moves within or to the US."
+  url: "https://boostmobile.sjv.io/5bvKPn"
+  relevant_categories:
+    - "Communication: Phone & Internet (Pre-Departure)"
+    - "Arrival: Local Communication Setup"
+  keywords:
+    - "US mobile provider"
+    - "phone service USA"
+    - "cell plan domestic US"
+    - "new phone plan America"
+
+- id: "visible_mobile" # Primarily US-based
+  name: "Visible by Verizon"
+  description: "Mobile phone service provider options, using Verizon's network in the US."
+  url: "https://visible.pxf.io/WD7BJZ"
+  relevant_categories:
+    - "Communication: Phone & Internet (Pre-Departure)"
+    - "Arrival: Local Communication Setup"
+  keywords:
+    - "Verizon network mobile plan"
+    - "US phone service"
+    - "Visible cell plan"
+    - "new phone plan USA"
+
+- id: "chime_bank" # Primarily US-based
+  name: "Chime Bank (Online Banking)"
+  description: "Online banking services, useful for setting up accounts, especially for domestic US moves or upon establishing US residency."
+  url: "https://chime.pxf.io/7aOqAd"
+  relevant_categories:
+    - "Finances & Banking (Pre-Departure)"
+    - "Arrival: Local Banking"
+  keywords:
+    - "online bank account USA"
+    - "US financial services"
+    - "set up bank account America"
+    - "Chime banking"
+
+- id: "visitors_coverage_travel_insurance"
+  name: "Visitors Coverage (Travel & Medical Insurance)"
+  description: "Travel and short-term medical insurance for international moves, visitors, or initial periods abroad."
+  url: "https://visitorscoverageinc.pxf.io/Qjbxvz"
+  relevant_categories:
+    - "Insurance (Travel, Health, Property)"
+    - "Arrival: Initial Insurance Check"
+    - "Health & Medical" # For pre-departure and arrival health needs
+  keywords:
+    - "international travel insurance"
+    - "visitor medical insurance"
+    - "expat health insurance short term"
+    - "relocation insurance coverage"
+    - "schengen visa insurance"
+
+- id: "lemonade_tenant_insurance"
+  name: "Lemonade (Tenant & Homeowners Insurance)"
+  description: "Tenant (renters) and homeowners insurance for your new residence in supported locations."
+  url: "https://imp.i146998.net/xk33Vdlemonade"
+  relevant_categories:
+    - "Insurance (Travel, Health, Property)"
+    - "Arrival: Initial Insurance Check" # Or "Insurance Activation"
+  keywords:
+    - "tenant insurance quote"
+    - "renters insurance policy"
+    - "homeowners insurance online"
+    - "housing insurance coverage"
+    - "property insurance"
+
+- id: "figo_pet_insurance"
+  name: "Figo Pet Insurance"
+  description: "Pet insurance to cover healthcare costs for your pets in your new location (check for country availability)."
+  url: "https://figopetinsurance.com/?p=J9H5C"
+  relevant_categories:
+    - "Pets: Documentation & Travel Prep (Pre-Departure)" # Research phase
+    - "Pets: Local Vet & Supplies (Post-Arrival)" # Activation/purchase
+    - "Insurance (Travel, Health, Property)"
+  keywords:
+    - "pet insurance plan"
+    - "animal health insurance"
+    - "vet bills coverage"
+    - "dog insurance"
+    - "cat insurance"
+
+- id: "international_autosource_car_sales"
+  name: "International Autosource (Car Sales for Expats)"
+  description: "Car sales, financing, and leasing solutions specifically for expats and international arrivals."
+  url: "https://go.intlauto.com/smooth-migration.html"
+  relevant_categories:
+    - "Vehicle: Planning & Prep (Pre-Departure)" # Research and arrange
+    - "Vehicle: Pickup & Import (Post-Arrival)" # If arranging purchase for arrival
+  keywords:
+    - "buy car as expat"
+    - "international car sales program"
+    - "vehicle acquisition for relocation"
+    - "expat car leasing"
+    - "new car for foreigner"
+
+- id: "rentcars_car_rental"
+  name: "Rentcars.com (Car Rental)"
+  description: "Car rental services for temporary transportation needs upon arrival or for moving."
+  url: "https://www.rentcars.com/en/?requestorid=9323&utm_source=smoothmigration.ca&utm_medium=afiliado"
+  relevant_categories:
+    - "Vehicle: Planning & Prep (Pre-Departure)"
+    - "Vehicle: Pickup & Import (Post-Arrival)"
+    - "Temporary Accommodation (Departure/Arrival)" # For mobility
+  keywords:
+    - "rent a car international"
+    - "car rental airport"
+    - "temporary vehicle hire"
+    - "book rental car online"
+    - "transportation on arrival"
+
+- id: "wise_money_transfer"
+  name: "Wise (Money Transfer & Multi-currency Account)"
+  description: "Service for personal and business international money transfers, and multi-currency account for holding/spending money abroad."
+  url: "https://wise.prf.hn/click/camref:1011lq4nL"
+  relevant_categories:
+    - "Finances & Banking (Pre-Departure)"
+    - "Arrival: Local Banking" # For receiving/managing funds
+  keywords:
+    - "international money transfer"
+    - "wise account"
+    - "send money overseas cheap"
+    - "receive money from abroad"
+    - "currency exchange service"
+    - "multi-currency debit card"
+
+- id: "remitly_money_transfer"
+  name: "Remitly (Personal Money Transfer)"
+  description: "Quick personal money transfers with various retrieval options like cash pickup, bank deposit. Not for business."
+  url: "https://remitly.tod8mp.net/Jr6DAv"
+  relevant_categories:
+    - "Finances & Banking (Pre-Departure)"
+  keywords:
+    - "personal money transfer international"
+    - "send money for cash pickup"
+    - "fast international remittance"
+    - "remitly service"
+
+- id: "xe_money_transfer"
+  name: "XE Money Transfer"
+  description: "Personal money transfers with support for a large number of currencies."
+  url: "https://xe-money-transfer.sjv.io/9WNvNe"
+  relevant_categories:
+    - "Finances & Banking (Pre-Departure)"
+  keywords:
+    - "XE international money transfer"
+    - "foreign currency exchange online"
+    - "send money with XE"
+    - "best exchange rates transfer"
+
+- id: "experts_in_moving_shipping"
+  name: "Experts in Moving (International & Domestic Shipping)"
+  description: "International and domestic shipping services for moving your household belongings."
+  url: "https://www.expertsinmoving.com/?so=a&ca=8ddabfceef8192200632f66a00293f9c"
+  relevant_categories:
+    - "Movers & International Shipping"
+    - "Packing & Shipping Logistics"
+    - "Vehicle: Planning & Prep (Pre-Departure)" # If they ship vehicles
+  keywords:
+    - "international shipping household goods"
+    - "domestic movers"
+    - "relocation shipping company"
+    - "move belongings overseas"
+    - "ship furniture international"
+    - "packing services for moving"
