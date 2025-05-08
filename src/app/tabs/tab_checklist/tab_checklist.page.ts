@@ -278,6 +278,7 @@ export class TabChecklistPage implements OnInit, AfterViewInit, OnDestroy {
                   category!.tasks = [...category!.tasks, newTask]; // Create a new array reference
 
                   console.log(`Added task "${newTask.task_description}" to ${stage} - ${categoryName}. Category tasks count: ${category!.tasks.length}. Category expanded state: ${category!.isExpanded}`);
+                  console.log(newTask);
 
 
                   this.generatedTasksCount++;
