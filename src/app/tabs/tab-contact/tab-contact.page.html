@@ -27,9 +27,17 @@
 
     <ion-item>
       <ion-label position="stacked">Message</ion-label>
-      <ion-textarea formControlName="message" autoGrow="true" required></ion-textarea>
+      <ion-textarea formControlName="message" autoGrow="true" rows="10" required></ion-textarea>
     </ion-item>
 
     <ion-button expand="block" type="submit" [disabled]="contactForm.invalid" class="submit-button">Send Email</ion-button>
   </form>
+
+  <div class="company-info">
+    <p>
+      Contact&#64;smoothmigration.net<br><br>
+      🇨🇦 #1011, 5307 Victoria Drive, Vancouver, BC, Canada V5P 3V6<br><br>
+      🇬🇧 Streatham, London, SW16 2BA
+    </p>
+  </div>
 </ion-content>
