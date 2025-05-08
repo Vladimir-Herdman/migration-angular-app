@@ -6,11 +6,30 @@
         Dashboard
       </ion-button>
     </ion-buttons>
-    <ion-title class="centered-title">Services</ion-title>
+    <ion-title class="centered-title">Contact Us</ion-title>
     <ion-buttons slot="end">
       <app-account-button></app-account-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="false"></ion-content>
+<ion-content [fullscreen]="false">
+  <form [formGroup]="contactForm" (ngSubmit)="submitForm()" class="content-wrapper">
+    <ion-item>
+      <ion-label position="stacked">Name</ion-label>
+      <ion-input formControlName="name" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Subject</ion-label>
+      <ion-input formControlName="subject" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Message</ion-label>
+      <ion-textarea formControlName="message" autoGrow="true" required></ion-textarea>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" [disabled]="contactForm.invalid" class="submit-button">Send Email</ion-button>
+  </form>
+</ion-content>
