@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Custom Task</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">Description*</ion-label>
+      <ion-textarea [(ngModel)]="newTask.task_description" name="taskDescription" rows="3" required></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Stage*</ion-label>
+      <ion-select [(ngModel)]="newTask.stage" name="taskStage" (ionChange)="onStageChange()" interface="popover"
+        required>
+        <ion-select-option value="predeparture">Predeparture</ion-select-option>
+        <ion-select-option value="departure">Departure</ion-select-option>
+        <ion-select-option value="arrival">Arrival</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Category*</ion-label>
+      <ion-select [(ngModel)]="newTask.category" name="taskCategory" (ionChange)="onCategoryChange()"
+        interface="popover" required>
+        <ion-select-option *ngFor="let cat of selectedStageCategories" [value]="cat">{{ cat | titlecase
+          }}</ion-select-option>
+        <ion-select-option value="add_new_category">-- Add New Category --</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngIf="isNewCategory">
+      <ion-label position="stacked">New Category Name*</ion-label>
+      <ion-input [(ngModel)]="newCategoryName" name="newCategoryName" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Priority</ion-label>
+      <ion-select [(ngModel)]="newTask.priority" name="taskPriority" interface="popover">
+        <ion-select-option value="High">High</ion-select-option>
+        <ion-select-option value="Medium">Medium</ion-select-option>
+        <ion-select-option value="Low">Low</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Due Date</ion-label>
+      <ion-datetime-button datetime="dueDatetimeModal"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime id="dueDatetimeModal" [(ngModel)]="newTask.due_date" name="taskDueDate"
+            presentation="date"></ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" (click)="saveTask()"
+    [disabled]="!newTask.task_description.trim() || (isNewCategory && !newCategoryName.trim()) || !newTask.category.trim()">Add
+    Task</ion-button>
+</ion-content>

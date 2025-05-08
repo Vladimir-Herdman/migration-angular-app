@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ taskData.task_description || 'Task Details' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal('cancel')">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="taskData">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>
+          Priority: <span
+            [ngClass]="{'high-priority': taskData.priority === 'High', 'medium-priority': taskData.priority === 'Medium', 'low-priority': taskData.priority === 'Low'}">{{
+            taskData.priority }}</span> |
+          Due:
+          <ion-datetime-button datetime="taskDueDateModal"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="taskDueDateModal" [(ngModel)]="currentDueDate" presentation="date"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-card-subtitle>
+        <ion-card-title>{{ taskData.task_description }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+
+        <div class="detail-section">
+          <h4>Why this is important:</h4>
+          <p class="explanation-text">{{ taskData.importance_explanation || 'No detailed explanation available.' }}</p>
+        </div>
+
+        <div *ngIf="taskData.recommended_services && taskData.recommended_services.length > 0" class="detail-section">
+          <h4>Recommended Services:</h4>
+          <ion-list lines="none">
+            <ion-item *ngFor="let service of taskData.recommended_services" class="service-item-modal">
+              <ion-label>
+                <h5>{{ service.name }}</h5>
+                <p>{{ service.description }}</p>
+              </ion-label>
+              <ion-button slot="end" fill="outline" size="small" [href]="service.url" target="_blank">
+                Visit
+                <ion-icon slot="end" name="open-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </div>
+        <div *ngIf="!taskData.recommended_services || taskData.recommended_services.length === 0"
+          class="detail-section">
+          <p>No specific service recommendations for this task.</p>
+        </div>
+
+        <div class="detail-section">
+          <h4>Personal Notes:</h4>
+          <ion-textarea [(ngModel)]="currentNotes" placeholder="Add your notes here..." rows="4"
+            class="notes-textarea"></ion-textarea>
+        </div>
+
+        <div class="detail-section action-buttons">
+          <ion-button fill="outline" size="small" (click)="askChatbot()">
+            <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
+            Ask Chatbot
+          </ion-button>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-padding-horizontal">
+  <ion-toolbar>
+    <ion-button (click)="toggleImportance()" fill="clear" slot="start">
+      <ion-icon [name]="currentIsImportant ? 'star' : 'star-outline'"
+        [color]="currentIsImportant ? 'warning' : 'medium'" slot="start"></ion-icon>
+      {{ currentIsImportant ? 'Unmark as Important' : 'Mark as Important' }}
+    </ion-button>
+    <ion-button (click)="saveAndClose()" slot="end">Done</ion-button>
+  </ion-toolbar>
+</ion-footer>

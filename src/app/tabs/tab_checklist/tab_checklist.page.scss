@@ -17,12 +17,31 @@ ion-header {
 
   ion-toolbar {
     --color: white;
-    --background: transparent;
+    --background: transparent; // For toolbars within the gradient header
     background: transparent;
+
+    &:last-of-type {
+      // Target the segment toolbar specifically if needed
+      // background: var(--ion-toolbar-background); // Or a solid color for segment toolbar
+    }
   }
+
+  ion-searchbar {
+    --background: rgba(255, 255, 255, 0.15);
+    --color: white;
+    --placeholder-color: #e0e0e0;
+    --icon-color: white;
+    --clear-button-color: white;
+    border-radius: 8px;
+    margin: 0 8px 8px 8px;
+    padding: 0 8px;
+  }
+
+
   ion-segment {
     ion-segment-button {
       --color-checked: #ffffff;
+      --indicator-color: #ffffff; // Color of the bottom line for selected segment
       --color: #cccccc;
 
       &.segment-button-checked {
@@ -33,6 +52,7 @@ ion-header {
 }
 
 .stage-select-list {
+  /* This class seems unused, can be removed if not needed */
   padding: 0;
   margin: 0;
 
@@ -44,6 +64,7 @@ ion-header {
 }
 
 ion-select {
+  /* This global style for ion-select might be too broad */
   --padding-top: 10px;
   --padding-bottom: 0;
   --padding-start: 8px;
@@ -60,7 +81,44 @@ ion-list {
   margin: 0;
 }
 
-ion-item {
+ion-item[button] {
+  // Category Item Styling
+  --inner-border-width: 0 0 1px 0;
+  --border-color: var(--ion-color-medium-tint);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  ion-label h2 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 8px 0;
+    display: flex; // For aligning icon with text
+    align-items: center; // For aligning icon with text
+  }
+
+  &:hover {
+    background-color: rgba(var(--ion-color-primary-rgb), 0.05);
+  }
+
+  &.expanded {
+    background-color: rgba(var(--ion-color-primary-rgb), 0.08);
+    --border-color: var(--ion-color-primary);
+  }
+
+  &.category-complete ion-label h2 {
+    // color: var(--ion-color-medium); // Example: dim text
+  }
+
+  .category-complete-icon {
+    margin-left: 8px;
+    font-size: 1.2em; // Make it slightly larger
+  }
+}
+
+ion-item:not([button]) {
+  // Task Item Styling
   --inner-border-width: 0 0 1px 0;
   --padding-start: 16px;
   --padding-end: 16px;
@@ -70,9 +128,26 @@ ion-item {
   padding-bottom: 10px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
+
   &.expanded {
-    --background: var(--ion-color-white);
+    --background: rgba(var(--ion-color-primary-rgb), 0.03);
   }
+
+  &:hover:not(.expanded) {
+    background-color: rgba(var(--ion-color-medium-rgb), 0.05);
+  }
+
+  &.is-favorite {
+    border-left: 4px solid var(--ion-color-warning);
+    // Adjust padding if border is on the left and you want consistent inner spacing
+    // --padding-start: calc(16px - 4px); // if original padding-start was 16px
+  }
+
+  &.high-priority-incomplete {
+    border-right: 4px solid var(--ion-color-danger-tint, var(--ion-color-danger));
+    // --background: rgba(var(--ion-color-danger-rgb), 0.03);
+  }
+
 }
 
 ion-label {
@@ -81,6 +156,7 @@ ion-label {
   width: 100%;
 
   h2 {
+    // Category Title
     font-size: 1rem;
     font-weight: bold;
     margin-top: 0;
@@ -88,8 +164,9 @@ ion-label {
   }
 
   h3 {
+    // Task Description
     position: relative;
-    color: black;
+    color: var(--ion-text-color);
     font-size: 1rem;
     font-weight: normal;
     margin-top: 0;
@@ -104,13 +181,13 @@ ion-label {
       left: 0;
       width: 0;
       height: 2px;
-      background-color: black;
+      background-color: var(--ion-text-color);
       z-index: 2;
       transition: all 0.45s ease;
     }
 
     &.checked {
-      color: grey;
+      color: var(--ion-color-medium);
 
       &::after {
         width: 100%;
@@ -119,6 +196,7 @@ ion-label {
   }
 
   p {
+    // Task Meta (Priority, Due Date)
     font-size: 0.9rem;
     color: var(--ion-color-medium);
     margin: 0;
@@ -144,26 +222,59 @@ ion-label {
   color: var(--ion-color-medium);
   font-style: italic;
   margin-top: 20px;
-}
 
+  ion-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+}
 
 .task-details {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid var(--ion-color-medium);
+  border-top: 1px solid var(--ion-border-color);
   font-size: 0.9rem;
   width: 100%;
 
   .importance-explanation {
     margin-bottom: 10px;
+    white-space: pre-line;
+    color: var(--ion-color-step-850);
+  }
+
+  .task-notes {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    strong {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    p {
+      white-space: pre-line;
+      color: var(--ion-color-step-850);
+      background-color: rgba(var(--ion-color-medium-rgb), 0.05);
+      padding: 8px;
+      border-radius: 4px;
+    }
   }
 
   .recommended-services {
     margin-top: 8px;
+    padding-left: 0;
 
     strong {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--ion-text-color);
     }
 
     ion-list {
@@ -177,23 +288,28 @@ ion-label {
       --inner-padding-end: 0;
       --min-height: auto;
       align-items: flex-start;
-      padding-top: 5px;
-      padding-bottom: 5px;
+      padding-top: 8px;
+      padding-bottom: 8px;
       --inner-border-width: 0;
       cursor: initial;
+      border-radius: 6px;
+      margin-bottom: 8px;
 
       ion-label {
         margin-right: 10px;
 
         h4 {
-          font-size: 1rem;
-          font-weight: normal;
-          margin: 0;
+          font-size: 0.95rem;
+          font-weight: 500;
+          margin: 0 0 4px 0;
+          color: var(--ion-color-primary);
         }
 
         p {
           font-size: 0.85rem;
           margin-top: 2px;
+          color: var(--ion-color-step-850);
+          white-space: normal;
         }
       }
 
@@ -201,8 +317,16 @@ ion-label {
         --padding-start: 8px;
         --padding-end: 8px;
         font-size: 0.75rem;
+        height: 28px;
       }
     }
+  }
+
+  .task-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
   }
 }
 
@@ -211,4 +335,67 @@ ion-footer ion-toolbar ion-progress-bar {
   height: 5px;
   --background: #e0e0e0;
   --progress-background: var(--ion-color-primary);
+}
+
+.overall-progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  ion-label {
+    font-size: 0.9em;
+    color: var(--ion-text-color); // Ensure visibility in dark mode
+  }
+}
+
+
+@media (prefers-color-scheme: dark) {
+  ion-header ion-searchbar {
+    --background: rgba(var(--ion-color-step-150-rgb), 0.5); // Darker background for search
+    --placeholder-color: var(--ion-color-step-850);
+  }
+
+  ion-footer ion-toolbar ion-progress-bar {
+    --background: var(--ion-color-step-200);
+  }
+
+  .overall-progress-container ion-label {
+    color: var(--ion-color-primary-contrast); // White text on dark footer
+  }
+
+  ion-item[button] {
+    --border-color: var(--ion-border-color);
+
+    &:hover {
+      background-color: rgba(var(--ion-color-primary-rgb), 0.1);
+    }
+
+    &.expanded {
+      background-color: rgba(var(--ion-color-primary-rgb), 0.15);
+      --border-color: var(--ion-color-primary);
+    }
+  }
+
+  ion-item:not([button]) {
+    &.expanded {
+      --background: rgba(var(--ion-color-primary-rgb), 0.08);
+    }
+
+    &:hover:not(.expanded) {
+      background-color: rgba(var(--ion-color-medium-rgb), 0.1);
+    }
+
+    &.is-favorite {
+      border-left-color: var(--ion-color-warning-shade);
+    }
+
+    &.high-priority-incomplete {
+      border-right-color: var(--ion-color-danger-shade, var(--ion-color-danger));
+    }
+  }
+
+  .task-notes p {
+    background-color: rgba(var(--ion-color-light-rgb), 0.1); // Lighter background for notes paragraph
+  }
 }

@@ -34,9 +34,257 @@
   --ion-color-primary-tint: #45798f;
 
   --primary-gradient: linear-gradient(167deg,rgba(11, 53, 71, 1) 0%, rgba(35, 121, 158, 1) 66%, rgba(16, 66, 87, 1) 100%);
+
+  --ion-text-color: #222428;
+  --ion-text-color-rgb: 34, 36, 40;
+  --ion-color-step-850: #3a3a3a;
+
+  --ion-background-color: #f4f5f8;
+  --ion-background-color-rgb: 244, 245, 248;
+  --ion-toolbar-background: var(--ion-color-primary); // Default toolbar for light
+  --ion-tab-bar-background: #ffffff;
+  --ion-card-background: #ffffff;
+  --ion-item-background: #ffffff;
+  --ion-list-header-background: #f0f0f0;
+  --ion-list-background: #ffffff;
 }
 
-/** ChatBot Page scss not affected in local scope, so moved here ot be global **/
+@media (prefers-color-scheme: dark) {
+
+  /*
+   * Dark Colors
+   * -------------------------------------------
+   */
+  body {
+    --ion-color-primary: #2bb3a3; // A slightly brighter teal for dark mode
+    --ion-color-primary-rgb: 43, 179, 163;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    --ion-color-primary-shade: #269e90;
+    --ion-color-primary-tint: #40bbab;
+
+    --primary-gradient: linear-gradient(167deg, rgba(23, 88, 115, 1) 0%, rgba(43, 179, 163, 1) 66%, rgba(23, 88, 115, 1) 100%);
+
+    --ion-color-secondary: #50c8ff;
+    --ion-color-secondary-rgb: 80, 200, 255;
+    --ion-color-secondary-contrast: #ffffff;
+    --ion-color-secondary-contrast-rgb: 255, 255, 255;
+    --ion-color-secondary-shade: #46b0e0;
+    --ion-color-secondary-tint: #62ceff;
+
+    --ion-color-tertiary: #6a64ff;
+    --ion-color-tertiary-rgb: 106, 100, 255;
+    --ion-color-tertiary-contrast: #ffffff;
+    --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+    --ion-color-tertiary-shade: #5d58e0;
+    --ion-color-tertiary-tint: #7974ff;
+
+    --ion-color-success: #2dd36f;
+    --ion-color-warning: #ffc409;
+    --ion-color-danger: #eb445a;
+    --ion-color-dark: #f4f5f8; // Light text on dark background
+    --ion-color-medium: #989aa2;
+    --ion-color-light: #222428; // Dark elements on light areas within dark mode
+
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
+    --ion-color-step-100: #2a2a2a;
+    --ion-color-step-150: #363636;
+    --ion-color-step-200: #414141;
+    --ion-color-step-850: #cccccc; // Lighter text for subtitles
+
+    --ion-background-color: #121212;
+    --ion-background-color-rgb: 18, 18, 18;
+
+    --ion-item-background: #1e1e1e;
+    --ion-toolbar-background: #1f1f1f; // Darker toolbar
+    --ion-tab-bar-background: #1f1f1f;
+    --ion-card-background: #1e1e1e;
+    --ion-list-header-background: #2a2a2a;
+    --ion-list-background: #1e1e1e;
+
+    --ion-border-color: #2f2f2f; // For borders on items, etc.
+  }
+
+  ion-content {
+    --background: var(--ion-background-color);
+  }
+
+  .login-page-wrapper ion-card {
+    background: var(--ion-item-background);
+  }
+
+  .login-page-wrapper h1,
+  .login-page-wrapper h3 {
+    color: var(--ion-text-color);
+  }
+
+  .login-page-wrapper h1 span::after,
+  .login-page-wrapper h3::before {
+    background-color: var(--ion-border-color);
+  }
+
+  .login-page-wrapper .additional-signin svg {
+    fill: var(--ion-color-step-850);
+
+    &:hover {
+      fill: var(--ion-text-color);
+    }
+  }
+
+  .account-page-wrapper ion-list-header,
+  app-account ion-list-header {
+    background-color: var(--ion-list-header-background);
+    color: var(--ion-text-color);
+  }
+
+  .account-page-wrapper ion-item,
+  app-account ion-item {
+    --background: var(--ion-item-background);
+    color: var(--ion-text-color);
+  }
+
+  .account-page-wrapper ion-label,
+  app-account ion-label {
+    color: var(--ion-text-color);
+  }
+
+  app-legal-popup ion-header ion-toolbar {
+    --background: var(--ion-toolbar-background);
+    color: var(--ion-text-color);
+  }
+
+  app-legal-popup ion-content {
+    --background: var(--ion-background-color);
+    color: var(--ion-text-color);
+  }
+
+  app-legal-popup h1 {
+    color: var(--ion-text-color);
+  }
+
+
+  ion-tab-bar {
+    --background: var(--ion-tab-bar-background);
+  }
+
+  ion-tab-button {
+    --color: var(--ion-color-medium);
+    --color-selected: var(--ion-color-primary);
+  }
+
+  ion-tab-button ion-label {
+    color: var(--color, var(--ion-color-medium));
+  }
+
+  ion-tab-button.tab-selected ion-label {
+    color: var(--color-selected, var(--ion-color-primary));
+  }
+
+
+  .message {
+    background: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+  }
+
+  .user-side:after {
+    box-shadow: -14px 6px 0px 5px var(--ion-color-primary);
+  }
+
+  .bot-side:after {
+    box-shadow: -14px 6px 0px 5px var(--ion-color-primary);
+  }
+
+  app-tab_chatbot ion-footer ion-toolbar {
+    --background: var(--ion-toolbar-background);
+  }
+
+  app-tab_chatbot ion-footer ion-toolbar ion-textarea {
+    border-color: var(--ion-border-color);
+    color: var(--ion-text-color);
+    --placeholder-color: var(--ion-color-medium);
+  }
+
+  app-tab_checklist ion-header {
+    --background: var(--primary-gradient);
+
+    ion-toolbar {
+      --color: var(--ion-color-primary-contrast);
+    }
+
+    ion-segment-button {
+      --color-checked: var(--ion-color-primary-contrast);
+      --color: var(--ion-color-step-850);
+    }
+  }
+
+  app-tab_checklist ion-item {
+    --background: var(--ion-item-background);
+
+    &.expanded {
+      --background: var(--ion-item-background);
+    }
+  }
+
+  app-tab_checklist ion-label h3 {
+    color: var(--ion-text-color);
+
+    &::after {
+      background-color: var(--ion-text-color);
+    }
+
+    &.checked {
+      color: var(--ion-color-medium);
+    }
+  }
+
+  app-tab_checklist .task-details {
+    border-top-color: var(--ion-border-color);
+  }
+
+  app-tab_checklist .task-details .service-item {
+    background: transparent;
+  }
+
+  app-tab_checklist .task-details .service-item ion-label h4 {
+    color: var(--ion-text-color);
+  }
+
+  app-tab_quiz ion-header ion-toolbar {
+    --background: var(--primary-gradient);
+    color: var(--ion-color-primary-contrast);
+  }
+
+  app-tab_quiz ion-list-header {
+    color: var(--ion-text-color);
+  }
+
+  app-tab_quiz ion-item {
+    --background: var(--ion-item-background);
+  }
+
+  app-tab_quiz ion-radio-group ion-label,
+  app-tab_quiz ion-checkbox+ion-label {
+    color: var(--ion-text-color);
+  }
+
+  app-tab_quiz ion-input,
+  app-tab_quiz ion-datetime {
+    color: var(--ion-text-color);
+    --placeholder-color: var(--ion-color-medium);
+  }
+
+  app-tab_quiz ion-datetime {
+    background: var(--ion-item-background);
+    border: 1px solid var(--ion-border-color);
+  }
+
+}
+
+.messages-area {
+  padding-bottom: 10px;
+}
+
 .message {
   max-width: 70%;
   word-wrap: break-word;
@@ -52,26 +300,42 @@
   z-index: 2;
   opacity: 0;
   transition: opacity 0.4s ease;
+  margin-bottom: 8px;
 }
 
 .appear {
   opacity: 1;
 }
+
 .shake {
   animation: gelatine 0.5s 1;
 }
 
 @keyframes gelatine {
-  from, to { transform: scale(1, 1); }
-  25% { transform: scale(0.95, 1.05); }
-  50% { transform: scale(1.05, 0.95); }
-  75% { transform: scale(0.95, 1.05); }
+
+  from,
+  to {
+    transform: scale(1, 1);
+  }
+
+  25% {
+    transform: scale(0.95, 1.05);
+  }
+
+  50% {
+    transform: scale(1.05, 0.95);
+  }
+
+  75% {
+    transform: scale(0.95, 1.05);
+  }
 }
 
 .user-side {
   margin-left: auto;
   margin-right: 20px;
 }
+
 .user-side:after {
   content: '';
   bottom: 5px;
@@ -92,6 +356,7 @@
   margin-right: auto;
   margin-left: 20px;
 }
+
 .bot-side:after {
   content: '';
   bottom: 5px;
@@ -108,14 +373,3 @@
   transform: scaleX(-1);
   z-index: 1;
 }
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
