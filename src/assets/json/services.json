@@ -1,0 +1,127 @@
+[
+    {
+        "group_id": "Housing",
+        "services": [
+            {
+                "id": "realtor_locator",
+                "name": "Realtor Locator",
+                "description": "Find a realtor to help with buying or selling property in your new location.",
+                "url": "mailto:realtor@smoothmigration.net"
+            },
+            {
+                "id": "mortgage_lender",
+                "name": "Mortgage Lender",
+                "description": "Find a mortgage lender for financing your new home purchase.",
+                "url": "mailto:realtor@smoothmigration.net"
+            }
+        ]
+    },
+    {
+        "group_id": "Phone",
+        "services": [
+            {
+                "id": "airalo_esim",
+                "name": "Airalo e-sim",
+                "description": "Purchase international eSIMs for mobile data plans when you arrive.",
+                "url": "https://airalo.pxf.io/7m4YGA"
+            },
+            {
+                "id": "boost_mobile",
+                "name": "Boost Mobile",
+                "description": "Mobile phone service provider options.",
+                "url": "https://boostmobile.sjv.io/5bvKPn"
+            },
+            {
+                "id": "visible_mobile",
+                "name": "Visible",
+                "description": "Mobile phone service provider options.",
+                "url": "https://visible.pxf.io/WD7BJZ"
+            }
+        ]
+    },
+    {
+        "group_id": "Banking",
+        "services": [
+            {
+                "id": "chime_bank",
+                "name": "Chime Bank",
+                "description": "Online banking services to set up accounts in your new country.",
+                "url": "https://chime.pxf.io/7aOqAd"
+            }
+        ]
+    },
+    {
+        "group_id": "Money Transfers",
+        "services": [
+            {
+                "id": "wise_money_transfer",
+                "name": "Wise (Money Transfer)",
+                "description": "Primary service for business related money transfers. Also works for personal.",
+                "url": "https://wise.prf.hn/click/camref:1011lq4nL"
+            },
+            {
+                "id": "remitly_money_transfer",
+                "name": "Remitly (Money Transfer)",
+                "description": "Quick personal money transfers with many retrieval options. Not for business.",
+                "url": "https://remitly.tod8mp.net/Jr6DAv"
+            },
+            {
+                "id": "xe_money_transfer",
+                "name": "XE (Money Transfer)",
+                "description": "Personal money transfers with support for a large number of currencies.",
+                "url": "https://xe-money-transfer.sjv.io/9WNvNe"
+            }
+        ]
+    },
+    {
+        "group_id": "Insurance",
+        "services": [
+            {
+                "id": "visitors_coverage_travel_insurance",
+                "name": "Visitors Coverage (Travel Insurance)",
+                "description": "Travel insurance for international moves.",
+                "url": "https://visitorscoverageinc.pxf.io/Qjbxvz"
+            },
+            {
+                "id": "lemonade_tenant_insurance",
+                "name": "Lemonade (Tenant Insurance)",
+                "description": "Tenant and homeowners insurance for your new residence.",
+                "url": "https://imp.i146998.net/xk33Vdlemonade"
+            },
+            {
+                "id": "figo_pet_insurance",
+                "name": "Figo Pet (Pet Insurance)",
+                "description": "Pet insurance to cover healthcare costs for your pets.",
+                "url": "https://figopetinsurance.com/?p=J9H5C"
+            }
+        ]
+    },
+    {
+        "group_id": "Car",
+        "services": [
+            {
+                "id": "international_autosource_car_sales",
+                "name": "International Autosource (Car Sales)",
+                "description": "Car sales and leasing for expats and international arrivals.",
+                "url": "https://go.intlauto.com/smooth-migration.html"
+            },
+            {
+                "id": "rentcars_car_rental",
+                "name": "Rencars.com (Car Rental)",
+                "description": "Car rental services for temporary transportation needs.",
+                "url": "https://www.rentcars.com/en/?requestorid=9323&utm_source=smoothmigration.ca&utm_medium=afiliado"
+            }
+        ]
+    },
+    {
+        "group_id": "Shipping",
+        "services": [
+            {
+                "id": "experts_in_moving_shipping",
+                "name": "Experts in Moving (Shipping)",
+                "description": "International shipping services for moving your belongings.",
+                "url": "https://www.expertsinmoving.com/?so=a&ca=8ddabfceef8192200632f66a00293f9c"
+            }
+        ]
+    }
+]
