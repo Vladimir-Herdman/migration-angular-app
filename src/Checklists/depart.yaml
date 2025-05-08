@@ -1,0 +1,488 @@
+# src/Checklists/depart.yaml
+- task_id: "DP_INTL_ACCOM_ARRANGE_TEMP"
+  stage: "departure" # This is still pre-departure action, but very close to departure day
+  category: "Temporary Accommodation (Departure/Arrival)"
+  task_description: "Arrange temporary accommodation (AirBNB, hotel) for the first few nights in [Destination Country]."
+  priority: "High"
+  due_date: "1-2 days before move" # Or earlier, this seems tight
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    # - path: "newHousing.needsTemporary" # if user indicated need for temp accom
+    #   is_true: True
+  base_importance_explanation: |
+    Having a place to stay immediately upon arrival in [Destination Country] provides stability while you handle initial logistics or wait for permanent housing.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "book hotel [Destination City/Region]"
+    - "short term rental [Destination Country]"
+    - "AirBNB booking international arrival"
+
+- task_id: "DP_INTL_ACCOM_CONFIRM_TEMP"
+  stage: "departure"
+  category: "Temporary Accommodation (Departure/Arrival)"
+  task_description: "Confirm temporary accommodations before travelling."
+  priority: "High"
+  due_date: "1 day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    # - path: "newHousing.needsTemporary"
+    #   is_true: True
+  base_importance_explanation: |
+    Double-checking your booking for [Destination Country] prevents unexpected issues upon arrival after a long journey.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "confirm hotel booking"
+    - "verify AirBNB reservation"
+
+- task_id: "DP_INTL_PACKING_ESSENTIALS_BAGS"
+  stage: "departure"
+  category: "Final Packing & Essentials (Departure)"
+  task_description: "Ensure all bags are packed accordingly with essentials needed before shipping arrives (medications, documents, toiletries, clothes for a few days)."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Packing essential items in your carry-on or checked luggage ensures you have immediate access to necessities in [Destination Country] before your main shipment arrives.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "essentials packing list international move"
+    - "what to pack in carry-on for relocation"
+
+- task_id: "DP_INTL_DOCS_TRAVEL_POUCH"
+  stage: "departure"
+  category: "Departure Day: Documentation & Customs"
+  task_description: "Prepare a travel pouch with all required documents needed for immigration and arrival (passports, visas, landing documents, health certs, etc.)."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Keeping all critical travel and immigration documents together and easily accessible is vital for clearing customs and navigating arrival procedures in [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "travel document organizer"
+    - "immigration papers checklist for airport"
+
+- task_id: "DP_INTL_TRAVEL_CONFIRM_FLIGHTS_LAYOVER"
+  stage: "departure"
+  category: "Travel Arrangements"
+  task_description: "Confirm flight times and ensure enough time between customs and any layovers."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Verifying flight details and connection times minimizes the risk of missing flights due to delays or lengthy immigration processes en route to [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "check flight status international"
+    - "manage international flight booking"
+
+- task_id: "DP_INTL_DEPARTURE_FINAL_PACKING_SECURE_HOME"
+  stage: "departure"
+  category: "Departure Day: Last Checks & Security"
+  task_description: "Allow time for final packing, cleaning, and securing your current residence on travel day."
+  priority: "High"
+  due_date: "Day of move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Ensure your home is secure (windows, doors, utilities off if applicable), final packing is complete, and you have enough time to get to the airport without rushing.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "move out checklist final day"
+    - "securing home before international move"
+
+- task_id: "DP_INTL_INSURANCE_CONFIRM_ACTIVE"
+  stage: "departure"
+  category: "Insurance (Travel, Health, Property)"
+  task_description: "Confirm all relevant insurance policies (travel, health, potentially shipping) are accurate and active before leaving."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Double-checking your insurance policies ensures you have coverage from the moment you depart for [Destination Country]. Keep policy numbers accessible.
+  personalize_explanation: True
+  recommended_service_ids:
+    - "visitors_coverage_travel_insurance"
+  highly_specific_keywords_for_services:
+    - "activate travel insurance"
+    - "confirm insurance policy details"
+
+- task_id: "DP_INTL_CUSTOMS_CHECK_DISALLOWED_ITEMS"
+  stage: "departure"
+  category: "Departure Day: Documentation & Customs"
+  task_description: "Check that you are not carrying any disallowed items for transit or import into [Destination Country] (check airline and customs websites)."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Reviewing airline and [Destination Country] customs regulations for prohibited or restricted items prevents confiscation, fines, and potential penalties upon arrival.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "customs prohibited items [Destination Country]"
+    - "airline restricted items international"
+    - "what not to pack for international move"
+
+- task_id: "DP_INTL_FINANCE_ACCESSIBLE_FUNDS"
+  stage: "departure"
+  category: "Finances & Banking (Pre-Departure)" # Category could be departure specific too
+  task_description: "Ensure you have readily accessible funds (some local currency for [Destination Country], credit/debit cards cleared for international use) for initial expenses."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Having local currency for [Destination Country] or access to funds via cards is essential for transportation, food, and unforeseen costs immediately upon arrival.
+  personalize_explanation: True
+  recommended_service_ids:
+    - "wise_money_transfer" # For card/account access
+  highly_specific_keywords_for_services:
+    - "currency exchange for travel [Destination Country]"
+    - "travel money card international"
+    - "notify bank of travel dates"
+
+- task_id: "DP_INTL_FINALCHECK_PREDEPARTURE_TASKS_COMPLETE"
+  stage: "departure"
+  category: "Departure Day: Last Checks & Security"
+  task_description: "Ensure all tasks for pre-departure are completed."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    A final review of your pre-departure checklist ensures you are fully prepared for the complexities of international relocation to [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "final moving checklist review"
+    - "pre-travel task verification"
+
+- task_id: "DP_INTL_HEALTH_MEDICATION_DOCS_CUSTOMS"
+  stage: "departure"
+  category: "Health & Medical"
+  task_description: "Ensure you have all needed medication (with prescriptions/doctor's letter) for the journey and initial period, and documentation for customs."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Having necessary medications and accompanying prescriptions or doctor's notes (especially for controlled substances) is crucial for health and clearing customs in [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "traveling with medication international"
+    - "prescription requirements customs [Destination Country]"
+    - "doctor's letter for medication travel"
+
+- task_id: "DP_INTL_PETS_CONFIRM_TRAVEL_ARRANGEMENTS"
+  stage: "departure"
+  category: "Pets: Departure Day Care"
+  task_description: "Confirm the details and arrangements for pet travel with the agency/airline one last time."
+  priority: "High"
+  due_date: "1-2 days before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Verifying all pet travel logistics (check-in times, kennel requirements, documentation) ensures a smooth and safe journey for your animals to [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "confirm pet flight booking"
+    - "pet relocation service final check"
+
+- task_id: "DP_INTL_PETS_PREPARE_FOR_JOURNEY"
+  stage: "departure"
+  category: "Pets: Departure Day Care"
+  task_description: "Prepare pet for travel (final health check if required, appropriate carrier, food/water for journey as per airline rules, last potty break)."
+  priority: "High"
+  due_date: "Day before move / Day of move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Ensuring your pet is comfortable, has necessary supplies, and meets all last-minute airline requirements is vital for their well-being during the journey to [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "pet travel checklist day of departure"
+    - "feeding pet before flight"
+    - "calming pet for travel"
+
+- task_id: "DP_INTL_CHILDREN_TRAVEL_BAG_ESSENTIALS"
+  stage: "departure"
+  category: "Children: Departure Day Care & Travel Prep"
+  task_description: "Pack an extended travel bag with essentials, snacks, entertainment, and comfort items for children for the journey."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasChildren"
+      is_true: True
+  base_importance_explanation: |
+    Having easy access to items like snacks, toys, medications, and comfort items makes the travel day much smoother for children during the long journey to [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "packing for kids international flight"
+    - "children's travel essentials carry-on"
+    - "entertainment for kids on long flight"
+
+- task_id: "DP_INTL_CHILDREN_EXPLAIN_TRAVEL_PROCESS"
+  stage: "departure"
+  category: "Children: Departure Day Care & Travel Prep"
+  task_description: "Explain the travel process (airport, security, flight, arrival) to children in an age-appropriate way."
+  priority: "Low" # Though important for child's comfort
+  due_date: "Few days before move / Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasChildren"
+      is_true: True
+  base_importance_explanation: |
+    Preparing children emotionally for the travel day by explaining what to expect can help reduce anxiety and make the experience more positive for them.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "talking to kids about moving internationally"
+    - "preparing children for long flight"
+
+# --- DOMESTIC DEPARTURE TASKS ---
+
+- task_id: "DP_DOM_ACCOM_ARRANGE_TEMP_IF_NEEDED"
+  stage: "departure"
+  category: "Temporary Accommodation (Departure/Arrival)"
+  task_description: "Arrange temporary accommodation (hotel) for the first few nights in the new city if needed."
+  priority: "High" # If needed
+  due_date: "1-2 days before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    # - path: "newHousing.needsTemporary"
+    #   is_true: True
+  base_importance_explanation: |
+    Having a place to stay immediately upon arrival provides stability while you handle initial setup or wait for permanent housing access.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "book hotel new city arrival"
+    - "temporary stay domestic move"
+
+- task_id: "DP_DOM_ACCOM_CONFIRM_TEMP"
+  stage: "departure"
+  category: "Temporary Accommodation (Departure/Arrival)"
+  task_description: "Confirm temporary accommodations before travelling if booked."
+  priority: "High" # If booked
+  due_date: "1 day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    # - path: "newHousing.needsTemporary"
+    #   is_true: True
+  base_importance_explanation: |
+    Double-checking your booking prevents unexpected issues upon arrival after your journey.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "confirm hotel reservation domestic"
+
+- task_id: "DP_DOM_PACKING_ESSENTIALS_BAGS"
+  stage: "departure"
+  category: "Final Packing & Essentials (Departure)"
+  task_description: "Ensure all bags/boxes for personal transport are packed with essentials needed before movers/shipped items arrive."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Packing essential items ensures you have immediate access to necessities like toiletries, medications, and a change of clothes.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "essentials box for moving day"
+    - "first night box domestic move"
+
+- task_id: "DP_DOM_TRAVEL_CONFIRM_FLIGHTS_LAYOVER_IF_FLYING"
+  stage: "departure"
+  category: "Travel Arrangements"
+  task_description: "If flying, confirm flight times and ensure enough time between any layovers."
+  priority: "High" # If flying
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    # - path: "travelMethod"
+    #   equals: "air"
+  base_importance_explanation: |
+    Verifying flight details and connection times minimizes the risk of missing flights during your domestic travel.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "check domestic flight status"
+    - "confirm flight booking local"
+
+- task_id: "DP_DOM_DEPARTURE_FINAL_PACKING_SECURE_HOME"
+  stage: "departure"
+  category: "Departure Day: Last Checks & Security"
+  task_description: "Allow time for final packing, cleaning, and securing your current residence on travel day."
+  priority: "High"
+  due_date: "Day of move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Ensure your home is secure, final packing is complete, and utilities are handled as planned.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "moving day final checklist"
+    - "secure house before leaving domestic move"
+
+- task_id: "DP_DOM_INSURANCE_CONFIRM_ACTIVE"
+  stage: "departure"
+  category: "Insurance (Travel, Health, Property)"
+  task_description: "Confirm all relevant insurance policies (e.g., car for road trip, movers' insurance, home if overlapping) are accurate and active."
+  priority: "High" # If applicable
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Double-checking your insurance ensures you have appropriate coverage from the moment you depart or movers take possession.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "confirm car insurance for road trip"
+    - "check movers insurance policy"
+
+- task_id: "DP_DOM_CUSTOMS_CHECK_DISALLOWED_ITEMS_TRANSIT"
+  stage: "departure"
+  category: "Departure Day: Documentation & Customs" # More about transport rules here
+  task_description: "Check that you are not carrying any disallowed items in transit (e.g., airline rules, or for moving truck if using company)."
+  priority: "Medium"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Reviewing airline or transportation company regulations for prohibited items prevents issues during your journey.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "airline prohibited items domestic"
+    - "moving company restricted items list"
+
+- task_id: "DP_DOM_FINALCHECK_PREDEPARTURE_TASKS_COMPLETE"
+  stage: "departure"
+  category: "Departure Day: Last Checks & Security"
+  task_description: "Ensure all tasks for pre-departure are completed."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Completing all necessary pre-departure steps ensures you are fully prepared for your move.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "final domestic moving checklist"
+
+- task_id: "DP_DOM_HEALTH_MEDICATION_PACK"
+  stage: "departure"
+  category: "Health & Medical"
+  task_description: "Ensure you have all needed medications packed accessibly for the journey and initial arrival period."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Having necessary medications readily available is crucial for your health during the move.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "packing medications for domestic move"
+    - "traveling with prescriptions domestic"
+
+- task_id: "DP_DOM_PETS_CONFIRM_TRAVEL_ARRANGEMENTS_IF_APPLICABLE"
+  stage: "departure"
+  category: "Pets: Departure Day Care"
+  task_description: "Confirm the details and arrangements for pet travel with the agency/airline if applicable (not driving pet yourself)."
+  priority: "High" # If applicable
+  due_date: "1-2 days before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasPets"
+      is_true: True
+    # - path: "petTravel.method"
+    #   equals: "air" # or other non-personal vehicle method
+  base_importance_explanation: |
+    Verifying all pet travel logistics ensures a smooth and safe journey for your animals if using a third-party service.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "confirm pet flight domestic"
+    - "pet transport service final check"
+
+- task_id: "DP_DOM_PETS_PREPARE_FOR_JOURNEY"
+  stage: "departure"
+  category: "Pets: Departure Day Care"
+  task_description: "Prepare pet for travel (final health check if required by airline, appropriate carrier, food/water for journey, last potty break)."
+  priority: "High"
+  due_date: "Day before move / Day of move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Ensuring your pet is comfortable and has necessary supplies for the journey is vital for their well-being.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "pet travel checklist domestic move"
+    - "preparing dog for car ride move"
+    - "cat travel essentials domestic"
+
+- task_id: "DP_DOM_CHILDREN_TRAVEL_BAG_ESSENTIALS"
+  stage: "departure"
+  category: "Children: Departure Day Care & Travel Prep"
+  task_description: "Pack an extended travel bag with essentials, snacks, and entertainment for children for the journey."
+  priority: "High"
+  due_date: "Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasChildren"
+      is_true: True
+  base_importance_explanation: |
+    Having easy access to items like snacks, toys, medications, and comfort items makes the travel day much smoother for children.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "packing for kids road trip"
+    - "children's travel essentials domestic flight"
+    - "car activities for kids moving"
+
+- task_id: "DP_DOM_CHILDREN_EXPLAIN_TRAVEL_PROCESS"
+  stage: "departure"
+  category: "Children: Departure Day Care & Travel Prep"
+  task_description: "Explain the travel process to children in an age-appropriate way."
+  priority: "Low"
+  due_date: "Few days before move / Day before move"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasChildren"
+      is_true: True
+  base_importance_explanation: |
+    Preparing children emotionally for the travel day can help reduce anxiety and make the experience more positive.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "talking to kids about moving domestic"
+    - "preparing children for car journey"

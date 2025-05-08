@@ -8,6 +8,10 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: 'tab-dashboard',
+        loadChildren: () => import('./tab-dashboard/tab-dashboard.module').then( m => m.TabDashboardPageModule)
+      },
+      {
         path: 'tab_quiz',
         loadChildren: () => import('./tab_quiz/tab_quiz.module').then(m => m.TabQuizPageModule)
       },
@@ -20,8 +24,20 @@ const routes: Routes = [
         loadChildren: () => import('./tab_chatbot/tab_chatbot.module').then(m => m.TabChatBotPageModule)
       },
       {
+        path: 'tab-services',
+        loadChildren: () => import('./tab-services/tab-services.module').then( m => m.TabServicesPageModule)
+      },
+      {
+        path: 'tab-holiday',
+        loadChildren: () => import('./tab-holiday/tab-holiday.module').then( m => m.TabHolidayPageModule)
+      },
+      {
+        path: 'tab-contact',
+        loadChildren: () => import('./tab-contact/tab-contact.module').then( m => m.TabContactPageModule)
+      },
+      {
         path: '',
-        redirectTo: 'tab_quiz',
+        redirectTo: 'tab-dashboard',
         pathMatch: 'full'
       }
     ]

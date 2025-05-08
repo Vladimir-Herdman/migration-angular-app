@@ -1,0 +1,27 @@
+ion-header ion-toolbar {
+  --background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-header ion-toolbar {
+    --background: var(--ion-toolbar-background);
+    color: var(--ion-text-color);
+  }
+
+  ion-content {
+    --background: var(--ion-background-color);
+  }
+
+  ion-item {
+    --background: var(--ion-item-background);
+  }
+
+  ion-label,
+  ion-input,
+  ion-textarea,
+  ion-select,
+  ion-datetime {
+    color: var(--ion-text-color);
+  }
+}

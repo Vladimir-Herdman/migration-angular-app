@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar>
-        <ion-title>Chat</ion-title>
+        <ion-title class="centered-title">Chat</ion-title>
         <ion-buttons slot="end">
             <app-account-button></app-account-button>
         </ion-buttons>
@@ -20,7 +20,7 @@
             placeholder="Send message" 
             class="ion-text-center" 
             [(ngModel)]="message"
-            (keydown.enter)="handleKeydown($event)">
+            (keydown.enter)="handleKeydown($any($event))">
         </ion-textarea>
         <ion-buttons slot="end">
             <ion-fab-button *ngIf="!isLoading" size="small" color="primary" (click)="sendMessage()">

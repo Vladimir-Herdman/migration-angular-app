@@ -1,0 +1,870 @@
+- task_id: "AR_INTL_HOUSING_CONFIRM_PROPERTY"
+  stage: "arrival"
+  category: "Arrival: Confirm Housing"
+  task_description: "Confirm the rental or purchase of property on arrival (keys, inspection, final paperwork)."
+  priority: "High"
+  due_date: "Day of arrival / within 1-2 days"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "newHousing.plan" # Assumes plan is 'buy' or 'rent' for long-term
+      in: ["buy", "rent"]
+  base_importance_explanation: |
+    Finalizing your long-term housing upon arrival in [Destination Country] provides a stable base to begin settling in. This includes key handover and property condition check.
+  personalize_explanation: True
+  recommended_service_ids: # If realtor was involved and is helping with handover
+    - "realtor_locator"
+  highly_specific_keywords_for_services:
+    - "property handover [Destination Country]"
+    - "new home keys collection"
+    - "rental agreement signing arrival"
+
+- task_id: "AR_INTL_INSURANCE_TRAVEL_COVERAGE_CHECK"
+  stage: "arrival"
+  category: "Arrival: Initial Insurance Check"
+  task_description: "Ensure your travel insurance covers your needs until you obtain local coverage in [Destination Country]."
+  priority: "High"
+  due_date: "Day of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Verifying your travel insurance coverage validity and terms upon arrival in [Destination Country] provides peace of mind for unexpected events during your initial period.
+  personalize_explanation: True
+  recommended_service_ids:
+    - "visitors_coverage_travel_insurance"
+  highly_specific_keywords_for_services:
+    - "travel insurance claim process international"
+    - "emergency medical coverage travel insurance"
+
+- task_id: "AR_INTL_INSURANCE_HOUSING_ACTIVATE"
+  stage: "arrival"
+  category: "Arrival: Initial Insurance Check" # Or "Insurance Activation"
+  task_description: "Obtain or activate housing insurance (renters or homeowners) for your new residence in [Destination Country]."
+  priority: "High"
+  due_date: "Within 1 week of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "newHousing.plan"
+      in: ["buy", "rent"]
+  base_importance_explanation: |
+    Securing housing insurance protects your belongings and provides liability coverage for your new residence in [Destination Country]. This is often mandatory for rentals.
+  personalize_explanation: True
+  recommended_service_ids:
+    - "lemonade_tenant_insurance"
+  highly_specific_keywords_for_services:
+    - "homeowners insurance [Destination Country]"
+    - "renters insurance quote [Destination City/Region]"
+    - "property insurance activation"
+
+- task_id: "AR_INTL_INSURANCE_HEALTH_LOCAL_SETUP"
+  stage: "arrival"
+  category: "Arrival: Initial Insurance Check" # Or "Insurance Activation"
+  task_description: "Obtain local health insurance or ensure existing international coverage applies effectively in [Destination Country]."
+  priority: "High"
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Access to healthcare is essential. Navigating the local health insurance system or confirming your international plan's usability in [Destination Country] is a priority.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "health insurance registration [Destination Country]"
+    - "expat medical plan [Destination Country]"
+    - "local healthcare system enrollment"
+
+- task_id: "AR_INTL_COMMUNICATION_PHONE_ESIM_SETUP"
+  stage: "arrival"
+  category: "Arrival: Local Communication Setup"
+  task_description: "Activate or set up local mobile phone service/eSIM in [Destination Country]."
+  priority: "High"
+  due_date: "Day of arrival / within 1 day"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Having a working local phone number in [Destination Country] is crucial for communication, accessing services, and setting up accounts.
+  personalize_explanation: True
+  recommended_service_ids:
+    - "airalo_esim"
+    - "boost_mobile" # if applicable
+    - "visible_mobile" # if applicable
+  highly_specific_keywords_for_services:
+    - "get local SIM card [Destination Country]"
+    - "activate eSIM on arrival"
+    - "mobile phone plan [Destination City/Region]"
+
+- task_id: "AR_INTL_ORIENTATION_ESSENTIAL_SERVICES_LOCATE"
+  stage: "arrival"
+  category: "Arrival: Local Orientation & Essentials"
+  task_description: "Determine the closest location of basic essential services (grocery store, pharmacy, ATM) near your new home in [Destination City/Region]."
+  priority: "Medium"
+  due_date: "Within 1-2 days of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Locating essential services helps you quickly settle into your new neighborhood in [Destination City/Region] and access daily necessities.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "find local grocery store"
+    - "pharmacy near me new location"
+    - "neighborhood orientation services"
+
+- task_id: "AR_INTL_VEHICLE_LOCAL_DRIVERS_LICENSE"
+  stage: "arrival"
+  category: "Arrival: Driver's License & Vehicle Registration"
+  task_description: "Begin the process of obtaining a local driver's license or exchanging your foreign license in [Destination Country]."
+  priority: "High"
+  due_date: "Within 2-4 weeks of arrival (check local rules)"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    # Applies if they plan to drive, could be more specific
+    # - path: "vehicle.willDrive"
+    #   is_true: True
+  base_importance_explanation: |
+    Depending on [Destination Country] rules and your origin license, obtaining or exchanging for a local driver's license may be required to legally drive long-term.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "exchange foreign driver license [Destination Country]"
+    - "local driving license application [Destination Country]"
+    - "driving permit for expats [Destination Country]"
+
+- task_id: "AR_INTL_UTILITIES_SETUP_NEW_RESIDENCE"
+  stage: "arrival"
+  category: "Arrival: Utilities Setup"
+  task_description: "Ensure utilities are set up and working at your new residence (electricity, water, gas, internet)."
+  priority: "High"
+  due_date: "Within 1-3 days of arrival (confirm pre-arrival if possible)"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "newHousing.plan"
+      in: ["buy", "rent"]
+  base_importance_explanation: |
+    Setting up essential utilities is necessary for comfortable living in your new home in [Destination Country]. Some may have been arranged pre-arrival.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "connect electricity new home [Destination Country]"
+    - "set up internet service [Destination City/Region]"
+    - "water and gas connection [Destination Country]"
+
+- task_id: "AR_INTL_HOUSEHOLD_PURCHASE_BASIC_ITEMS"
+  stage: "arrival"
+  category: "Arrival: Household Setup & Shopping"
+  task_description: "Purchase all needed basic items for the household (kitchenware, bedding, cleaning supplies) if not shipped/brought."
+  priority: "Medium"
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Acquiring basic household items helps make your new residence in [Destination Country] feel like home and become functional.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "household essentials shopping list new home"
+    - "setting up new apartment checklist"
+
+- task_id: "AR_INTL_EMPLOYMENT_JOB_SEARCH_REGISTRATION"
+  stage: "arrival"
+  category: "Arrival: Employment & Job Search"
+  task_description: "If employment is not secured, register with local recruiters or begin job search activities in [Destination Country]."
+  priority: "High" # If unemployed
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    # - path: "employment.hasJob"
+    #   is_false: True
+  base_importance_explanation: |
+    Finding employment is crucial for financial stability and settling into [Destination Country]. Start early if you haven't secured a job.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "job search [Destination Country] for expats"
+    - "recruitment agencies [Destination City/Region]"
+    - "register as job seeker [Destination Country]"
+
+- task_id: "AR_INTL_FINANCE_OPEN_LOCAL_BANK_ACCOUNT"
+  stage: "arrival"
+  category: "Arrival: Local Banking"
+  task_description: "Open a local bank account in [Destination Country]."
+  priority: "High"
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Having a local bank account in [Destination Country] simplifies managing finances, receiving income, and paying bills.
+  personalize_explanation: True
+  recommended_service_ids:
+    - "chime_bank" # if applicable
+  highly_specific_keywords_for_services:
+    - "open bank account [Destination Country] for non-resident"
+    - "expat banking [Destination Country]"
+    - "requirements for bank account [Destination Country]"
+
+- task_id: "AR_INTL_LEGAL_REGISTER_AUTHORITIES_EMBASSY"
+  stage: "arrival"
+  category: "Arrival: Local Registration & Embassy"
+  task_description: "Register with local authorities (e.g., city hall, foreign office) and/or your embassy/consulate in [Destination Country] if required/recommended."
+  priority: "High" # Varies by country and visa
+  due_date: "Within 1-4 weeks of arrival (check local rules)"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Registering your presence with local authorities in [Destination Country] and your embassy is often a legal requirement or provides a point of contact in emergencies.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "register as foreigner in [Destination Country]"
+    - "embassy registration for citizens abroad [Destination Country]"
+    - "local municipal registration [Destination City/Region]"
+
+- task_id: "AR_INTL_TRANSPORTATION_EXPLORE_PUBLIC_PASSES"
+  stage: "arrival"
+  category: "Arrival: Local Transportation"
+  task_description: "Explore transportation options and obtain local public transport passes if applicable in [Destination City/Region]."
+  priority: "Medium"
+  due_date: "Within 1 week of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+  base_importance_explanation: |
+    Understanding local transportation in [Destination City/Region] helps you navigate your new city efficiently.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "public transport pass [Destination City/Region]"
+    - "how to use subway/bus [Destination City/Region]"
+    - "local transit options"
+
+- task_id: "AR_INTL_VEHICLE_RENTAL_PICKUP"
+  stage: "arrival"
+  category: "Vehicle: Pickup & Import (Post-Arrival)"
+  task_description: "Pick up your rental car."
+  priority: "High"
+  due_date: "Day of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "vehicle.plan"
+      equals: "rent"
+  base_importance_explanation: |
+    Collecting your pre-booked rental car provides immediate transportation upon arrival in [Destination Country].
+  personalize_explanation: True
+  recommended_service_ids:
+    - "rentcars_car_rental"
+  highly_specific_keywords_for_services:
+    - "car rental pickup [Destination Airport]"
+
+- task_id: "AR_INTL_VEHICLE_BRING_CONFIRM_ARRIVAL_PICKUP_PORT"
+  stage: "arrival"
+  category: "Vehicle: Pickup & Import (Post-Arrival)"
+  task_description: "Confirm the arrival of your shipped vehicle and arrange pickup from port/depot."
+  priority: "High"
+  due_date: "Within 1-7 days of vehicle arrival (depending on shipping)"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "vehicle.plan"
+      equals: "bring"
+  base_importance_explanation: |
+    Retrieving your shipped vehicle is necessary for personal transportation. Coordinate with the shipping agent for customs clearance and pickup from the port/depot in [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "vehicle shipping arrival notification"
+    - "collect car from port [Destination Country]"
+    - "customs clearance for imported car"
+
+- task_id: "AR_INTL_VEHICLE_BRING_IMPORT_PROCEDURES_TAXES"
+  stage: "arrival"
+  category: "Vehicle: Pickup & Import (Post-Arrival)"
+  task_description: "Complete vehicle import procedures and pay applicable taxes/duties in [Destination Country]."
+  priority: "High"
+  due_date: "Within specified timeframe after vehicle arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "vehicle.plan"
+      equals: "bring"
+  base_importance_explanation: |
+    Properly importing your vehicle and paying duties/taxes is required to legally own and register it in [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "vehicle import duty [Destination Country]"
+    - "customs process for car import"
+    - "paying taxes on imported vehicle"
+
+- task_id: "AR_INTL_VEHICLE_BRING_REGISTER_LOCAL"
+  stage: "arrival"
+  category: "Vehicle: Local Insurance & Registration (Post-Arrival)"
+  task_description: "Register your imported vehicle in the new location ([Destination Country])."
+  priority: "High"
+  due_date: "Within specified timeframe after arrival/import"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "vehicle.plan"
+      equals: "bring"
+  base_importance_explanation: |
+    Registering your vehicle is a legal requirement for driving in [Destination Country]. This may involve inspections and specific documentation.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "car registration [Destination Country] for imported vehicle"
+    - "vehicle licensing [Destination City/Region]"
+    - "DMV appointment for car registration"
+
+- task_id: "AR_INTL_VEHICLE_BRING_LOCAL_CAR_INSURANCE"
+  stage: "arrival"
+  category: "Vehicle: Local Insurance & Registration (Post-Arrival)"
+  task_description: "Obtain local car insurance for your vehicle in [Destination Country]."
+  priority: "High"
+  due_date: "Before driving your vehicle / As per registration requirements"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "vehicle.plan"
+      equals: "bring"
+  base_importance_explanation: |
+    Car insurance is mandatory in most places and protects you financially. Obtain local coverage for [Destination Country] before or immediately upon registering your vehicle.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "car insurance for expats [Destination Country]"
+    - "local auto insurance quote [Destination City/Region]"
+    - "vehicle insurance for imported car"
+
+- task_id: "AR_INTL_PETS_PICKUP_QUARANTINE_CARGO"
+  stage: "arrival"
+  category: "Pets: Pickup & Settling In (Post-Arrival)"
+  task_description: "Pick up your pets from quarantine facility or airport cargo in [Destination Country] as scheduled."
+  priority: "High"
+  due_date: "Day of arrival / As scheduled post-quarantine"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Retrieving your pets is a top priority upon arrival or after their quarantine period to reunite your family in [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "collect pet from airport cargo [Destination Airport]"
+    - "pet quarantine release [Destination Country]"
+    - "animal reception center [Destination Airport]"
+
+- task_id: "AR_INTL_PETS_ADJUST_NEW_ENVIRONMENT"
+  stage: "arrival"
+  category: "Pets: Pickup & Settling In (Post-Arrival)"
+  task_description: "Help your pets adjust to their new environment in [Destination Country] (safe space, familiar items, routine)."
+  priority: "High"
+  due_date: "Ongoing after arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Providing a comfortable and safe space, along with familiar items and routines, helps your pets acclimate to their new home in [Destination Country] after the stress of travel.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "settling pets in new home after international move"
+    - "reducing pet stress after travel"
+
+- task_id: "AR_INTL_PETS_INSURANCE_ACTIVATE_NEW"
+  stage: "arrival"
+  category: "Pets: Local Vet & Supplies (Post-Arrival)"
+  task_description: "Obtain or activate pet insurance in the new country ([Destination Country])."
+  priority: "Medium"
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Pet insurance helps cover unexpected veterinary costs in your new location, [Destination Country].
+  personalize_explanation: True
+  recommended_service_ids:
+    - "figo_pet_insurance" # if applicable
+  highly_specific_keywords_for_services:
+    - "pet insurance [Destination Country]"
+    - "animal health coverage expat"
+
+- task_id: "AR_INTL_PETS_SOURCE_SUPPLIES"
+  stage: "arrival"
+  category: "Pets: Local Vet & Supplies (Post-Arrival)"
+  task_description: "Source pet supplies such as food (match current if possible), treats, and toys in [Destination City/Region]."
+  priority: "High"
+  due_date: "Within 1-2 days of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Ensuring you have necessary supplies for your pets is essential for their care and comfort upon arrival in [Destination City/Region].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "pet food store [Destination City/Region]"
+    - "buy pet supplies new location"
+
+- task_id: "AR_INTL_PETS_FIND_LOCAL_VET"
+  stage: "arrival"
+  category: "Pets: Local Vet & Supplies (Post-Arrival)"
+  task_description: "Find nearby vets in [Destination City/Region] to establish patienthood and for potential emergencies."
+  priority: "High"
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Identifying a local veterinarian in [Destination City/Region] is important for your pet's ongoing health needs, registration (if required), and emergencies.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "veterinarian near me [Destination City/Region]"
+    - "english speaking vet [Destination City/Region]"
+    - "register pet with local vet"
+
+- task_id: "AR_INTL_CHILDREN_SCHOOL_CHECKIN_CONFIRM_ENROLLMENT"
+  stage: "arrival"
+  category: "Children: School Enrollment & Settling In (Post-Arrival)"
+  task_description: "Check in at the children's new school in [Destination Country] and confirm enrollment details."
+  priority: "High"
+  due_date: "Within 1 week of arrival (or as per school start)"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasChildren"
+      is_true: True
+  base_importance_explanation: |
+    Ensuring your children are properly enrolled and ready to start school in [Destination Country] is important for their adjustment and education.
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "new student school registration [Destination Country]"
+    - "confirm school enrollment international student"
+
+- task_id: "AR_INTL_CHILDREN_ADJUST_NEW_ENVIRONMENT_SCHOOL"
+  stage: "arrival"
+  category: "Children: School Enrollment & Settling In (Post-Arrival)"
+  task_description: "Help children adjust to their new environment, home, and school in [Destination Country]."
+  priority: "High"
+  due_date: "Ongoing after arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "international"
+    - path: "family.hasChildren"
+      is_true: True
+  base_importance_explanation: |
+    Providing support, establishing routines, and creating opportunities to socialize helps children settle into their new home and community in [Destination Country].
+  personalize_explanation: True
+  highly_specific_keywords_for_services:
+    - "helping child adjust to international move"
+    - "kids settling in new school abroad"
+    - "support for expat children"
+
+# --- DOMESTIC ARRIVAL TASKS ---
+
+- task_id: "AR_DOM_HOUSING_CONFIRM_PROPERTY"
+  stage: "arrival"
+  category: "Arrival: Confirm Housing"
+  task_description: "Confirm the rental or purchase of property on arrival (keys, inspection, final walkthrough)."
+  priority: "High"
+  due_date: "Day of arrival / within 1-2 days"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "newHousing.plan"
+      in: ["buy", "rent"]
+  base_importance_explanation: |
+    Finalizing your housing upon arrival provides a stable base to begin settling in your new city/state.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "property handover domestic move"
+    - "keys collection new home local"
+
+- task_id: "AR_DOM_INSURANCE_COVERAGE_CHECK"
+  stage: "arrival"
+  category: "Arrival: Initial Insurance Check"
+  task_description: "Ensure your existing insurance (health, home, auto) covers your needs in the new state/city or arrange for new local coverage."
+  priority: "High"
+  due_date: "Day of arrival / Within 1 week"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Verifying or updating your insurance coverage (health, home, auto) provides peace of mind for unexpected events in your new location.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "update health insurance new state"
+    - "transfer car insurance to new state"
+    - "homeowners insurance new property domestic"
+
+- task_id: "AR_DOM_INSURANCE_HOUSING_ACTIVATE"
+  stage: "arrival"
+  category: "Arrival: Initial Insurance Check"
+  task_description: "Obtain or activate housing insurance (renters or homeowners) for your new residence."
+  priority: "High"
+  due_date: "Within 1 week of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "newHousing.plan"
+      in: ["buy", "rent"]
+  base_importance_explanation: |
+    Securing housing insurance protects your belongings and provides liability coverage for your new residence.
+  personalize_explanation: False
+  recommended_service_ids:
+    - "lemonade_tenant_insurance"
+  highly_specific_keywords_for_services:
+    - "get renters insurance new city"
+    - "homeowners insurance quote domestic"
+
+- task_id: "AR_DOM_INSURANCE_HEALTH_LOCAL_UPDATE"
+  stage: "arrival"
+  category: "Arrival: Initial Insurance Check"
+  task_description: "Update your health insurance for the new state/province or enroll in a new plan if necessary."
+  priority: "High"
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Access to healthcare is essential. Ensure your health insurance is valid and provides adequate coverage in your new location.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "change health insurance plan moving states"
+    - "enroll in local health coverage"
+
+- task_id: "AR_DOM_COMMUNICATION_PHONE_SETUP"
+  stage: "arrival"
+  category: "Arrival: Local Communication Setup"
+  task_description: "Activate or set up local mobile phone service if you changed providers or need a new number."
+  priority: "High"
+  due_date: "Day of arrival / within 1 day"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Having a working local phone number is crucial for communication and accessing local services.
+  personalize_explanation: False
+  recommended_service_ids:
+    - "boost_mobile"
+    - "visible_mobile"
+  highly_specific_keywords_for_services:
+    - "activate new phone plan domestic"
+    - "get mobile service new city"
+
+- task_id: "AR_DOM_ORIENTATION_ESSENTIAL_SERVICES_LOCATE"
+  stage: "arrival"
+  category: "Arrival: Local Orientation & Essentials"
+  task_description: "Determine the closest location of basic essential services (grocery store, pharmacy, etc.)."
+  priority: "Medium"
+  due_date: "Within 1-2 days of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Locating essential services helps you quickly settle into your new neighborhood.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "find grocery store new neighborhood"
+    - "local pharmacy locator"
+
+- task_id: "AR_DOM_VEHICLE_DRIVERS_LICENSE_TRANSFER"
+  stage: "arrival"
+  category: "Arrival: Driver's License & Vehicle Registration"
+  task_description: "Begin the process of transferring your driver's license to the new state/province if required."
+  priority: "High"
+  due_date: "Within specified timeframe after arrival (e.g., 30-90 days)"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    # - path: "vehicle.willDrive"
+    #   is_true: True
+  base_importance_explanation: |
+    Transferring your driver's license is often a legal requirement for residing and driving in a new state or province. Check local DMV/RMV rules.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "transfer driver's license to new state"
+    - "DMV appointment change of address license"
+    - "get new state driver's license"
+
+- task_id: "AR_DOM_UTILITIES_SETUP_NEW_RESIDENCE"
+  stage: "arrival"
+  category: "Arrival: Utilities Setup"
+  task_description: "Ensure utilities are set up at your new residence (electricity, water, gas, internet)."
+  priority: "High"
+  due_date: "Within 1-3 days of arrival (confirm pre-arrival if possible)"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "newHousing.plan"
+      in: ["buy", "rent"]
+  base_importance_explanation: |
+    Setting up essential utilities is necessary for comfortable living in your new home. Some may have been arranged pre-arrival.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "connect utilities new home domestic"
+    - "set up internet new address"
+    - "start electricity service new house"
+
+- task_id: "AR_DOM_HOUSEHOLD_PURCHASE_BASIC_ITEMS"
+  stage: "arrival"
+  category: "Arrival: Household Setup & Shopping"
+  task_description: "Purchase all needed basic items for the household if not moved or bought in advance."
+  priority: "Medium"
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Acquiring basic household items helps make your new residence feel like home.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "household shopping list after move"
+    - "essentials for new apartment domestic"
+
+- task_id: "AR_DOM_EMPLOYMENT_JOB_SEARCH_IF_NEEDED"
+  stage: "arrival"
+  category: "Arrival: Employment & Job Search"
+  task_description: "If employment is not secured or you are looking for a new job, register with local recruiters or begin job search activities."
+  priority: "High" # If unemployed or seeking new job
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    # - path: "employment.status" # e.g. "seeking", "transferring", "secured"
+    #   equals: "seeking"
+  base_importance_explanation: |
+    Finding employment is crucial for financial stability and settling into your new city.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "job search new city domestic"
+    - "local recruitment agencies"
+    - "find employment after moving states"
+
+- task_id: "AR_DOM_FINANCE_OPEN_TRANSFER_BANK_ACCOUNT"
+  stage: "arrival"
+  category: "Arrival: Local Banking"
+  task_description: "Open a local bank account or transfer your existing account to a local branch if needed."
+  priority: "High" # Or medium if national bank
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Having a local bank account or updating your existing one simplifies managing finances, receiving income, and paying bills.
+  personalize_explanation: False
+  recommended_service_ids:
+    - "chime_bank" # if suitable for domestic
+  highly_specific_keywords_for_services:
+    - "open bank account new city"
+    - "transfer bank account to new state"
+    - "local banking services domestic"
+
+- task_id: "AR_DOM_TRANSPORTATION_EXPLORE_PUBLIC_PASSES"
+  stage: "arrival"
+  category: "Arrival: Local Transportation"
+  task_description: "Explore transportation options and obtain local public transport passes if applicable."
+  priority: "Medium"
+  due_date: "Within 1 week of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+  base_importance_explanation: |
+    Understanding local transportation helps you navigate your new city efficiently.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "public transport pass new city"
+    - "local bus routes and schedules"
+
+- task_id: "AR_DOM_VEHICLE_RENTAL_PICKUP"
+  stage: "arrival"
+  category: "Vehicle: Pickup & Import (Post-Arrival)" # Using same category, though no import
+  task_description: "Pick up your rental car."
+  priority: "High"
+  due_date: "Day of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "vehicle.plan"
+      equals: "rent"
+  base_importance_explanation: |
+    Collecting your rental car provides immediate transportation upon arrival.
+  personalize_explanation: False
+  recommended_service_ids:
+    - "rentcars_car_rental"
+  highly_specific_keywords_for_services:
+    - "car rental pickup new city airport"
+
+- task_id: "AR_DOM_VEHICLE_BRING_CONFIRM_ARRIVAL_IF_SHIPPED"
+  stage: "arrival"
+  category: "Vehicle: Pickup & Import (Post-Arrival)"
+  task_description: "Confirm the arrival of your vehicle if it was shipped separately."
+  priority: "High" # If shipped
+  due_date: "Within 1-3 days of arrival (if shipped)"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "vehicle.plan"
+      equals: "bring"
+    # - path: "vehicle.transportMethod"
+    #   equals: "shipped"
+  base_importance_explanation: |
+    Retrieving your vehicle is necessary for personal transportation if it was shipped rather than driven.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "vehicle shipping arrival domestic"
+    - "collect car from transport company"
+
+- task_id: "AR_DOM_VEHICLE_BRING_REGISTER_NEW_STATE"
+  stage: "arrival"
+  category: "Vehicle: Local Insurance & Registration (Post-Arrival)"
+  task_description: "Register your vehicle in the new state/province."
+  priority: "High"
+  due_date: "Within specified timeframe after arrival (e.g., 30-90 days)"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "vehicle.plan"
+      equals: "bring"
+  base_importance_explanation: |
+    Registering your vehicle in the new state/province is a legal requirement. This usually involves title transfer, new plates, and emissions/safety inspections.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "car registration new state"
+    - "DMV vehicle registration domestic"
+    - "transfer car title to new state"
+
+- task_id: "AR_DOM_VEHICLE_BRING_LOCAL_CAR_INSURANCE"
+  stage: "arrival"
+  category: "Vehicle: Local Insurance & Registration (Post-Arrival)"
+  task_description: "Obtain or update car insurance for your vehicle to comply with new state/province requirements."
+  priority: "High"
+  due_date: "Before or upon registering your vehicle"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "vehicle.plan"
+      equals: "bring"
+  base_importance_explanation: |
+    Car insurance is mandatory and rates/requirements can vary by state. Ensure your coverage is valid in your new location.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "car insurance new state quote"
+    - "update auto insurance policy moving"
+    - "vehicle insurance requirements [New State/Province]"
+
+- task_id: "AR_DOM_PETS_ADJUST_NEW_ENVIRONMENT"
+  stage: "arrival"
+  category: "Pets: Pickup & Settling In (Post-Arrival)"
+  task_description: "Help your pets adjust to their new environment."
+  priority: "High"
+  due_date: "Ongoing after arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Providing a comfortable and safe space helps your pets acclimate to their new home after the move.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "settling pets in new home domestic move"
+    - "help dog adjust after moving"
+
+- task_id: "AR_DOM_PETS_INSURANCE_ACTIVATE_NEW"
+  stage: "arrival"
+  category: "Pets: Local Vet & Supplies (Post-Arrival)"
+  task_description: "Obtain or activate/update pet insurance for the new location."
+  priority: "Medium"
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Pet insurance helps cover unexpected veterinary costs in your new city.
+  personalize_explanation: False
+  recommended_service_ids:
+    - "figo_pet_insurance"
+  highly_specific_keywords_for_services:
+    - "pet insurance new city"
+    - "update pet health coverage"
+
+- task_id: "AR_DOM_PETS_SOURCE_SUPPLIES"
+  stage: "arrival"
+  category: "Pets: Local Vet & Supplies (Post-Arrival)"
+  task_description: "Source pet supplies such as food, treats, and toys."
+  priority: "High"
+  due_date: "Within 1-2 days of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Ensuring you have necessary supplies for your pets is essential for their care.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "pet supplies new city"
+    - "local pet store"
+
+- task_id: "AR_DOM_PETS_FIND_LOCAL_VET"
+  stage: "arrival"
+  category: "Pets: Local Vet & Supplies (Post-Arrival)"
+  task_description: "Find nearby vets to establish patienthood and for potential emergencies."
+  priority: "High"
+  due_date: "Within 1-2 weeks of arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasPets"
+      is_true: True
+  base_importance_explanation: |
+    Identifying a local veterinarian is important for your pet's ongoing health needs and emergencies in the new city.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "find veterinarian new city"
+    - "local vet clinic registration"
+
+- task_id: "AR_DOM_CHILDREN_SCHOOL_CHECKIN_CONFIRM_ENROLLMENT"
+  stage: "arrival"
+  category: "Children: School Enrollment & Settling In (Post-Arrival)"
+  task_description: "Check in at the children's new school and confirm enrollment details."
+  priority: "High"
+  due_date: "Within 1 week of arrival (or as per school start)"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasChildren"
+      is_true: True
+  base_importance_explanation: |
+    Ensuring your children are properly enrolled and ready to start their new school is important for their adjustment and education.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "new student registration local school"
+    - "confirm school start date"
+
+- task_id: "AR_DOM_CHILDREN_ADJUST_NEW_ENVIRONMENT_SCHOOL"
+  stage: "arrival"
+  category: "Children: School Enrollment & Settling In (Post-Arrival)"
+  task_description: "Help children adjust to their new environment and school."
+  priority: "High"
+  due_date: "Ongoing after arrival"
+  applies_if:
+    - path: "moveType"
+      equals: "domestic"
+    - path: "family.hasChildren"
+      is_true: True
+  base_importance_explanation: |
+    Providing support and opportunities to socialize helps children settle into their new home and community.
+  personalize_explanation: False
+  highly_specific_keywords_for_services:
+    - "helping child adjust to new school domestic"
+    - "kids settling in after move"

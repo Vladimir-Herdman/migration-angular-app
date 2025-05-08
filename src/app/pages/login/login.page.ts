@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonicModule, LoadingController, AlertController } from '@ionic/angular';
+import { IonicModule, LoadingController, AlertController, ViewWillEnter } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { AuthService } from 'src/app/services/auth.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { environment } from '../../../environments/environment';
+//REMOVE
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +19,7 @@ import { environment } from '../../../environments/environment';
 })
 
 export class LoginPage implements OnInit {
-    loginForm: FormGroup;
+    loginForm!: FormGroup;
     email: string | null = null;
     password: string | null = null;
     emailError: string = "Invalid email";
@@ -30,7 +32,8 @@ export class LoginPage implements OnInit {
       private alertController: AlertController,
       private auth: Auth,
       private authService: AuthService,
-      private databaseService: DatabaseService
+      private databaseService: DatabaseService,
+      private storage: Storage, /* REMOVE */
   ) {
       this.loginForm = this.formBuilder.group({
           email: ['', [Validators.required, Validators.email]],
@@ -39,16 +42,18 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.router.navigateByUrl('/tabs', { replaceUrl: true });
-      }
-    });
+      // If already signed in, skip the login page
+      onAuthStateChanged(this.auth, async (user) => {
+        if (user) {
+            this.authService.email_key = user.email ?? 'noEmailDetected';
+            this.skipToTabs();
+        }
+      await this.storage.create()
+      });
   }
 
   public forgot_email_password() {
-      //TODO: Implement in AuthService forgot email/password from firebase
-      console.log("forgot email-password pressed");
+      this.router.navigateByUrl('/forgotpassword')
   }
 
   public async login() {
@@ -74,7 +79,6 @@ export class LoginPage implements OnInit {
       }
         
       // Here, input validation for correct style of email (@ symbol with letter after)
-      // TODO: Make password length above 6
       if (this.loginForm.valid && this.loginForm.get("password")?.value.length >= 6 ){
           const loading = await this.loadingController.create();
           await loading.present();
@@ -84,9 +88,9 @@ export class LoginPage implements OnInit {
 
           if (userCredentials) {
             await this.postLoginFlow(userCredentials);
-					} else {
+          } else {
             this.showAlert('Login failed', 'Please try again!');
-					}
+          }
 
       } else {
           this.emailError = "Invalid email";
@@ -97,30 +101,15 @@ export class LoginPage implements OnInit {
   }
 
   public async register() {
-      const loading = await this.loadingController.create();
-      await loading.present();
-
-      const user = await this.authService.register(this.loginForm.value);
-      await loading.dismiss();
-
-      if (user) {
-				await this.postLoginFlow(user);
-			} else {
-        this.showAlert('Registration failed', 'Please try again!');
-			}		
+      this.router.navigateByUrl('/register', { replaceUrl: false });
   }
 
-	private async postLoginFlow(userCredentials: any) {
+  private async postLoginFlow(userCredentials: any) {
       const userUid = userCredentials.user.uid;
       this.databaseService.userUid = userUid;
+      this.authService.email_key = userCredentials.user.email ?? 'noEmailDetected';
       await this.databaseService.getUserData();
-      const firstTimeSignIn = this.databaseService.userData?.firstTimeSignIn;
-
-      if (firstTimeSignIn) {
-        this.router.navigateByUrl('/legal-popup', { replaceUrl: true });
-      } else {
-        this.router.navigateByUrl('/tabs', { replaceUrl: true });
-      }
+      this.skipToTabs();
   }
 
   private async showAlert(header: string, message: string) {
@@ -130,6 +119,19 @@ export class LoginPage implements OnInit {
           buttons: ['OK']
       });
       await alert.present();
+  }
+
+  async google_signin() {
+      const google = await this.authService.loginGoogle();
+      if (google?.user) {
+          this.router.navigateByUrl('/tabs', { replaceUrl: true });
+      } else {
+          console.error("Google did not through - frontend");
+      }
+  }
+
+  skipToTabs() {
+      this.router.navigateByUrl('/tabs', { replaceUrl: true });
   }
 
 }

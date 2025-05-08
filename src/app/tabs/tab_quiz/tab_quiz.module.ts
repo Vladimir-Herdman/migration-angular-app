@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TabQuizPage } from './tab_quiz.page';
 import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
+import { QuizComponent } from 'src/app/components/quiz/quiz.component';
 import { AccountButtonComponent } from 'src/app/components/account-button/account-button.component';
 
 import { TabQuizPageRoutingModule } from './tab_quiz-routing.module';
@@ -15,6 +16,7 @@ import { TabQuizPageRoutingModule } from './tab_quiz-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
+    QuizComponent,
     AccountButtonComponent,
     TabQuizPageRoutingModule
   ],

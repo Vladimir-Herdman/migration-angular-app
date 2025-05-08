@@ -1,0 +1,30 @@
+<ion-content scroll-y="false">
+    <div class="login-page-wrapper">
+
+
+        <div class="card-wrapper">
+            <ion-card>
+                <h1><span>Registration</span></h1>
+                <ion-card-content>
+                    <form [formGroup]="loginForm" (ngSubmit)="register()">
+                        <ion-item>
+                            <ion-input type="email" label="Email" formControlName="email" labelPlacement="floating" [errorText]="emailError"></ion-input>
+                        </ion-item>
+                        <ul>
+                            <li>Must have &#64; symbol</li>
+                            <li>Must have .com at end</li>
+                        </ul>
+                        <ion-item>
+                            <ion-input type="password" label="Password" formControlName="password" labelPlacement="floating" [errorText]="passwordError"></ion-input>
+                        </ion-item>
+                        <ul>
+                            <li>at least 6 characters</li>
+                        </ul>
+                        <ion-button color="primary" size="full" type="submit">Register Account</ion-button>
+                        <ion-button color="primary" fill="clear" size="full" (click)="back()">Back</ion-button>
+                    </form>
+                </ion-card-content>
+            </ion-card>
+        </div>
+    </div>
+</ion-content>

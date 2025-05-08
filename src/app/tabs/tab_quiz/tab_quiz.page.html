@@ -1,6 +1,12 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>Questionnaire</ion-title>
+    <ion-buttons slot="start">
+      <ion-button routerLink="/tabs/tab-dashboard">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Dashboard
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="centered-title">Questionnaire</ion-title>
     <ion-buttons slot="end">
       <app-account-button></app-account-button>
     </ion-buttons>
@@ -8,160 +14,17 @@
 </ion-header>
 
 <ion-content [fullscreen]="false">
-  <form class="content-wrapper">
-    <!-- General Information -->
-    <ion-list>
-      <ion-list-header color="light">
-        <ion-label><h1>General Information</h1></ion-label>
-      </ion-list-header>
+  <div class="content-wrapper">
+    <h3>Please fill out this questionnaire. We will generate a list of tasks based on your responses.</h3>
 
-      <ion-item>
-        <ion-label>Are you moving internationally or domestically?</ion-label>
-      </ion-item>
-      <ion-radio-group [(ngModel)]="form.moveType" name="moveType">
-        <ion-item>
-          <ion-label>International</ion-label>
-          <ion-radio slot="start" value="international"></ion-radio>
-        </ion-item>
-        <ion-item>
-          <ion-label>Domestic</ion-label>
-          <ion-radio slot="start" value="domestic"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
+    <!-- Quiz Component -->
+    <app-quiz [form]="form"></app-quiz>
 
-      <ion-item>
-        <ion-label position="stacked">Destination Country and City</ion-label>
-        <ion-input [(ngModel)]="form.destination" name="destination" placeholder="Destination" required></ion-input>
-      </ion-item>
-
-      <ion-item style="flex-direction: column; align-items: center;">
-        <ion-label position="stacked">Estimated Move Date</ion-label>
-        <ion-datetime [(ngModel)]="form.moveDate" name="moveDate" presentation="date"></ion-datetime>
-      </ion-item>
-    </ion-list>
-
-    <!-- Family -->
-    <ion-list>
-      <ion-list-header color="light">
-        <ion-label><h1>Family</h1></ion-label>
-      </ion-list-header>
-
-      <ion-item>
-        <ion-label>Who are you moving with?</ion-label>
-      </ion-item>
-      
-      <ion-item>
-        <ion-checkbox [(ngModel)]="form.family.children" name="children" slot="start"></ion-checkbox>
-        <ion-label>Children</ion-label>
-      </ion-item>
-      
-      <ion-item>
-        <ion-checkbox [(ngModel)]="form.family.pets" name="pets" slot="start"></ion-checkbox>
-        <ion-label>Pets</ion-label>
-      </ion-item>
-    </ion-list>
-
-    <!-- Housing -->
-    <ion-list>
-      <ion-list-header color="light">
-        <ion-label><h1>Housing</h1></ion-label>
-      </ion-list-header>
-
-      <ion-item>
-        <ion-label>Do you own or rent your current home?</ion-label>
-      </ion-item>
-      <ion-radio-group [(ngModel)]="form.currentHousing" name="currentHousing">
-        <ion-item><ion-label>Own</ion-label><ion-radio slot="start" value="own"></ion-radio></ion-item>
-        <ion-item><ion-label>Rent</ion-label><ion-radio slot="start" value="rent"></ion-radio></ion-item>
-      </ion-radio-group>
-
-      <ion-item>
-        <ion-label>Do you have housing arranged?</ion-label>
-        <ion-toggle [(ngModel)]="form.hasHousing" name="hasHousing"></ion-toggle>
-      </ion-item>
-      <div *ngIf="form.hasHousing">
-        <ion-item>
-          <ion-label>What will your housing be at the destination?</ion-label>
-        </ion-item>
-        <ion-radio-group [(ngModel)]="form.newHousing" name="newHousing">
-          <ion-item><ion-label>Buying a Home</ion-label><ion-radio slot="start" value="own"></ion-radio></ion-item>
-          <ion-item><ion-label>Renting</ion-label><ion-radio slot="start" value="rent"></ion-radio></ion-item>
-          <ion-item><ion-label>Temporary Stay (Hotel, AirBNB)</ion-label><ion-radio slot="start" value="temporary"></ion-radio></ion-item>
-        </ion-radio-group>
-      </div>
-    </ion-list>
-    
-    <!-- Transportation -->
-    <ion-list>
-      <ion-list-header color="light">
-        <ion-label><h1>Transportation</h1></ion-label>
-      </ion-list-header>
-
-      <ion-item>
-        <ion-label>What is your vehicle plan?</ion-label>
-      </ion-item>
-      <ion-radio-group [(ngModel)]="form.vehicle" name="vehicle">
-        <ion-item>
-          <ion-label>Bringing My Own</ion-label>
-          <ion-radio slot="start" value="bring"></ion-radio>
-        </ion-item>
-        <ion-item>
-          <ion-label>Renting One</ion-label>
-          <ion-radio slot="start" value="rent"></ion-radio>
-        </ion-item>
-        <ion-item>
-          <ion-label>No Vehicle</ion-label>
-          <ion-radio slot="start" value="none"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-    </ion-list>
-
-    <!-- Services -->
-    <ion-list>
-      <ion-list-header color="light">
-        <ion-label><h1>Services</h1></ion-label>
-      </ion-list-header>
-
-      <ion-item>
-        <ion-label>Do you need help with setting up any of the following?</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-checkbox [(ngModel)]="form.services.internet" name="internet" slot="start"></ion-checkbox>
-        <ion-label>Internet</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-checkbox [(ngModel)]="form.services.utilities" name="utilities" slot="start"></ion-checkbox>
-        <ion-label>Utilities</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-checkbox [(ngModel)]="form.services.healthInsurance" name="healthInsurance" slot="start"></ion-checkbox>
-        <ion-label>Health Insurance</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-checkbox [(ngModel)]="form.services.homeInsurance" name="homeInsurance" slot="start"></ion-checkbox>
-        <ion-label>Home Insurance</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-checkbox [(ngModel)]="form.services.carInsurance" name="carInsurance" slot="start"></ion-checkbox>
-        <ion-label>Car Insurance</ion-label>
-      </ion-item>
-    </ion-list>
-
-    <!-- Employment -->
-    <ion-list>
-      <ion-list-header color="light">
-        <ion-label><h1>Employment</h1></ion-label>
-      </ion-list-header>
-
-      <ion-item>
-        <ion-label>Do you already have a job at your destination?</ion-label>
-        <ion-toggle [(ngModel)]="form.hasJob" name="hasJob"></ion-toggle>
-      </ion-item>
-    </ion-list>
+    <h3>You may change your answers later in your account settings.</h3>
 
     <!-- Save Answers -->
     <div class="button-wrapper">
-      <ion-button expand="block" (click)="submitForm()">Save Answers</ion-button>
+      <ion-button expand="block" (click)="submitForm()">Submit Questionnaire</ion-button>
     </div>
-  </form>
+  </div>
 </ion-content>
