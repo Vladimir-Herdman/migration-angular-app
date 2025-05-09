@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button routerLink="/tabs/tab-dashboard">
+      <ion-button class="header-button" routerLink="/tabs/tab-dashboard">
         <ion-icon slot="start" name="arrow-back"></ion-icon>
         Dashboard
       </ion-button>
@@ -30,7 +30,7 @@
       <ion-textarea formControlName="message" autoGrow="true" rows="10" required></ion-textarea>
     </ion-item>
 
-    <ion-button expand="block" type="submit" [disabled]="contactForm.invalid" class="submit-button">Send Email</ion-button>
+    <ion-button expand="block" type="submit" [disabled]="contactForm.invalid" class="button-wrapper">Send Email</ion-button>
   </form>
 
   <div class="company-info">

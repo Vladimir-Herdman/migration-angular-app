@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="handleBack()">
+      <ion-button class="header-button" (click)="handleBack()">
         <ion-icon slot="start" name="arrow-back"></ion-icon>
         Back
       </ion-button>
@@ -23,6 +23,10 @@
         <ion-label position="stacked">Email</ion-label>
         <ion-input [(ngModel)]="account.info.email" name="email" type="email" placeholder="Email"></ion-input>
       </ion-item>
+
+      <ion-item>
+        <ion-button (click)="changePassword()">Change Password</ion-button>
+      </ion-item>
     </ion-list>
 
     <!-- Settings -->
@@ -37,14 +41,22 @@
       </ion-item>
     </ion-list>
 
-    <!-- Quiz Component -->
+    <!-- Questionnaire -->
+    <h1 [class.hidden]="!canShowQuiz" style="margin: 0">Questionnaire</h1>
     <app-quiz [form]="account.quiz" [class.hidden]="!canShowQuiz"></app-quiz>
 
-    <!-- Action Buttons -->
+    <!-- Very Intense Buttons -->
     <div class="button-wrapper">
-      <ion-button expand="block" color="primary" (click)="submitForm()">Save Changes</ion-button>
-      <ion-button expand="block" color="secondary" fill="outline" (click)="logout()">Logout</ion-button>
+      <ion-button expand="block" color="secondary" fill="outline" (click)="handleLogout()">Logout</ion-button>
       <ion-button expand="block" color="danger" fill="outline" (click)="handleDelete()">Delete Account</ion-button>
     </div>
   </div>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="submit-button">
+      <ion-button expand="block" color="primary" (click)="submitForm()">Save Changes</ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

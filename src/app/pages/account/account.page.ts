@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { ToastController, AlertController } from '@ionic/angular';
-import { Auth, onAuthStateChanged, deleteUser, EmailAuthProvider, reauthenticateWithCredential } from '@angular/fire/auth';
+import { ToastController, AlertController, ViewWillEnter } from '@ionic/angular';
+import { Auth, onAuthStateChanged, deleteUser, EmailAuthProvider, reauthenticateWithCredential, verifyBeforeUpdateEmail, updatePassword } from '@angular/fire/auth';
 import { FormDataService } from 'src/app/components/quiz/form-data.service';
 import { QuizComponent } from 'src/app/components/quiz/quiz.component';
 
@@ -12,7 +12,7 @@ import { QuizComponent } from 'src/app/components/quiz/quiz.component';
   styleUrls: ['account.page.scss'],
   standalone: false,
 })
-export class AccountPage implements OnInit {
+export class AccountPage implements ViewWillEnter {
   @ViewChild(QuizComponent)
   quizComponent!: QuizComponent;
   
@@ -41,7 +41,7 @@ export class AccountPage implements OnInit {
 
   authUnsubscribe: (() => void) | null = null;
 
-  async ngOnInit() {
+  async ionViewWillEnter() {
     const form = await this.formDataService.getForm();
     this.canShowQuiz = this.formDataService.isFilled(form);
     this.account.quiz = await this.quizComponent.updateForm();
@@ -88,17 +88,27 @@ export class AccountPage implements OnInit {
     }
   }
 
-  async showToast(message: string, color: string = 'success') {
+  async showToast(
+    message: string,
+    color: string = 'success',
+    duration: number = 2000,
+    position: "top" | "bottom" | "middle" | undefined = "top"
+  ) {
     const toast = await this.toastController.create({
       message,
-      duration: 2000,
+      duration,
       color,
-      position: 'top'
+      position
     });
     await toast.present();
   }  
 
   async submitForm() {
+    if (this.account.info.email !== this.oldForm.info.email) {
+      await this.changeEmail(this.account.info.email);
+      return;
+    }
+
     await this.formDataService.setForm(this.account.quiz); // Store questionnaire answers
 
     console.log(this.account);
@@ -106,7 +116,101 @@ export class AccountPage implements OnInit {
     this.showToast('Account saved successfully!');
   }
 
-  async logout() {
+  async changeEmail(newEmail: string) {
+    if (!this.user || !this.user.email) {
+      this.showToast('No user is signed in.', 'danger');
+      return;
+    }
+
+    if (!(await this.reauth())) return; // Prompt user to re-authenticate
+
+    try {
+      await verifyBeforeUpdateEmail(this.user, newEmail);
+      this.showToast(`Verification email sent to ${newEmail}. You will now be signed out.`, 'warning', 5000);
+      await this.logout();
+    } catch (error: any) {
+      console.error('Error changing email:', error);
+      let msg = 'Failed to change email.';
+      if (error.code === 'auth/email-already-in-use') {
+        msg = 'That email is already in use.';
+      } else {
+        msg = error.message || msg; // Already re-authenticated, so these are less likely
+      }
+      this.showToast(msg, 'danger');
+    }
+  }
+
+  async changePassword() {
+    const alert = await this.alertController.create({
+      header: 'Change Password',
+      inputs: [
+        {
+          name: 'currentPassword',
+          type: 'password',
+          placeholder: 'Current Password'
+        },
+        {
+          name: 'newPassword',
+          type: 'password',
+          placeholder: 'New Password'
+        },
+        {
+          name: 'confirmPassword',
+          type: 'password',
+          placeholder: 'Confirm New Password'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Update',
+          handler: async (data) => {
+            const { currentPassword, newPassword, confirmPassword } = data;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+              this.showToast('All fields are required.', 'danger');
+              return false;
+            }
+
+            if (newPassword !== confirmPassword) {
+              this.showToast('Passwords do not match.', 'danger');
+              return false;
+            }
+
+            if (newPassword.length < 6) {
+              this.showToast('Password must be at least 6 characters.', 'danger');
+              return false;
+            }
+
+            try {
+              const user = this.auth.currentUser;
+              if (!user || !user.email) throw new Error('User not signed in.');
+
+              const credential = EmailAuthProvider.credential(user.email, currentPassword);
+              await reauthenticateWithCredential(user, credential);
+              await updatePassword(user, newPassword);
+              this.showToast('Password updated successfully.', 'success');
+              return true;
+            } catch (err: any) {
+              console.error('Password update error:', err);
+              let msg = 'Failed to change password.';
+              if (err.code === 'auth/wrong-password') msg = 'Incorrect current password.';
+              else if (err.code === 'auth/weak-password') msg = 'Password is too weak.';
+              else if (err.code === 'auth/requires-recent-login') msg = 'Please re-login to change your password.';
+              this.showToast(msg, 'danger');
+              return false;
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async handleLogout() {
     const alert = await this.alertController.create({
       header: 'Confirm Logout',
       message: 'Are you sure you want to log out?',
@@ -119,14 +223,17 @@ export class AccountPage implements OnInit {
           text: 'Log Out',
           role: 'destructive',
           handler: async () => {
-            await this.auth.signOut();
-            this.router.navigateByUrl('/', { replaceUrl: true });
+            await this.logout();
           }
         }
       ]
     });
-  
     await alert.present();
+  }
+
+  async logout() {
+    await this.auth.signOut();
+    this.router.navigateByUrl('/', { replaceUrl: true });
   }
 
   async handleDelete() {
@@ -160,44 +267,50 @@ export class AccountPage implements OnInit {
       }
     } catch (error: any) {
       if (error.code === 'auth/requires-recent-login') {
-        this.reauth();
+        if (await this.reauth()) {
+          this.deleteAccount();
+        };
       } else {
         this.showToast('Failed to delete account. Please try again.', 'danger');
       }
     }
   }
 
-  async reauth() {
-    const alert = await this.alertController.create({
-      header: 'Re-authenticate',
-      inputs: [
-        { name: 'password', type: 'password', placeholder: 'Password' }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Confirm',
-          handler: async (data) => {
-            try {
-              const user = this.auth.currentUser;
-              if (user && data.password) {
-                const credential = EmailAuthProvider.credential(user.email!, data.password);
-                await reauthenticateWithCredential(user, credential);
-                this.deleteAccount();
-              } else {
-                this.showToast('Missing password', 'danger');
+  async reauth(): Promise<boolean> {
+    return new Promise<boolean>(async (resolve) => {
+      const alert = await this.alertController.create({
+        header: 'Re-authenticate',
+        inputs: [
+          { name: 'password', type: 'password', placeholder: 'Password' }
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          },
+          {
+            text: 'Confirm',
+            handler: async (data) => {
+              try {
+                const user = this.auth.currentUser;
+                if (user && data.password) {
+                  const credential = EmailAuthProvider.credential(user.email!, data.password);
+                  await reauthenticateWithCredential(user, credential);
+                  resolve(true);
+                } else {
+                  this.showToast('Missing password', 'danger');
+                  resolve(false);
+                }
+              } catch (err: any) {
+                console.error('Re-authentication failed:', err);
+                this.showToast('Re-authentication failed. Please try again.', 'danger');
+                resolve(false);
               }
-            } catch (err: any) {
-              console.error('Re-authentication failed:', err);
-              this.showToast('Re-authentication failed. Please try again.', 'danger');
             }
           }
-        }
-      ]
+        ]
+      });
+      await alert.present();
     });
-    await alert.present();
   }
 }
