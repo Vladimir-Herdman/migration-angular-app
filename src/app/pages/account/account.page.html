@@ -37,7 +37,8 @@
       </ion-item>
     </ion-list>
 
-    <!-- Quiz Component -->
+    <!-- Questionnaire -->
+    <h1 [class.hidden]="!canShowQuiz">Questionnaire</h1>
     <app-quiz [form]="account.quiz" [class.hidden]="!canShowQuiz"></app-quiz>
 
     <!-- Action Buttons -->
