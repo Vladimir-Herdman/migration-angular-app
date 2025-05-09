@@ -446,7 +446,7 @@ async def chat_with_llm(payload: Dict[str, Any]):
             messages=messages_for_llm,
             options={'temperature': 0.7} # Adjust as needed
         )
-        response_text = response['message']['content']
+        response_text = re.sub(r'<think>(?s:.)*?</think>\n\n', '', response['message']['content'])
         print(f"LLM chat response: {response_text[:100]}...")
         return {"response": response_text}
     except Exception as e:
