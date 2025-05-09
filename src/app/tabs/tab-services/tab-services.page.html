@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button routerLink="/tabs/tab-dashboard">
+      <ion-button class="header-button" routerLink="/tabs/tab-dashboard">
         <ion-icon slot="start" name="arrow-back"></ion-icon>
         Dashboard
       </ion-button>
@@ -13,4 +13,28 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="false"></ion-content>
+<ion-content [fullscreen]="false">
+    <ion-list>
+        <ng-container *ngFor="let category of servicesData">
+            <ion-item button detail="false" (click)="toggleCategory(category)" [class.expanded]="category.isExpanded">
+                <ion-label>
+                    <h2>{{ category.name }} ({{ category.tasks.length }})</h2>
+                </ion-label>
+                <ion-icon slot="end"
+                    [name]="category.isExpanded ? 'chevron-down-outline' : 'chevron-forward-outline'"></ion-icon>
+            </ion-item>
+
+            <div *ngIf="category.isExpanded">
+                <ion-item *ngFor="let service of category.tasks">
+                    <ion-label class="ion-text-wrap">
+                        <h3>{{ service.name }}</h3>
+                        <p>{{ service.description }}</p>
+                    </ion-label>
+                    <ion-button slot="end" size="small" [style.background]="'var(--global-primary-color)'" [href]="service.url" target="_blank">
+                        Visit
+                    </ion-button>
+                </ion-item>
+            </div>
+        </ng-container>
+    </ion-list>
+</ion-content>

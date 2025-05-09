@@ -23,7 +23,9 @@ FRONTEND_ORIGINS = os.getenv("FRONTEND_ORIGINS", "http://localhost:8100").split(
 
 # Construct absolute paths from the script's location
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CHECKLISTS_DIR = os.path.join(BASE_DIR, '..', 'Checklists')
+BACKEND_DIR = os.path.join(BASE_DIR, '..', 'Backend')
+
+CHECKLISTS_DIR = os.path.join(BACKEND_DIR, 'Checklists')
 
 SERVICES_DATA_PATH = os.path.join(CHECKLISTS_DIR, 'services.yaml')
 PREDEPART_DATA_PATH = os.path.join(CHECKLISTS_DIR, 'predepart.yaml')
@@ -442,9 +444,9 @@ async def chat_with_llm(payload: Dict[str, Any]):
             ollama.chat,
             model=LLM_MODEL_NAME,
             messages=messages_for_llm,
-            options={'temperature': 0.7} # Adjust as needed
+            options={'temperature': 0.7, 'num_predict':1350} # Adjust as needed
         )
-        response_text = response['message']['content']
+        response_text = re.sub(r'<think>(?s:.)*?</think>\n\n', '', response['message']['content'])
         print(f"LLM chat response: {response_text[:100]}...")
         return {"response": response_text}
     except Exception as e:

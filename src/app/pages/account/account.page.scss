@@ -4,8 +4,14 @@ ion-list-header h1 {
     margin: 0;
 }
 
-ion-list, .button-wrapper {
+ion-list {
   width: 90%;
   max-width: 600px;
   margin-bottom: 20px;
+}
+
+.submit-button {
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
 }

@@ -1,0 +1,1516 @@
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Reducing the volume of belongings will lower shipping
+    costs and simplify packing, especially important for an international move.
+
+    '
+  category: Shipping & Administrative Logistics
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - decluttering services
+  - downsizing assistance
+  - junk removal
+  - charity donation pickup
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Downsize belongings and get rid of what is not needed or wanted
+    in the new location.
+  task_id: PD_INTL_DECLUTTER_DOWNSIZE
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Planning which items you need immediately upon arrival
+    versus those that can be shipped separately is crucial for your initial setup
+    in [Destination Country] and helps manage customs declarations.
+
+    '
+  category: Shipping & Administrative Logistics
+  due_date: 4-6 weeks before move
+  highly_specific_keywords_for_services:
+  - moving inventory list
+  - shipping checklist
+  - customs declaration assistance
+  personalize_explanation: true
+  priority: Medium
+  stage: predeparture
+  task_description: Compile goods to accompany (carry-on/checked luggage) and goods
+    to follow (shipment) list.
+  task_id: PD_INTL_LOGISTICS_GOODS_LIST
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'International shipping requires significant planning
+    and scheduling. Getting quotes early helps in budgeting, choosing a reliable mover,
+    and understanding timelines for your move to [Destination Country].
+
+    '
+  category: Shipping & Administrative Logistics
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - international movers
+  - overseas shipping quotes
+  - relocation shipping companies
+  personalize_explanation: true
+  priority: High
+  recommended_service_ids:
+  - experts_in_moving_shipping
+  stage: predeparture
+  task_description: Get quotes for international shipping of goods.
+  task_id: PD_INTL_SHIPPING_QUOTES
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Booking international flights well in advance is often
+    necessary to secure desired dates, potentially better prices, and coordinate with
+    your overall moving timeline.
+
+    '
+  category: Travel Planning
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - book international flights
+  - travel agency international
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Arrange international travel plans (flights, etc.).
+  task_id: PD_INTL_TRAVEL_ARRANGE_FLIGHTS
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Travel insurance provides crucial coverage for unexpected
+    events during your international journey, including medical emergencies, trip
+    cancellations, and lost luggage.
+
+    '
+  category: Insurance (Travel, Health, Property)
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - international travel insurance
+  - relocation insurance
+  - expat medical insurance
+  personalize_explanation: false
+  priority: High
+  recommended_service_ids:
+  - visitors_coverage_travel_insurance
+  stage: predeparture
+  task_description: Arrange travel insurance for the move.
+  task_id: PD_INTL_INSURANCE_ARRANGE_TRAVEL
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Informing your bank prevents potential holds on your
+    accounts due to unusual international activity and allows you to discuss international
+    banking options.
+
+    '
+  category: Finances & Banking
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - bank notification international move
+  - international banking services
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Notify banks and financial institutions of your international
+    move.
+  task_id: PD_INTL_FINANCE_NOTIFY_BANKS
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Ensuring your mail is forwarded prevents important
+    documents from being lost and helps manage the transition smoothly. International
+    mail forwarding options may differ.
+
+    '
+  category: Shipping & Administrative Logistics
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - international mail forwarding
+  - post office change of address international
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Arrange to forward mail to your new address or a trusted contact.
+  task_id: PD_INTL_ADMIN_FORWARD_MAIL
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Understanding and securing the correct visa and meeting
+    entry requirements is fundamental for a legal international move to [Destination
+    Country]. This process can be lengthy.
+
+    '
+  category: Immigration & Visas
+  due_date: 8-12 weeks before move
+  highly_specific_keywords_for_services:
+  - visa requirements [Destination Country]
+  - immigration consultant [Destination Country]
+  - entry permit [Destination Country]
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Research visa and entry requirements for destination country.
+  task_id: PD_INTL_IMMIGRATION_VISA_RESEARCH
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Some countries require proof of language proficiency
+    for immigration purposes. These tests need to be scheduled well in advance. Check
+    if [Destination Country] requires this for your visa type.
+
+    '
+  category: Immigration & Visas
+  due_date: 10-14 weeks before move
+  highly_specific_keywords_for_services:
+  - IELTS exam booking
+  - CELPIP test center
+  - language test for visa [Destination Country]
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Take language proficiency exams (e.g., IELTS/CELPIP) if required
+    for visa.
+  task_id: PD_INTL_IMMIGRATION_LANG_TEST
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Certified or apostilled copies of important documents
+    are often required for visa applications, registration, and other official procedures
+    in [Destination Country].
+
+    '
+  category: Immigration & Visas
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - document certification for visa
+  - apostille services
+  - notarize documents international
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Get all relevant personal documents (birth/marriage certificates,
+    degrees, etc.) copied and certified/apostilled as required.
+  task_id: PD_INTL_IMMIGRATION_DOCS_CERTIFY
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'These foundational documents are frequently needed
+    for visa applications, family reunification processes, and registration purposes
+    in [Destination Country].
+
+    '
+  category: Immigration & Visas
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - obtain birth certificate
+  - request marriage certificate official
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Arrange and Collect original or certified copies of birth and
+    marriage certificates.
+  task_id: PD_INTL_IMMIGRATION_BIRTH_MARRIAGE_CERT
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Visa applications have specific photo requirements
+    (size, background, etc.) that must be met precisely to avoid application delays
+    for [Destination Country].
+
+    '
+  category: Immigration & Visas
+  due_date: 4-6 weeks before move
+  highly_specific_keywords_for_services:
+  - visa photos [Destination Country]
+  - passport photos specific requirements
+  personalize_explanation: true
+  priority: Medium
+  stage: predeparture
+  task_description: Obtain required visa photos according to specific embassy/consulate
+    guidelines.
+  task_id: PD_INTL_IMMIGRATION_VISA_PHOTOS
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'An expired or soon-to-expire passport, or one with
+    insufficient blank pages, can halt international travel and visa processes for
+    [Destination Country].
+
+    '
+  category: Immigration & Visas
+  due_date: 8-12 weeks before move
+  highly_specific_keywords_for_services:
+  - passport renewal
+  - check passport validity for travel
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Ensure passports are up to date and valid for at least 6 months
+    beyond your intended duration of stay, and have sufficient blank pages.
+  task_id: PD_INTL_IMMIGRATION_PASSPORT_VALIDITY
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasChildren
+  base_importance_explanation: 'Children require their own valid passports and potentially
+    visas. If traveling with one parent, consent letters from the other parent might
+    be needed for [Destination Country].
+
+    '
+  category: 'Children: Documentation & Schooling'
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - child passport application
+  - visa for minor [Destination Country]
+  - child travel consent letter
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Ensure children have necessary travel documentation (passports,
+    visas if separate, birth certificates, consent letters if applicable).
+  task_id: PD_INTL_CHILDREN_TRAVEL_DOCS
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasChildren
+  base_importance_explanation: 'Informing the school allows for proper withdrawal
+    procedures and timely collection of necessary academic records for transfer.
+
+    '
+  category: 'Children: Documentation & Schooling'
+  due_date: 4-6 weeks before move
+  highly_specific_keywords_for_services:
+  - school withdrawal notice
+  - student transfer process
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Give notice to the children's current school about the move.
+  task_id: PD_INTL_CHILDREN_SCHOOL_NOTICE
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasChildren
+  base_importance_explanation: 'These documents will be essential for enrolling children
+    in a new school in [Destination Country]. Check requirements for translation or
+    apostille.
+
+    '
+  category: 'Children: Documentation & Schooling'
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - school records for international transfer
+  - translate academic transcripts
+  - apostille school documents
+  personalize_explanation: true
+  priority: Medium
+  stage: predeparture
+  task_description: Collect children's academic records, transcripts, and transfer
+    certificates (potentially translated/apostilled).
+  task_id: PD_INTL_CHILDREN_SCHOOL_RECORDS
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasChildren
+  base_importance_explanation: 'Proof of specific vaccinations may be mandatory for
+    school enrollment or immigration in [Destination Country]. Obtain official records.
+
+    '
+  category: 'Children: Documentation & Schooling'
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - child vaccination for travel [Destination Country]
+  - school entry immunization requirements
+  - international certificate of vaccination
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Make sure children are vaccinated according to destination country
+    requirements and have official documentation.
+  task_id: PD_INTL_CHILDREN_VACCINATIONS
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasChildren
+  base_importance_explanation: 'Finding and enrolling children in a suitable school
+    in [Destination Country] can take time and may involve waiting lists or specific
+    application periods. Early research is key.
+
+    '
+  category: 'Children: Documentation & Schooling'
+  due_date: 8-12 weeks before move
+  highly_specific_keywords_for_services:
+  - international schools in [Destination City/Region]
+  - school enrollment process [Destination Country]
+  - education consultant international
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Research schooling options (public, private, international) in
+    the new location and begin the enrollment process if possible.
+  task_id: PD_INTL_CHILDREN_SCHOOL_RESEARCH_ENROLL
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: rent
+    path: vehicle.plan
+  base_importance_explanation: 'Arranging for temporary transportation upon arrival
+    in [Destination Country] is important for initial mobility.
+
+    '
+  category: Travel Planning
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - car rental [Destination Airport]
+  - airport car hire [Destination City/Region]
+  personalize_explanation: true
+  priority: Medium
+  recommended_service_ids:
+  - rentcars_car_rental
+  stage: predeparture
+  task_description: Find a car rental location at or near the new location airport/arrival
+    point.
+  task_id: PD_INTL_VEHICLE_RENTAL_RESEARCH_DESTINATION
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: rent
+    path: vehicle.plan
+  base_importance_explanation: 'Confirming your rental ensures a vehicle is available
+    upon your arrival in [Destination Country], especially during peak travel times.
+
+    '
+  category: Travel Planning
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - book rental car [Destination City/Region]
+  - reserve vehicle international arrival
+  personalize_explanation: true
+  priority: Medium
+  recommended_service_ids:
+  - rentcars_car_rental
+  stage: predeparture
+  task_description: Book a rental car for your arrival.
+  task_id: PD_INTL_VEHICLE_RENTAL_BOOK
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: bring
+    path: vehicle.plan
+  base_importance_explanation: 'Importing a vehicle into [Destination Country] involves
+    complex customs regulations, taxes, and potentially modifications to meet local
+    standards. Thorough research is critical.
+
+    '
+  category: Travel Planning
+  due_date: 8-12 weeks before move
+  highly_specific_keywords_for_services:
+  - car import regulations [Destination Country]
+  - vehicle customs clearance [Destination Country]
+  - import duty for cars [Destination Country]
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Research requirements for importing your vehicle into the destination
+    country (customs, taxes, modifications).
+  task_id: PD_INTL_VEHICLE_IMPORT_RESEARCH
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: bring
+    path: vehicle.plan
+  base_importance_explanation: 'Proper documentation is required by your current country
+    for export and by [Destination Country] for import customs clearance.
+
+    '
+  category: Travel Planning
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - vehicle export documents
+  - car title for international shipping
+  - proof of vehicle ownership export
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Obtain all necessary documents for exporting your vehicle (Registration,
+    title, proof of ownership, etc.).
+  task_id: PD_INTL_VEHICLE_EXPORT_DOCS
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: bring
+    path: vehicle.plan
+  base_importance_explanation: 'Shipping a vehicle internationally is a complex logistical
+    process that needs to be scheduled well in advance with a specialized company.
+
+    '
+  category: Travel Planning
+  due_date: 4-6 weeks before move
+  highly_specific_keywords_for_services:
+  - international car shipping
+  - vehicle transport overseas
+  - ro-ro shipping quote
+  personalize_explanation: false
+  priority: High
+  recommended_service_ids:
+  - experts_in_moving_shipping
+  stage: predeparture
+  task_description: Arrange for international shipping of your vehicle.
+  task_id: PD_INTL_VEHICLE_ARRANGE_SHIPPING
+- applies_if:
+  - equals: international
+    path: moveType
+  - in:
+    - bring
+    - rent
+    path: vehicle.plan
+  base_importance_explanation: 'An International Driving Permit (IDP) translates your
+    existing license and may be required or recommended for driving in [Destination
+    Country] before you obtain a local license.
+
+    '
+  category: Travel Planning
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - international driving permit application
+  - IDP for [Destination Country]
+  personalize_explanation: true
+  priority: Medium
+  stage: predeparture
+  task_description: Obtain an International Driving Permit (IDP) if required or recommended
+    for driving in [Destination Country].
+  task_id: PD_INTL_VEHICLE_IDP
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasPets
+  base_importance_explanation: 'Countries have strict regulations for importing pets.
+    Understanding requirements for [Destination Country] (like rabies titer tests,
+    quarantine) is crucial and can take months.
+
+    '
+  category: 'Pets: Documentation & Travel Prep'
+  due_date: 8-12 weeks (or more depending on country)
+  highly_specific_keywords_for_services:
+  - pet import rules [Destination Country]
+  - animal quarantine [Destination Country]
+  - bringing dog to [Destination Country]
+  - cat travel international requirements
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Research pet import regulations for the destination country (quarantine,
+    vaccinations, microchip, documentation).
+  task_id: PD_INTL_PETS_IMPORT_REGULATIONS
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasPets
+  base_importance_explanation: 'Pets need to meet specific health requirements and
+    have up-to-date vaccinations/tests for international travel to [Destination Country].
+    Some tests have long waiting periods.
+
+    '
+  category: 'Pets: Documentation & Travel Prep'
+  due_date: 6-8 weeks (or as per import timeline)
+  highly_specific_keywords_for_services:
+  - international pet health certificate vet
+  - rabies titer test for pet travel
+  - pet microchipping for [Destination Country]
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Schedule necessary vet appointments for health checks, vaccinations,
+    microchipping, and specific tests (e.g., rabies titer test).
+  task_id: PD_INTL_PETS_VET_APPOINTMENTS
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasPets
+  base_importance_explanation: 'Official health certificates and vaccination records,
+    often needing government endorsement, are mandatory for clearing customs with
+    your pets in [Destination Country].
+
+    '
+  category: 'Pets: Documentation & Travel Prep'
+  due_date: 4-6 weeks (or as per import timeline)
+  highly_specific_keywords_for_services:
+  - USDA APHIS pet travel certificate
+  - EU pet passport
+  - government endorsement pet health docs
+  personalize_explanation: true
+  priority: High
+  stage: predeparture
+  task_description: Obtain required pet documentation (international health certificates
+    endorsed by authorities, vaccination records, pet passport if applicable).
+  task_id: PD_INTL_PETS_DOCUMENTATION
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasPets
+  base_importance_explanation: 'Traveling with pets internationally requires specific
+    arrangements with airlines (cabin vs. cargo) or specialized relocation services
+    to ensure their safety and compliance with all regulations.
+
+    '
+  category: 'Pets: Documentation & Travel Prep'
+  due_date: 4-6 weeks before move
+  highly_specific_keywords_for_services:
+  - pet airline travel booking
+  - international pet relocation service
+  - IPATA pet shipper
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Arrange pet travel with an airline or a specialized pet relocation
+    service.
+  task_id: PD_INTL_PETS_ARRANGE_TRAVEL
+- applies_if:
+  - equals: international
+    path: moveType
+  - is_true: true
+    path: family.hasPets
+  base_importance_explanation: 'Ensuring your pet has a comfortable, secure, and airline-compliant
+    carrier with necessary supplies is vital for their well-being during travel. Start
+    acclimatization early.
+
+    '
+  category: 'Pets: Documentation & Travel Prep'
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - IATA approved pet carrier
+  - pet travel comfort items
+  - acclimatize pet to travel crate
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Prepare an IATA-compliant travel carrier and essentials for your
+    pet's journey (familiar bedding, water dispenser, etc.). Acclimatize pet to carrier.
+  task_id: PD_INTL_PETS_TRAVEL_CARRIER_ESSENTIALS
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Cancelling your current plan avoids unnecessary charges.
+    Discuss contract termination or suspension options with your provider.
+
+    '
+  category: Property Management
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - cancel mobile plan international move
+  - suspend phone service moving abroad
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Cancel or modify your existing mobile phone plan to avoid charges
+    after moving.
+  task_id: PD_INTL_PHONE_CANCEL_MODIFY_PLAN
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Setting up a new phone plan or activating an eSIM
+    upon arrival in [Destination Country] is crucial for communication. Research options
+    beforehand.
+
+    '
+  category: Property Management
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - mobile plans [Destination Country]
+  - eSIM for travel [Destination Country]
+  - best phone provider [Destination City/Region]
+  personalize_explanation: true
+  priority: Medium
+  recommended_service_ids:
+  - airalo_esim
+  - boost_mobile
+  - visible_mobile
+  stage: predeparture
+  task_description: Research mobile phone providers, plans, and eSIM options in the
+    new location for immediate connectivity upon arrival.
+  task_id: PD_INTL_PHONE_RESEARCH_NEW_PLANS_ESIM
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: own
+    path: currentHousing.type
+  - equals: sell
+    path: currentHousing.action
+  base_importance_explanation: 'Selling a property is a lengthy process that requires
+    professional assistance and market knowledge, especially when coordinating with
+    an international move.
+
+    '
+  category: Property Management
+  due_date: 8-12 weeks before move
+  highly_specific_keywords_for_services:
+  - realtor to sell house
+  - real estate agent for selling property
+  personalize_explanation: false
+  priority: High
+  recommended_service_ids:
+  - realtor_locator
+  stage: predeparture
+  task_description: Engage a realtor to sell your current home.
+  task_id: PD_INTL_HOUSING_REALTOR_SELL_HOME
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: own
+    path: currentHousing.type
+  - equals: sell
+    path: currentHousing.action
+  base_importance_explanation: 'Finalizing the sale of your current property provides
+    funds for your move and future housing, and resolves a major pre-move task.
+
+    '
+  category: Property Management
+  due_date: 0-2 weeks before move
+  highly_specific_keywords_for_services:
+  - house sale closing
+  - property sale completion
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Complete the process of selling your current house (closing).
+  task_id: PD_INTL_HOUSING_COMPLETE_SALE
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: buy
+    path: newHousing.plan
+  base_importance_explanation: 'Finding suitable housing for purchase in a new country
+    requires local expertise and can take considerable time. Start your search early.
+
+    '
+  category: Property Management
+  due_date: 8-12 weeks before move
+  highly_specific_keywords_for_services:
+  - realtor to buy house in [Destination City/Region]
+  - international property search
+  - buyer's agent [Destination Country]
+  personalize_explanation: false
+  priority: High
+  recommended_service_ids:
+  - realtor_locator
+  stage: predeparture
+  task_description: Engage a realtor or research options to find a new home (purchase)
+    in your destination location.
+  task_id: PD_INTL_HOUSING_REALTOR_FIND_NEW_HOME
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: buy
+    path: newHousing.plan
+  base_importance_explanation: 'Finalizing the purchase of your new home secures your
+    long-term accommodation. This complex process may extend to after your arrival.
+
+    '
+  category: Property Management
+  due_date: 0-4 weeks before move (can extend post-arrival)
+  highly_specific_keywords_for_services:
+  - international mortgage
+  - buying property in [Destination Country]
+  - real estate closing [Destination Country]
+  personalize_explanation: true
+  priority: High
+  recommended_service_ids:
+  - mortgage_lender
+  stage: predeparture
+  task_description: Complete the process of purchasing a new house in [Destination
+    Country] if possible before move, or have process well underway.
+  task_id: PD_INTL_HOUSING_COMPLETE_PURCHASE_NEW_HOME
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: rent
+    path: currentHousing.type
+  - equals: terminate_lease
+    path: currentHousing.action
+  base_importance_explanation: 'Properly terminating your lease according to the agreement
+    avoids penalties and ensures a smooth departure from your current residence.
+
+    '
+  category: Property Management
+  due_date: Based on lease terms (usually 30-60 days before move)
+  highly_specific_keywords_for_services:
+  - lease termination notice
+  - end rental agreement
+  - landlord move out notice
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Give notice to your current landlord and terminate your lease
+    according to agreement terms.
+  task_id: PD_INTL_HOUSING_LANDLORD_NOTICE_LEASE_TERMINATION
+- applies_if:
+  - equals: international
+    path: moveType
+  - equals: rent
+    path: currentHousing.type
+  base_importance_explanation: 'Following proper move-out procedures (cleaning, inspection,
+    providing international forwarding address) helps ensure the timely return of
+    your security deposit.
+
+    '
+  category: Property Management
+  due_date: During move-out / within specified timeframe after move-out
+  highly_specific_keywords_for_services:
+  - security deposit return process
+  - move out inspection for renters
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Arrange for the return of your security deposit (document condition,
+    provide forwarding address).
+  task_id: PD_INTL_HOUSING_SECURITY_DEPOSIT_RETURN
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Understanding international money transfer services
+    helps you move funds to [Destination Country] efficiently and cost-effectively.
+
+    '
+  category: Finances & Banking
+  due_date: 4-6 weeks before move
+  highly_specific_keywords_for_services:
+  - international money transfer services
+  - best way to send money overseas
+  - currency exchange for relocation
+  personalize_explanation: true
+  priority: Medium
+  recommended_service_ids:
+  - wise_money_transfer
+  - remitly_money_transfer
+  - xe_money_transfer
+  stage: predeparture
+  task_description: Research options for transferring money internationally (fees,
+    exchange rates, speed).
+  task_id: PD_INTL_FINANCE_MONEY_TRANSFER_RESEARCH
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Notifying your bank about your move prevents potential
+    issues with accessing funds abroad. Discuss options for international access or
+    opening a local account in [Destination Country].
+
+    '
+  category: Finances & Banking
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - international banking solutions
+  - expat banking services
+  - closing bank account before moving abroad
+  personalize_explanation: true
+  priority: Medium
+  stage: predeparture
+  task_description: Inform your bank of your move and inquire about international
+    banking services, account closure, or keeping accounts open.
+  task_id: PD_INTL_FINANCE_BANK_INTERNATIONAL_SERVICES
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Ensuring utilities are disconnected at your old address
+    prevents continued billing and simplifies closing accounts. Provide a forwarding
+    address for final bills.
+
+    '
+  category: Utility Management
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - disconnect utilities moving
+  - cancel internet service
+  - final electricity bill request
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Notify current utility providers (electricity, water, gas, internet,
+    cable) of your move and arrange disconnection and final bill.
+  task_id: PD_INTL_UTILITIES_DISCONNECT
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'Providing proper notice to your employer is professional
+    and may be required by your contract. This also allows time to arrange for handovers.
+
+    '
+  category: 'Employment: Notice & Records'
+  due_date: As per employment contract (usually 2-4 weeks before last day)
+  highly_specific_keywords_for_services:
+  - resignation letter
+  - giving notice employment
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Give notice to your current employer as per your employment contract.
+  task_id: PD_INTL_EMPLOYMENT_GIVE_NOTICE
+- applies_if:
+  - equals: international
+    path: moveType
+  base_importance_explanation: 'These documents may be needed for future job applications,
+    tax purposes, or skills verification in [Destination Country].
+
+    '
+  category: 'Employment: Notice & Records'
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - request certificate of employment
+  - professional references for international job
+  - collect payslips tax documents
+  personalize_explanation: true
+  priority: Medium
+  stage: predeparture
+  task_description: Collect necessary employment records (payslips, tax forms, certificates
+    of employment) and references.
+  task_id: PD_INTL_EMPLOYMENT_COLLECT_RECORDS_REFERENCES
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Reducing the volume of belongings simplifies packing
+    and moving logistics, potentially reducing costs for your domestic move.
+
+    '
+  category: Shipping & Administrative Logistics
+  due_date: 4-6 weeks before move
+  highly_specific_keywords_for_services:
+  - decluttering services domestic move
+  - downsizing assistance local
+  - junk removal before moving
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Downsize belongings and get rid of what is not needed or wanted
+    in the new location.
+  task_id: PD_DOM_DECLUTTER_DOWNSIZE
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Planning which items you need immediately upon arrival
+    versus those that can be moved separately is crucial for initial setup in your
+    new city.
+
+    '
+  category: Shipping & Administrative Logistics
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - moving inventory checklist domestic
+  - packing list for movers
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Compile goods to accompany (in car/carry-on) and goods for movers/shipment
+    list.
+  task_id: PD_DOM_LOGISTICS_GOODS_LIST
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Hiring professional movers or arranging a rental truck
+    can save time and effort. Getting quotes helps in budgeting for your domestic
+    relocation.
+
+    '
+  category: Shipping & Administrative Logistics
+  due_date: 4-6 weeks before move
+  highly_specific_keywords_for_services:
+  - domestic moving companies quotes
+  - local movers
+  - truck rental for moving
+  personalize_explanation: false
+  priority: High
+  recommended_service_ids:
+  - experts_in_moving_shipping
+  stage: predeparture
+  task_description: Get quotes for domestic moving services or truck rental.
+  task_id: PD_DOM_SHIPPING_MOVER_QUOTES
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Planning your travel to the new location ensures a
+    smooth journey, whether flying or driving.
+
+    '
+  category: Travel Planning
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - book domestic flights
+  - plan road trip route for moving
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Arrange domestic travel plans (flights, driving route, hotel stops
+    if long drive).
+  task_id: PD_DOM_TRAVEL_ARRANGE_PLANS
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Consider travel or specific moving insurance for domestic
+    moves if you have concerns about your journey or valuable belongings during transit.
+
+    '
+  category: Insurance (Travel, Health, Property)
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - moving insurance for belongings
+  - road trip insurance domestic
+  personalize_explanation: false
+  priority: Low
+  recommended_service_ids:
+  - visitors_coverage_travel_insurance
+  stage: predeparture
+  task_description: Arrange travel/moving insurance if applicable (e.g., for road
+    trip protection or valuable items in transit).
+  task_id: PD_DOM_INSURANCE_ARRANGE_TRAVEL_VALUABLES
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Informing your bank helps prevent potential issues
+    with accessing funds or card usage in a new location and to update your address.
+
+    '
+  category: Finances & Banking
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - bank change of address domestic move
+  - notify bank moving states
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Notify banks and financial institutions of your move to a new
+    state/city.
+  task_id: PD_DOM_FINANCE_NOTIFY_BANKS
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Setting up mail forwarding ensures you receive important
+    correspondence at your new address without interruption.
+
+    '
+  category: Shipping & Administrative Logistics
+  due_date: 1 week before move
+  highly_specific_keywords_for_services:
+  - USPS mail forwarding
+  - Canada Post mail forwarding
+  - post office change of address domestic
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Set up mail forwarding with the postal service to your new address.
+  task_id: PD_DOM_ADMIN_FORWARD_MAIL
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - is_true: true
+    path: family.hasChildren
+  base_importance_explanation: 'Informing the school allows for proper withdrawal
+    procedures and collection of necessary academic records for transfer within the
+    country.
+
+    '
+  category: 'Children: Documentation & Schooling'
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - school withdrawal notice domestic move
+  - student transfer process local
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Give notice to the children's current school about the move.
+  task_id: PD_DOM_CHILDREN_SCHOOL_NOTICE
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - is_true: true
+    path: family.hasChildren
+  base_importance_explanation: 'These documents will be essential for enrolling children
+    in a new school in the destination city/state.
+
+    '
+  category: 'Children: Documentation & Schooling'
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - school records for domestic transfer
+  - collect transcripts for new school
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Collect children's academic records and transfer certificates.
+  task_id: PD_DOM_CHILDREN_SCHOOL_RECORDS
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - is_true: true
+    path: family.hasChildren
+  base_importance_explanation: 'Proof of vaccinations may be required for school enrollment
+    in the new district. Check new local requirements.
+
+    '
+  category: 'Children: Documentation & Schooling'
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - child vaccination records for school
+  - school immunization requirements new state
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Make sure children are vaccinated according to new local/state
+    school requirements and have documentation.
+  task_id: PD_DOM_CHILDREN_VACCINATIONS_RECORDS
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - is_true: true
+    path: family.hasChildren
+  base_importance_explanation: 'Finding and enrolling children in a suitable school
+    in a new city/state can take time, especially if popular schools have waiting
+    lists or specific enrollment periods.
+
+    '
+  category: 'Children: Documentation & Schooling'
+  due_date: 4-6 weeks before move
+  highly_specific_keywords_for_services:
+  - schools in [New City/State]
+  - school enrollment process [New District]
+  - find best schools new location
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Research schooling options in the new location and begin enrollment
+    process.
+  task_id: PD_DOM_CHILDREN_SCHOOL_RESEARCH_ENROLL
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: rent
+    path: vehicle.plan
+  base_importance_explanation: 'Arranging for temporary transportation upon arrival
+    is important for initial mobility in your new city.
+
+    '
+  category: Travel Planning
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - car rental [New City airport]
+  - local car hire [New City]
+  personalize_explanation: false
+  priority: Medium
+  recommended_service_ids:
+  - rentcars_car_rental
+  stage: predeparture
+  task_description: Find a car rental location at or near the new location airport/arrival
+    point if flying, or for initial use.
+  task_id: PD_DOM_VEHICLE_RENTAL_RESEARCH_DESTINATION
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: rent
+    path: vehicle.plan
+  base_importance_explanation: 'Confirming your rental ensures a vehicle is available,
+    especially during peak travel times or if arriving by plane.
+
+    '
+  category: Travel Planning
+  due_date: Few days before move
+  highly_specific_keywords_for_services:
+  - book rental car [New City]
+  - reserve vehicle for domestic move arrival
+  personalize_explanation: false
+  priority: Medium
+  recommended_service_ids:
+  - rentcars_car_rental
+  stage: predeparture
+  task_description: Book a rental car for your arrival if needed.
+  task_id: PD_DOM_VEHICLE_RENTAL_BOOK
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: bring
+    path: vehicle.plan
+  base_importance_explanation: 'Having your vehicle''s documents organized is important
+    for re-registration and insurance in the new state/province.
+
+    '
+  category: Travel Planning
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - vehicle documents for moving states
+  - car registration new state checklist
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Gather all relevant documents for your vehicle (Registration,
+    insurance, maintenance records, title).
+  task_id: PD_DOM_VEHICLE_BRING_DOCS_GATHER
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: bring
+    path: vehicle.plan
+  base_importance_explanation: 'Ensuring your vehicle is in good condition (oil change,
+    tire check) is crucial for a safe and smooth road trip to your new home.
+
+    '
+  category: Travel Planning
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - car maintenance before long drive
+  - vehicle check for road trip
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Schedule any necessary maintenance for your vehicle before a long
+    drive.
+  task_id: PD_DOM_VEHICLE_BRING_MAINTENANCE
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: bring
+    path: vehicle.plan
+  base_importance_explanation: 'Planning your route helps estimate travel time, identify
+    rest stops, and book accommodations for longer drives.
+
+    '
+  category: Travel Planning
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - driving route planner for moving
+  - overnight stops for road trip
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Plan your driving route and overnight stops if necessary for a
+    multi-day trip.
+  task_id: PD_DOM_VEHICLE_BRING_PLAN_ROUTE
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - is_true: true
+    path: family.hasPets
+  base_importance_explanation: 'Ensuring your pets are healthy and up-to-date on vaccinations
+    is important for their well-being during the stress of a move and for some housing/boarding.
+
+    '
+  category: 'Pets: Documentation & Travel Prep'
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - pet health check before moving
+  - update pet vaccinations
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Schedule necessary vet appointments for health checks and ensure
+    vaccinations are up-to-date.
+  task_id: PD_DOM_PETS_VET_APPOINTMENTS_HEALTH_CHECK
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - is_true: true
+    path: family.hasPets
+  base_importance_explanation: 'Having your pet''s health records readily available
+    is important for finding a new vet, airline travel, or some rental agreements.
+
+    '
+  category: 'Pets: Documentation & Travel Prep'
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - pet health certificate for domestic flight
+  - vaccination records for pet travel
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Obtain/organize pet documentation (health certificates if flying,
+    vaccination records).
+  task_id: PD_DOM_PETS_DOCUMENTATION_RECORDS
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - is_true: true
+    path: family.hasPets
+  base_importance_explanation: 'If traveling by air or other means not in your personal
+    vehicle, make necessary arrangements for your pet''s transport according to provider
+    rules.
+
+    '
+  category: 'Pets: Documentation & Travel Prep'
+  due_date: 2-4 weeks before move
+  highly_specific_keywords_for_services:
+  - pet travel by airline domestic
+  - booking pets on flight
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Arrange pet travel if not traveling by car (e.g., airline arrangements).
+  task_id: PD_DOM_PETS_ARRANGE_TRAVEL_IF_NOT_CAR
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - is_true: true
+    path: family.hasPets
+  base_importance_explanation: 'Ensuring your pet has a comfortable carrier with necessary
+    supplies is vital for their well-being during travel. Acclimatization helps reduce
+    stress.
+
+    '
+  category: 'Pets: Documentation & Travel Prep'
+  due_date: Few days before move
+  highly_specific_keywords_for_services:
+  - pet travel carrier domestic
+  - essentials for pet road trip
+  - crate training for travel
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Prepare a travel carrier and essentials for your pet's journey.
+    Acclimatize pet to carrier.
+  task_id: PD_DOM_PETS_TRAVEL_CARRIER_ESSENTIALS
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Informing your provider helps ensure a smooth transition
+    of service, check coverage in new area, or manage plan changes.
+
+    '
+  category: Property Management
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - mobile provider change of address
+  - phone plan coverage new city
+  personalize_explanation: false
+  priority: Low
+  stage: predeparture
+  task_description: Notify your current mobile phone provider of your move if changing
+    plans or needing service in new area.
+  task_id: PD_DOM_PHONE_NOTIFY_PROVIDER
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Finding a suitable phone plan with good coverage in
+    your new city is crucial for staying connected.
+
+    '
+  category: Property Management
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - best mobile plans [New City/State]
+  - compare phone providers new area
+  personalize_explanation: false
+  priority: Medium
+  recommended_service_ids:
+  - boost_mobile
+  - visible_mobile
+  stage: predeparture
+  task_description: Research mobile phone providers and plans in the new location
+    if considering a switch.
+  task_id: PD_DOM_PHONE_RESEARCH_NEW_PLANS
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: own
+    path: currentHousing.type
+  - equals: sell
+    path: currentHousing.action
+  base_importance_explanation: 'Selling a property is a significant process that benefits
+    from professional assistance and market knowledge.
+
+    '
+  category: Property Management
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - realtor to sell house local
+  - real estate agent for selling property domestic
+  personalize_explanation: false
+  priority: High
+  recommended_service_ids:
+  - realtor_locator
+  stage: predeparture
+  task_description: Engage a realtor to sell your current home.
+  task_id: PD_DOM_HOUSING_REALTOR_SELL_HOME
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: own
+    path: currentHousing.type
+  - equals: sell
+    path: currentHousing.action
+  base_importance_explanation: 'Finalizing the sale of your current property is a
+    major step in your relocation.
+
+    '
+  category: Property Management
+  due_date: 0-2 weeks before move
+  highly_specific_keywords_for_services:
+  - house sale closing domestic
+  - property sale completion local
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Complete the process of selling your current house (closing).
+  task_id: PD_DOM_HOUSING_COMPLETE_SALE
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: buy
+    path: newHousing.plan
+  base_importance_explanation: 'Finding suitable housing in a new city/state benefits
+    from local expertise and can take time.
+
+    '
+  category: Property Management
+  due_date: 6-8 weeks before move
+  highly_specific_keywords_for_services:
+  - realtor to buy house in [New City/State]
+  - find property in new city
+  - buyer's agent domestic
+  personalize_explanation: false
+  priority: High
+  recommended_service_ids:
+  - realtor_locator
+  stage: predeparture
+  task_description: Engage a realtor or research options to find a new home (purchase)
+    in your destination location.
+  task_id: PD_DOM_HOUSING_REALTOR_FIND_NEW_HOME
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: buy
+    path: newHousing.plan
+  base_importance_explanation: 'Finalizing the purchase of your new home secures your
+    accommodation. This process may conclude near or after your move-in date.
+
+    '
+  category: Property Management
+  due_date: 0-4 weeks before move (can extend post-arrival)
+  highly_specific_keywords_for_services:
+  - mortgage for new home domestic
+  - buying property in [New City/State]
+  - real estate closing domestic
+  personalize_explanation: false
+  priority: High
+  recommended_service_ids:
+  - mortgage_lender
+  stage: predeparture
+  task_description: Complete the process of purchasing a new house.
+  task_id: PD_DOM_HOUSING_COMPLETE_PURCHASE_NEW_HOME
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: rent
+    path: currentHousing.type
+  - equals: terminate_lease
+    path: currentHousing.action
+  base_importance_explanation: 'Properly terminating your lease avoids penalties and
+    ensures a smooth departure from your current residence.
+
+    '
+  category: Property Management
+  due_date: Based on lease terms (usually 30-60 days before move)
+  highly_specific_keywords_for_services:
+  - lease termination notice domestic
+  - end rental agreement local
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Give notice to your current landlord and terminate your lease
+    according to agreement.
+  task_id: PD_DOM_HOUSING_LANDLORD_NOTICE_LEASE_TERMINATION
+- applies_if:
+  - equals: domestic
+    path: moveType
+  - equals: rent
+    path: currentHousing.type
+  base_importance_explanation: 'Following proper move-out procedures helps ensure
+    the timely return of your security deposit.
+
+    '
+  category: Property Management
+  due_date: Within specified timeframe after move-out
+  highly_specific_keywords_for_services:
+  - security deposit return domestic
+  - move out inspection landlord
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Arrange for the return of your security deposit (document condition,
+    provide forwarding address).
+  task_id: PD_DOM_HOUSING_SECURITY_DEPOSIT_RETURN
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Notifying your bank helps prevent potential issues
+    with accessing funds, updates your contact information, and allows discussion
+    of services in your new area.
+
+    '
+  category: Finances & Banking
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - bank update address moving
+  - financial services new city
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Inform your bank of your move to update your address and discuss
+    any local banking needs.
+  task_id: PD_DOM_FINANCE_BANK_NOTIFY_MOVE
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Ensuring utilities are disconnected at your old address
+    prevents continued billing. Schedule disconnection for your move-out day.
+
+    '
+  category: Utility Management
+  due_date: 1 week before move
+  highly_specific_keywords_for_services:
+  - disconnect utilities for domestic move
+  - cancel utilities old address
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Notify current utility providers (electricity, water, gas, internet)
+    of your move and arrange disconnection.
+  task_id: PD_DOM_UTILITIES_DISCONNECT
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'Providing proper notice to your employer is professional
+    and may be required by your contract if you are leaving your job due to the move.'
+    
+  category: 'Employment: Notice & Records'
+  due_date: As per employment contract (usually 2-4 weeks before last day)
+  highly_specific_keywords_for_services:
+  - resignation letter domestic move
+  - job notice period
+  personalize_explanation: false
+  priority: High
+  stage: predeparture
+  task_description: Give notice to your current employer if changing jobs due to the
+    move.
+  task_id: PD_DOM_EMPLOYMENT_GIVE_NOTICE
+- applies_if:
+  - equals: domestic
+    path: moveType
+  base_importance_explanation: 'These documents may be needed for future job applications
+    or verification if you are starting a new role in the new location.'
+  category: 'Employment: Notice & Records'
+  due_date: 1-2 weeks before move
+  highly_specific_keywords_for_services:
+  - request employment records for new job
+  - professional references local move
+  personalize_explanation: false
+  priority: Medium
+  stage: predeparture
+  task_description: Collect necessary employment records and references if changing
+    jobs.
+  task_id: PD_DOM_EMPLOYMENT_COLLECT_RECORDS_REFERENCES

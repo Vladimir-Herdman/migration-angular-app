@@ -1,15 +1,11 @@
 ion-item {
-    min-width: 600px;
-    padding: 0 0 20px;
-}
-
-ion-button.submit-button {
-    min-width: 600px;
+  width: 90%;
+  max-width: 600px;
+  margin: 0 0 20px;
 }
 
 .company-info {
-    text-align: center;
-    margin-top: 60px;
-    font-size: 14px;
-    color: var(--ion-color-medium);
+  text-align: center;
+  font-size: 14px;
+  color: var(--ion-color-medium);
 }
