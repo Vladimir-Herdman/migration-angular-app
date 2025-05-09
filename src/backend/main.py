@@ -444,9 +444,10 @@ async def chat_with_llm(payload: Dict[str, Any]):
             ollama.chat,
             model=LLM_MODEL_NAME,
             messages=messages_for_llm,
-            options={'temperature': 0.7, 'num_predict':1350} # Adjust as needed
+            options={'temperature': 0.7, 'num_predict':1225, 'repeat_penalty': 1.2} # Adjust as needed
         )
         response_text = re.sub(r'<think>(?s:.)*?</think>\n\n', '', response['message']['content'])
+        # response_text = response['message']['content']
         print(f"LLM chat response: {response_text[:100]}...")
         return {"response": response_text}
     except Exception as e:
