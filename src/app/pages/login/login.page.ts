@@ -22,6 +22,7 @@ export class LoginPage implements OnInit {
     loginForm!: FormGroup;
     email: string | null = null;
     password: string | null = null;
+    passwordVisible: boolean = false;
     emailError: string = "Invalid email";
     passwordError: string = "6 character minimum";
 

@@ -15,7 +15,9 @@
                             <li>Must have .com at end</li>
                         </ul>
                         <ion-item>
-                            <ion-input type="password" label="Password" formControlName="password" labelPlacement="floating" [errorText]="passwordError"></ion-input>
+                            <ion-input type="password" label="Password" formControlName="password" labelPlacement="floating" [errorText]="passwordError">
+                                <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+                            </ion-input>
                         </ion-item>
                         <ul>
                             <li>at least 6 characters</li>

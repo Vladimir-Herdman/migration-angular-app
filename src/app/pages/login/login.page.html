@@ -11,7 +11,9 @@
                             <ion-input type="email" label="Email" formControlName="email" labelPlacement="floating" [errorText]="emailError"></ion-input>
                         </ion-item>
                         <ion-item>
-                            <ion-input type="password" label="Password" formControlName="password" labelPlacement="floating" [errorText]="passwordError"></ion-input>
+                            <ion-input type="password" label="Password" formControlName="password" labelPlacement="floating" [errorText]="passwordError">
+                                <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+                            </ion-input>
                         </ion-item>
                         <ion-button id="skip-button" color="primary" size="full" (click)="skipToTabs()">Skip SignIn</ion-button>
                         <ion-button color="dark" fill="clear" size="full" (click)="forgot_email_password()">Forgot password</ion-button>
