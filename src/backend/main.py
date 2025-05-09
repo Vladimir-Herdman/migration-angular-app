@@ -23,7 +23,9 @@ FRONTEND_ORIGINS = os.getenv("FRONTEND_ORIGINS", "http://localhost:8100").split(
 
 # Construct absolute paths from the script's location
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CHECKLISTS_DIR = os.path.join(BASE_DIR, '..', 'Checklists')
+BACKEND_DIR = os.path.join(BASE_DIR, '..', 'Backend')
+
+CHECKLISTS_DIR = os.path.join(BACKEND_DIR, 'Checklists')
 
 SERVICES_DATA_PATH = os.path.join(CHECKLISTS_DIR, 'services.yaml')
 PREDEPART_DATA_PATH = os.path.join(CHECKLISTS_DIR, 'predepart.yaml')
