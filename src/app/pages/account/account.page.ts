@@ -225,44 +225,50 @@ export class AccountPage implements ViewWillEnter {
       }
     } catch (error: any) {
       if (error.code === 'auth/requires-recent-login') {
-        this.reauth();
+        if (await this.reauth()) {
+          this.deleteAccount();
+        };
       } else {
         this.showToast('Failed to delete account. Please try again.', 'danger');
       }
     }
   }
 
-  async reauth() {
-    const alert = await this.alertController.create({
-      header: 'Re-authenticate',
-      inputs: [
-        { name: 'password', type: 'password', placeholder: 'Password' }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Confirm',
-          handler: async (data) => {
-            try {
-              const user = this.auth.currentUser;
-              if (user && data.password) {
-                const credential = EmailAuthProvider.credential(user.email!, data.password);
-                await reauthenticateWithCredential(user, credential);
-                this.deleteAccount();
-              } else {
-                this.showToast('Missing password', 'danger');
+  async reauth(): Promise<boolean> {
+    return new Promise<boolean>(async (resolve) => {
+      const alert = await this.alertController.create({
+        header: 'Re-authenticate',
+        inputs: [
+          { name: 'password', type: 'password', placeholder: 'Password' }
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          },
+          {
+            text: 'Confirm',
+            handler: async (data) => {
+              try {
+                const user = this.auth.currentUser;
+                if (user && data.password) {
+                  const credential = EmailAuthProvider.credential(user.email!, data.password);
+                  await reauthenticateWithCredential(user, credential);
+                  resolve(true);
+                } else {
+                  this.showToast('Missing password', 'danger');
+                  resolve(false);
+                }
+              } catch (err: any) {
+                console.error('Re-authentication failed:', err);
+                this.showToast('Re-authentication failed. Please try again.', 'danger');
+                resolve(false);
               }
-            } catch (err: any) {
-              console.error('Re-authentication failed:', err);
-              this.showToast('Re-authentication failed. Please try again.', 'danger');
             }
           }
-        }
-      ]
+        ]
+      });
+      await alert.present();
     });
-    await alert.present();
   }
 }
