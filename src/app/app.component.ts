@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +9,9 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class AppComponent {
-  constructor() {}
+  constructor(private auth: Auth, private router: Router) {
+    onAuthStateChanged(this.auth, (user) => {
+      if (!user) this.router.navigateByUrl('/', { replaceUrl: true });
+    });
+  }
 }
