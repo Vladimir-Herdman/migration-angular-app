@@ -88,12 +88,17 @@ export class AccountPage implements ViewWillEnter {
     }
   }
 
-  async showToast(message: string, color: string = 'success') {
+  async showToast(
+    message: string,
+    color: string = 'success',
+    duration: number = 2000,
+    position: "top" | "bottom" | "middle" | undefined = "top"
+  ) {
     const toast = await this.toastController.create({
       message,
-      duration: 2000,
+      duration,
       color,
-      position: 'top'
+      position
     });
     await toast.present();
   }  
@@ -121,7 +126,8 @@ export class AccountPage implements ViewWillEnter {
 
     try {
       await verifyBeforeUpdateEmail(this.user, newEmail);
-      this.showToast('Verification email sent. Please check your inbox.');
+      this.showToast(`Verification email sent to ${newEmail}. You will now be signed out.`, 'warning', 5000);
+      await this.logout();
     } catch (error: any) {
       console.error('Error changing email:', error);
       let msg = 'Failed to change email.';
@@ -134,7 +140,7 @@ export class AccountPage implements ViewWillEnter {
     }
   }
 
-  async logout() {
+  async handleLogout() {
     const alert = await this.alertController.create({
       header: 'Confirm Logout',
       message: 'Are you sure you want to log out?',
@@ -147,14 +153,17 @@ export class AccountPage implements ViewWillEnter {
           text: 'Log Out',
           role: 'destructive',
           handler: async () => {
-            await this.auth.signOut();
-            this.router.navigateByUrl('/', { replaceUrl: true });
+            await this.logout();
           }
         }
       ]
     });
-  
     await alert.present();
+  }
+
+  async logout() {
+    await this.auth.signOut();
+    this.router.navigateByUrl('/', { replaceUrl: true });
   }
 
   async handleDelete() {
