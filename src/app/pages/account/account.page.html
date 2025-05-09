@@ -23,6 +23,10 @@
         <ion-label position="stacked">Email</ion-label>
         <ion-input [(ngModel)]="account.info.email" name="email" type="email" placeholder="Email"></ion-input>
       </ion-item>
+
+      <ion-item>
+        <ion-button (click)="changePassword()">Change Password</ion-button>
+      </ion-item>
     </ion-list>
 
     <!-- Settings -->
@@ -43,7 +47,7 @@
 
     <!-- Very Intense Buttons -->
     <div class="button-wrapper">
-      <ion-button expand="block" color="secondary" fill="outline" (click)="logout()">Logout</ion-button>
+      <ion-button expand="block" color="secondary" fill="outline" (click)="handleLogout()">Logout</ion-button>
       <ion-button expand="block" color="danger" fill="outline" (click)="handleDelete()">Delete Account</ion-button>
     </div>
   </div>
