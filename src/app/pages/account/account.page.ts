@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ToastController, AlertController, ViewWillEnter } from '@ionic/angular';
-import { Auth, onAuthStateChanged, deleteUser, EmailAuthProvider, reauthenticateWithCredential, verifyBeforeUpdateEmail } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged, deleteUser, EmailAuthProvider, reauthenticateWithCredential, verifyBeforeUpdateEmail, updatePassword } from '@angular/fire/auth';
 import { FormDataService } from 'src/app/components/quiz/form-data.service';
 import { QuizComponent } from 'src/app/components/quiz/quiz.component';
 
@@ -138,6 +138,76 @@ export class AccountPage implements ViewWillEnter {
       }
       this.showToast(msg, 'danger');
     }
+  }
+
+  async changePassword() {
+    const alert = await this.alertController.create({
+      header: 'Change Password',
+      inputs: [
+        {
+          name: 'currentPassword',
+          type: 'password',
+          placeholder: 'Current Password'
+        },
+        {
+          name: 'newPassword',
+          type: 'password',
+          placeholder: 'New Password'
+        },
+        {
+          name: 'confirmPassword',
+          type: 'password',
+          placeholder: 'Confirm New Password'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Update',
+          handler: async (data) => {
+            const { currentPassword, newPassword, confirmPassword } = data;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+              this.showToast('All fields are required.', 'danger');
+              return false;
+            }
+
+            if (newPassword !== confirmPassword) {
+              this.showToast('Passwords do not match.', 'danger');
+              return false;
+            }
+
+            if (newPassword.length < 6) {
+              this.showToast('Password must be at least 6 characters.', 'danger');
+              return false;
+            }
+
+            try {
+              const user = this.auth.currentUser;
+              if (!user || !user.email) throw new Error('User not signed in.');
+
+              const credential = EmailAuthProvider.credential(user.email, currentPassword);
+              await reauthenticateWithCredential(user, credential);
+              await updatePassword(user, newPassword);
+              this.showToast('Password updated successfully.', 'success');
+              return true;
+            } catch (err: any) {
+              console.error('Password update error:', err);
+              let msg = 'Failed to change password.';
+              if (err.code === 'auth/wrong-password') msg = 'Incorrect current password.';
+              else if (err.code === 'auth/weak-password') msg = 'Password is too weak.';
+              else if (err.code === 'auth/requires-recent-login') msg = 'Please re-login to change your password.';
+              this.showToast(msg, 'danger');
+              return false;
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   async handleLogout() {

@@ -23,6 +23,10 @@
         <ion-label position="stacked">Email</ion-label>
         <ion-input [(ngModel)]="account.info.email" name="email" type="email" placeholder="Email"></ion-input>
       </ion-item>
+
+      <ion-item>
+        <ion-button (click)="changePassword()">Change Password</ion-button>
+      </ion-item>
     </ion-list>
 
     <!-- Settings -->
