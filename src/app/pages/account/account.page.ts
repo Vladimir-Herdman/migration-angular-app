@@ -117,58 +117,21 @@ export class AccountPage implements ViewWillEnter {
       return;
     }
 
-    const alert = await this.alertController.create({
-      header: 'Re-authentication Required',
-      inputs: [
-        {
-          name: 'password',
-          type: 'password',
-          placeholder: 'Enter your current password'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Confirm',
-          handler: async (data) => {
-            const password = data.password;
-  
-            if (!password) {
-              this.showToast('Password is required.', 'danger');
-              return false;
-            }
-  
-            try {
-              const credential = EmailAuthProvider.credential(this.user.email, password);
-              await reauthenticateWithCredential(this.user, credential);
-              await verifyBeforeUpdateEmail(this.user, newEmail);
-            
-              this.showToast('Verification email sent. Please check your inbox.');
-            } catch (error: any) {
-              console.error('Error changing email:', error);
-              let msg = 'Failed to change email.';
-              if (error.code === 'auth/email-already-in-use') {
-                msg = 'That email is already in use.';
-              } else if (error.code === 'auth/wrong-password') {
-                msg = 'Incorrect password.';
-              } else if (error.code === 'auth/requires-recent-login') {
-                msg = 'Please re-login to change your email.';
-              } else if (error.code === 'auth/missing-password') {
-                msg = 'Password cannot be empty.';
-              }
-              this.showToast(msg, 'danger');
-            }            
+    if (!(await this.reauth())) return; // Prompt user to re-authenticate
 
-            return true;
-          }
-        }
-      ]
-    });
-  
-    await alert.present();
+    try {
+      await verifyBeforeUpdateEmail(this.user, newEmail);
+      this.showToast('Verification email sent. Please check your inbox.');
+    } catch (error: any) {
+      console.error('Error changing email:', error);
+      let msg = 'Failed to change email.';
+      if (error.code === 'auth/email-already-in-use') {
+        msg = 'That email is already in use.';
+      } else {
+        msg = error.message || msg; // Already re-authenticated, so these are less likely
+      }
+      this.showToast(msg, 'danger');
+    }
   }
 
   async logout() {
