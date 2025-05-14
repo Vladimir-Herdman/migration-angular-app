@@ -84,7 +84,7 @@ Now, set up the Python environment and install the necessary libraries for the b
   With the virtual environment activated, install the required packages using pip.
 
   ```bash
-  pip install fastapi uvicorn ollama pydantic python-dotenv
+  pip install fastapi uvicorn ollama pydantic python-dotenv pyyaml
   ```
   
 

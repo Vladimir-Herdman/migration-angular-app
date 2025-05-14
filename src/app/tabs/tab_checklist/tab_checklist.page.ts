@@ -99,8 +99,8 @@ export class TabChecklistPage implements OnInit, AfterViewInit, OnDestroy {
   arrivalLabel: string = 'Arrival';
 
   private cachedFormData: any = null;
-  public readonly CACHED_CHECKLIST_KEY_BASE = `cachedChecklist_v3`; // 3rd time deleting this shit and going back to it because I am stubborn
-  private readonly CACHED_FORM_DATA_KEY_BASE = `cachedFormDataForChecklist_v3`;  // Keep above public for access in account page cache deletion
+  public readonly CACHED_CHECKLIST_KEY_BASE = `cachedChecklist_v3`; 
+  private readonly CACHED_FORM_DATA_KEY_BASE = `cachedFormDataForChecklist_v3`;  
   private CACHED_CHECKLIST_KEY = '';
   private CACHED_FORM_DATA_KEY = '';
 
@@ -292,7 +292,7 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let partialData = '';
-      this.generatedTasksCount = 0;
+      this.generatedTasksCount = 0; // Reset for new generation
 
       while (true) {
         const { done, value } = await reader.read();
@@ -306,15 +306,16 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
           if (line.trim()) {
             try {
               const data = JSON.parse(line);
-              if (data.total_tasks !== undefined && data.stage_totals !== undefined) {
-                this.totalTasksToGenerate = data.total_tasks; // This is the true total
+              // Check for 'initial_structure' event first
+              if (data.event_type === 'initial_structure') {
+                this.totalTasksToGenerate = data.total_applicable_tasks || 0;
                 Object.assign(this.stageProgress, {
-                    predeparture: { current: 0, total: data.stage_totals.predeparture || 0 },
-                    departure: { current: 0, total: data.stage_totals.departure || 0 },
-                    arrival: { current: 0, total: data.stage_totals.arrival || 0 }
+                    predeparture: { current: 0, total: data.stage_totals?.predeparture || 0 },
+                    departure: { current: 0, total: data.stage_totals?.departure || 0 },
+                    arrival: { current: 0, total: data.stage_totals?.arrival || 0 }
                 });
-                this.updateStageLabelsBasedOnOriginalData();
-              } else {
+                this.updateStageLabelsBasedOnOriginalData(); // Update labels with totals
+              } else if (data.event_type === 'task_item') { // Process task items
                 const taskData = data;
                 const stageKey = taskData.stage as keyof ChecklistByStageAndCategory;
                 const categoryName = taskData.category || 'General';
@@ -335,17 +336,21 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
                       importance_explanation_summary: this.generateSummary(taskData.importance_explanation),
                       recommended_services: taskData.recommended_services,
                       isExpanded: false,
-                      completed: false,
-                      isImportant: false,
+                      completed: taskData.completed !== undefined ? taskData.completed : false, // Default to false
+                      isImportant: taskData.isImportant !== undefined ? taskData.isImportant : false, // Default to false
                       stage: stageKey,
                       category: categoryName,
-                      notes: ''
+                      notes: taskData.notes || '' // Default to empty string
                   };
                   category.tasks.push(newTask);
                   this.generatedTasksCount++;
                   this.workingOnStage = stageKey;
+                  this.updateStageLabelsBasedOnOriginalData(); // Update progress during generation
                   this.changeDetectorRef.detectChanges();
                 }
+              } else if (data.event_type === 'stream_end') {
+                console.log(`Stream ended. Total tasks streamed by backend: ${data.total_streamed}`);
+                // Final processing after stream ends is handled in the finally block
               }
             } catch (e) {
               console.error('Error parsing streamed JSON:', e, 'Line:', line);
@@ -353,16 +358,27 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
           }
         }
       }
-      this.showToast('Checklist generation complete!', 'success');
+      // Toast for completion is now handled in the 'finally' block based on generatedTasksCount
     } catch (error) {
       console.error('Error generating checklist:', error);
       this.showToast('Error generating checklist. Please try again.', 'danger');
     } finally {
       this.isGeneratingChecklist = false;
       this.workingOnStage = '';
-      this.updateStageProgressAndLabelsFromData(this.checklistData);
-      this.applyFiltersAndSearch();
-      this.saveChecklistToCache();
+
+      if (this.generatedTasksCount > 0) {
+          this.showToast('Checklist generation complete!', 'success');
+      } else if (this.totalTasksToGenerate > 0 && this.generatedTasksCount === 0) {
+          // This case means an initial structure with tasks was expected, but none were actually streamed/processed.
+          this.showToast('Checklist generated, but no tasks match your current criteria.', 'warning');
+      }
+      // If totalTasksToGenerate is 0 (or became 0) and generatedTasksCount is 0,
+      // the empty list message will be handled by applyFiltersAndSearch. No specific toast needed here.
+
+      this.updateStageProgressAndLabelsFromData(this.checklistData); 
+      this.applyFiltersAndSearch(); 
+      this.saveChecklistToCache(); 
+      this.changeDetectorRef.detectChanges();
     }
   }
 
@@ -508,21 +524,25 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
             });
         }
 
+        // Update stageProgress directly from original data
         this.stageProgress[stageKey].current = current;
         this.stageProgress[stageKey].total = total;
+
 
         const stageName = stageKey.charAt(0).toUpperCase() + stageKey.slice(1);
         const labelKey = `${stageKey}Label` as 'predepartureLabel' | 'departureLabel' | 'arrivalLabel';
 
         if (this.isGeneratingChecklist && this.totalTasksToGenerate > 0) {
              this[labelKey] = `${stageName} (${this.generatedTasksCount}/${this.totalTasksToGenerate} gen...)`;
-        } else if (total > 0 && current === total) {
+        } else if (this.isGeneratingChecklist) { // Still generating but totalTasksToGenerate might not be known yet
+             this[labelKey] = `${stageName} (Generating...)`;
+        } else if (total > 0 && current === total) { // All tasks in this stage complete
              this[labelKey] = `${stageName} (${total})`;
-        } else if (total === 0 && this.isQuestionnaireFilled) {
+        } else if (total === 0 && this.isQuestionnaireFilled && !this.isGeneratingChecklist) { // No tasks for this stage
             this[labelKey] = `${stageName} (0)`;
-        } else if (total === 0 && !this.isQuestionnaireFilled) {
+        } else if (!this.isQuestionnaireFilled) { // Questionnaire not filled
             this[labelKey] = stageName;
-        } else {
+        } else { // Default case: show current/total
              this[labelKey] = `${stageName} (${current}/${total})`;
         }
     });
@@ -541,7 +561,7 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
               });
           }
       });
-      this.updateStageLabelsBasedOnOriginalData();
+      this.updateStageLabelsBasedOnOriginalData(); // This will also be called, ensuring labels reflect counts
   }
 
   async openDetailedTaskModal(task: RelocationTask) {
@@ -564,10 +584,10 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
               changed = true;
           }
           if (data.due_date !== undefined && originalTask.due_date !== data.due_date) {
-               try { // Attempt to format date nicely if possible
+               try { 
                    originalTask.due_date = data.due_date ? new Date(data.due_date).toLocaleDateString() : 'Not set';
                } catch (e) {
-                   originalTask.due_date = data.due_date; // Fallback to raw string if formatting fails
+                   originalTask.due_date = data.due_date; 
                }
               changed = true;
           }
@@ -613,8 +633,7 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
   }
 
   async presentFilterPopover() {
-    // Using the AlertController approach defined previously
-    const alertInputs: any[] = [ // Explicitly type as any[] for custom structure
+    const alertInputs: any[] = [ 
             { type: 'radio', label: 'By Status:', value: 'sep_status_header', disabled: true, name: 'sep_status_name_header'},
             { name: 'statusFilterValue', type: 'radio', label: 'All', value: 'all', checked: this.filterStatus === 'all' },
             { name: 'statusFilterValue', type: 'radio', label: 'Incomplete', value: 'incomplete', checked: this.filterStatus === 'incomplete' },
@@ -630,37 +649,28 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
 
     const alert = await this.alertController.create({
         header: 'Filter Tasks',
-        inputs: alertInputs, // Pass the structured inputs
+        inputs: alertInputs, 
         buttons: [
             { text: 'Cancel', role: 'cancel' },
             {
                 text: 'Apply',
                 handler: (data) => {
-                     // Check if data exists and handle values.
-                     // AlertController returns an array for checkboxes if multiple,
-                     // or the value string for radio buttons.
-                     // Since checkbox is single, data will be undefined if unchecked, or its value ('isFavorite') if checked.
-                     // Radio values are straightforward.
-                     // We need to find the selected radio value among the possible values.
                      const statusValues = ['all', 'incomplete', 'completed'];
                      const priorityValues = ['all', 'High', 'Medium', 'Low'];
 
-                     let statusVal = this.filterStatus; // Default to current
-                     let priorityVal = this.filterPriority; // Default to current
-                     let favVal = this.filterFavorites; // Default to current
+                     let statusVal = this.filterStatus; 
+                     let priorityVal = this.filterPriority; 
+                     let favVal = this.filterFavorites; 
 
-                     if (Array.isArray(data)) { // Checkbox was likely involved
+                     if (Array.isArray(data)) { 
                          favVal = data.includes('isFavorite');
-                         // Find radio values within the array if present
                          statusVal = data.find(d => statusValues.includes(d)) || statusVal;
                          priorityVal = data.find(d => priorityValues.includes(d)) || priorityVal;
-                     } else if (typeof data === 'string') { // Only radio buttons were interacted with
+                     } else if (typeof data === 'string') { 
                          if (statusValues.includes(data)) statusVal = data as any;
                          if (priorityValues.includes(data)) priorityVal = data as any;
-                         // Checkbox state wouldn't change if only radio was clicked
                      }
                     
-                     // Assign the determined values
                      this.filterStatus = statusVal;
                      this.filterPriority = priorityVal;
                      this.filterFavorites = favVal;

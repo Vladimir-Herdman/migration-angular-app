@@ -280,50 +280,78 @@ export class AccountPage implements ViewWillEnter {
     }
   }
 
-  public async clear_cache(all_cache: boolean=false) {
-      if (all_cache) {
-          console.log(await this.storage.keys());
-          await this.storage.clear();
-      } else {
-          const userEmailPrefix = this.authService.email_key.replace(/[^a-zA-Z0-9]/g, '_') || 'default_user';
-          const checklist_base = 'cachedChecklist_v3';
-          const form_base = 'cachedFormDataForChecklist_v3';
-          const checklist_data_key = userEmailPrefix + '_' + checklist_base;
-          //console.log(await this.storage.keys());
-          //console.log(await this.storage.get(checklist_data_key));
-          await this.storage.remove(`${userEmailPrefix}_${checklist_base}`);
-          await this.storage.remove(`${userEmailPrefix}_${form_base}`);
-      }
+  public async clear_cache(all_cache: boolean = false) {
+    const header = all_cache ? 'Confirm Clear All Cache' : 'Confirm Clear Cache';
+    const message = all_cache ?
+        'Are you sure you want to clear ALL cached data for ALL users on this device? This action cannot be undone and may affect other users if this device is shared.' :
+        'Are you sure you want to clear your personalized checklist and questionnaire data? This action cannot be undone.';
+    const confirmButtonText = all_cache ? 'Clear All' : 'Clear';
+
+    const alert = await this.alertController.create({
+        header: header,
+        message: message,
+        cssClass: 'custom-alert', // Need mobile styling probably
+        buttons: [
+            {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'alert-button-cancel'
+            },
+            {
+                text: confirmButtonText,
+                role: 'destructive',
+                cssClass: 'alert-button-destructive',
+                handler: async () => {
+                    if (all_cache) {
+                        await this.storage.clear();
+                        this.showToast('Cache for all users cleared successfully.', 'success');
+                    } else {
+                        const userEmailPrefix = this.authService.email_key.replace(/[^a-zA-Z0-9]/g, '_') || 'default_user';
+                        // Ensure these base keys are consistent with tab_checklist.page.ts
+                        const checklist_base_key = 'cachedChecklist_v3';
+                        const form_data_base_key = 'cachedFormDataForChecklist_v3';
+                        
+                        await this.storage.remove(`${userEmailPrefix}_${checklist_base_key}`);
+                        await this.storage.remove(`${userEmailPrefix}_${form_data_base_key}`);
+                        this.showToast('Your cached checklist and questionnaire data have been cleared.', 'success');
+                    }
+                }
+            }
+        ]
+    });
+    await alert.present();
   }
 
   async reauth(): Promise<boolean> {
     return new Promise<boolean>(async (resolve) => {
       const alert = await this.alertController.create({
         header: 'Re-authenticate',
+        message: 'For your security, please enter your password to continue.',
         inputs: [
           { name: 'password', type: 'password', placeholder: 'Password' }
         ],
         buttons: [
           {
             text: 'Cancel',
-            role: 'cancel'
+            role: 'cancel',
+            handler: () => resolve(false)
           },
           {
             text: 'Confirm',
             handler: async (data) => {
               try {
                 const user = this.auth.currentUser;
-                if (user && data.password) {
-                  const credential = EmailAuthProvider.credential(user.email!, data.password);
+                if (user && data.password && user.email) { // Ensure user.email is not null
+                  const credential = EmailAuthProvider.credential(user.email, data.password);
                   await reauthenticateWithCredential(user, credential);
                   resolve(true);
                 } else {
-                  this.showToast('Missing password', 'danger');
+                  this.showToast('Password is required.', 'danger');
                   resolve(false);
                 }
               } catch (err: any) {
                 console.error('Re-authentication failed:', err);
-                this.showToast('Re-authentication failed. Please try again.', 'danger');
+                this.showToast('Re-authentication failed. Incorrect password.', 'danger');
                 resolve(false);
               }
             }
