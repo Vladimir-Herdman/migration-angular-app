@@ -17,4 +17,5 @@ ion-content {
 
 .choices ion-button {
   transition: all 0.7s ease;
+  --background: var(--legal-buttons);
 }

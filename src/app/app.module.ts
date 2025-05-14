@@ -16,6 +16,8 @@ import { environment } from '../environments/environment';
 
 import { IonicStorageModule } from '@ionic/storage-angular';
 
+import { CountrySelectComponent } from '@wlucha/ng-country-select';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -23,7 +25,8 @@ import { IonicStorageModule } from '@ionic/storage-angular';
     IonicModule.forRoot(),
     AppRoutingModule,
     IonicStorageModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    CountrySelectComponent,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

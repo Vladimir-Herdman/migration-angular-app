@@ -5,6 +5,8 @@ import { ToastController, AlertController, ViewWillEnter } from '@ionic/angular'
 import { Auth, onAuthStateChanged, deleteUser, EmailAuthProvider, reauthenticateWithCredential, verifyBeforeUpdateEmail, updatePassword } from '@angular/fire/auth';
 import { FormDataService } from 'src/app/components/quiz/form-data.service';
 import { QuizComponent } from 'src/app/components/quiz/quiz.component';
+import { AuthService } from 'src/app/services/auth.service';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-account',
@@ -36,7 +38,9 @@ export class AccountPage implements ViewWillEnter {
     private auth: Auth,
     private location: Location,
     private router: Router,
-    private formDataService: FormDataService
+    private formDataService: FormDataService,
+    private authService: AuthService,
+    private storage: Storage,
   ) {}
 
   authUnsubscribe: (() => void) | null = null;
@@ -48,6 +52,7 @@ export class AccountPage implements ViewWillEnter {
     this.authUnsubscribe = onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.user = user;
+        this.authService.email_key = user.email ?? 'noEmailDetected';
         this.account.info.email = user.email ?? '';
         this.account.settings.notifications = false; // WIP: settings should push to DB
       }
@@ -111,7 +116,6 @@ export class AccountPage implements ViewWillEnter {
 
     await this.formDataService.setForm(this.account.quiz); // Store questionnaire answers
 
-    console.log(this.account);
     this.oldForm = JSON.parse(JSON.stringify(this.account));
     this.showToast('Account saved successfully!');
   }
@@ -274,6 +278,22 @@ export class AccountPage implements ViewWillEnter {
         this.showToast('Failed to delete account. Please try again.', 'danger');
       }
     }
+  }
+
+  public async clear_cache(all_cache: boolean=false) {
+      if (all_cache) {
+          console.log(await this.storage.keys());
+          await this.storage.clear();
+      } else {
+          const userEmailPrefix = this.authService.email_key.replace(/[^a-zA-Z0-9]/g, '_') || 'default_user';
+          const checklist_base = 'cachedChecklist_v3';
+          const form_base = 'cachedFormDataForChecklist_v3';
+          const checklist_data_key = userEmailPrefix + '_' + checklist_base;
+          //console.log(await this.storage.keys());
+          //console.log(await this.storage.get(checklist_data_key));
+          await this.storage.remove(`${userEmailPrefix}_${checklist_base}`);
+          await this.storage.remove(`${userEmailPrefix}_${form_base}`);
+      }
   }
 
   async reauth(): Promise<boolean> {

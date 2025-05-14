@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormDataService {
   private _storage: Storage | null = null;
+  private _email_key: string;
 
   private formDataSubject = new BehaviorSubject<any>(null);
   formData$ = this.formDataSubject.asObservable();  
 
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage, private authService: AuthService) {
     this.init();
+    this._email_key = this.authService.email_key;
   }
 
   async init() {
@@ -28,12 +31,12 @@ export class FormDataService {
   }
 
   async setForm(data: any) {
-    await this._storage?.set('formData', data);
+    await this._storage?.set(`${this._email_key}_formData`, data);
     this.formDataSubject.next(data);
   }
 
   async getForm(): Promise<any> {
-    return await this._storage?.get('formData');
+    return await this._storage?.get(`${this._email_key}_formData`);
   }
 
   public getDefaultForm() {

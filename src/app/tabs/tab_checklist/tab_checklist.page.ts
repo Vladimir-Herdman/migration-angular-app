@@ -99,8 +99,8 @@ export class TabChecklistPage implements OnInit, AfterViewInit, OnDestroy {
   arrivalLabel: string = 'Arrival';
 
   private cachedFormData: any = null;
-  private readonly CACHED_CHECKLIST_KEY_BASE = `cachedChecklist_v3`; // 3rd time deleting this shit and going back to it because I am stubborn
-  private readonly CACHED_FORM_DATA_KEY_BASE = `cachedFormDataForChecklist_v3`;
+  public readonly CACHED_CHECKLIST_KEY_BASE = `cachedChecklist_v3`; // 3rd time deleting this shit and going back to it because I am stubborn
+  private readonly CACHED_FORM_DATA_KEY_BASE = `cachedFormDataForChecklist_v3`;  // Keep above public for access in account page cache deletion
   private CACHED_CHECKLIST_KEY = '';
   private CACHED_FORM_DATA_KEY = '';
 
@@ -129,6 +129,7 @@ export class TabChecklistPage implements OnInit, AfterViewInit, OnDestroy {
   // Ensure stageKey is a valid key of ChecklistByStageAndCategory
   if (stageKey === 'predeparture' || stageKey === 'departure' || stageKey === 'arrival') {
     // Use 'as keyof...' for type safety when accessing the object property
+    this.displayedChecklistData = this.checklistData;
     return this.displayedChecklistData[stageKey as keyof ChecklistByStageAndCategory] || [];
   }
   return [];
@@ -487,11 +488,11 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
     }
   }
 
-    async saveChecklistToCache() {
-        await this.storage.set(this.CACHED_CHECKLIST_KEY, this.checklistData);
-        await this.storage.set(this.CACHED_FORM_DATA_KEY, this.formData);
-        this.cachedFormData = this.formData;
-    }
+  async saveChecklistToCache() {
+      await this.storage.set(this.CACHED_CHECKLIST_KEY, this.checklistData);
+      await this.storage.set(this.CACHED_FORM_DATA_KEY, this.formData);
+      this.cachedFormData = this.formData;
+  }
 
   updateStageLabelsBasedOnOriginalData() {
     const stages: (keyof ChecklistByStageAndCategory)[] = ['predeparture', 'departure', 'arrival'];

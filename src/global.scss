@@ -42,11 +42,15 @@
   --ion-background-color: #f4f5f8;
   --ion-background-color-rgb: 244, 245, 248;
   --ion-toolbar-background: var(--ion-color-primary); // Default toolbar for light
+  --legal-buttons: #eeeeee;
   --ion-tab-bar-background: #ffffff;
   --ion-card-background: #ffffff;
   --ion-item-background: #ffffff;
   --ion-list-header-background: #f0f0f0;
   --ion-list-background: #ffffff;
+
+  --mat-autocomplete-background-color: #fdfdfd;
+  --mat-sys-surface-container: #fdfdfd;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -98,6 +102,7 @@
 
     --ion-item-background: #1e1e1e;
     --ion-toolbar-background: #1f1f1f; // Darker toolbar
+    --legal-buttons: #dddddd;
     --ion-tab-bar-background: #1f1f1f;
     --ion-card-background: #1e1e1e;
     --ion-list-header-background: #2a2a2a;

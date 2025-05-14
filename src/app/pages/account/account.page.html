@@ -49,6 +49,8 @@
     <div class="button-wrapper">
       <ion-button expand="block" color="secondary" fill="outline" (click)="handleLogout()">Logout</ion-button>
       <ion-button expand="block" color="danger" fill="outline" (click)="handleDelete()">Delete Account</ion-button>
+      <ion-button expand="block" color="warning" (click)="clear_cache()">Clear Individual User Cache</ion-button>
+      <ion-button expand="block" color="warning" (click)="clear_cache(true)">Clear All Caches</ion-button>
     </div>
   </div>
 </ion-content>

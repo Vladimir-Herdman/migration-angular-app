@@ -7,8 +7,6 @@ import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { AuthService } from 'src/app/services/auth.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { environment } from '../../../environments/environment';
-//REMOVE
-import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-login',
@@ -34,7 +32,6 @@ export class LoginPage implements OnInit {
       private auth: Auth,
       private authService: AuthService,
       private databaseService: DatabaseService,
-      private storage: Storage, /* REMOVE */
   ) {
       this.loginForm = this.formBuilder.group({
           email: ['', [Validators.required, Validators.email]],
@@ -49,7 +46,6 @@ export class LoginPage implements OnInit {
             this.authService.email_key = user.email ?? 'noEmailDetected';
             this.skipToTabs();
         }
-      await this.storage.create()
       });
   }
 
