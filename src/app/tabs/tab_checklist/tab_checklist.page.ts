@@ -12,6 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AccountButtonComponent } from 'src/app/components/account-button/account-button.component';
+import { filter } from 'rxjs';
 
 
 // --- Keep existing interfaces ---
@@ -153,7 +154,9 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
   }
 
   async ngAfterViewInit() {
-    this.formDataSubscription = this.formDataService.formData$.subscribe(async form => {
+    this.formDataSubscription = this.formDataService.formData$.
+    pipe(filter(form => !!form))
+    .subscribe(async form => {
       this.formData = form;
       const wasQuestionnaireFilled = this.isQuestionnaireFilled;
       this.isQuestionnaireFilled = this.checkIfQuestionnaireFilled(form);
@@ -180,7 +183,10 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
         this.formData = initialForm;
         this.isQuestionnaireFilled = this.checkIfQuestionnaireFilled(initialForm);
         if (this.isQuestionnaireFilled) {
-            await this.loadCachedChecklistOrGenerate(initialForm);
+            // I think this line is what's double generating our checklist, as our
+            // form data subscriber is already generating, don't need to load the cache
+            // if we already do it there
+            //await this.loadCachedChecklistOrGenerate(initialForm);
         } else {
              this.isQuestionnaireFilled = false;
              this.clearChecklist();
@@ -228,6 +234,7 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
   }
 
   async loadCachedChecklistOrGenerate(currentForm: any) {
+      await this.ngOnInit();
       const cachedChecklist = await this.storage.get(this.CACHED_CHECKLIST_KEY);
       this.cachedFormData = await this.storage.get(this.CACHED_FORM_DATA_KEY);
       const formDataChanged = JSON.stringify(currentForm) !== JSON.stringify(this.cachedFormData);

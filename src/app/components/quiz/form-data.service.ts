@@ -20,14 +20,15 @@ export class FormDataService {
 
   async init() {
     this._storage = await this.storage.create();
-    const savedForm = await this._storage.get('formData');
+    const savedForm = await this._storage?.get(`${this._email_key}_formData`);
     if (savedForm) {
       this.formDataSubject.next(savedForm);
     }
   }
 
   isFilled(form: any): boolean {
-    return !!(form && form.moveType && form.destination && form.moveDate);
+    const isFilled_Boolean = !!(form && form.moveType && form.destination && form.moveDate);
+    return isFilled_Boolean;
   }
 
   async setForm(data: any) {
@@ -36,6 +37,10 @@ export class FormDataService {
   }
 
   async getForm(): Promise<any> {
+    // Hey, I don't know why, but authService email key is not properly initialized
+    // if called from the constructor or init.  Setting _email_key here keeps it
+    // up to date and working ¯\_(-_-)_/¯
+    this._email_key = this.authService.email_key;
     return await this._storage?.get(`${this._email_key}_formData`);
   }
 

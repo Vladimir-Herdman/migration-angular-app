@@ -26,7 +26,6 @@ export class TabQuizPage implements ViewWillEnter {
   async submitForm() {
     await this.formDataService.setForm(this.form);
 
-    console.log(this.form);
     const toast = await this.toastController.create({
       message: 'Answers saved successfully!',
       duration: 2000,

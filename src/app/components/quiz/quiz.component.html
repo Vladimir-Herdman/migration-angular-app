@@ -20,7 +20,7 @@
     </ion-radio-group>
 
     <ion-item>
-      <ng-country-select [lang]="'en'" (countrySelected)="handleSelection($event)" placeholder="Destination" [required]="true"></ng-country-select>
+      <ng-country-select [(ngModel)]="form.destination" name="destination" [lang]="'en'" (countrySelected)="handleSelection($event)" placeholder="Destination" [required]="true"></ng-country-select>
     </ion-item>
 
     <ion-item style="flex-direction: column; align-items: center;">
