@@ -280,6 +280,7 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
   public async generateChecklist(form: any) {
     this.isGeneratingChecklist = true;
     this.clearChecklist();
+    form.destination = form.destination.translations.en;
 
     try {
       const response = await fetch(`${this.backendUrl}/generate_tasks`, {
