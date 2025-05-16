@@ -1,8 +1,8 @@
 <form class="content-wrapper">
   <ion-accordion-group [multiple]="true" value="general">
     <!-- General Information -->
-    <ion-accordion value="general">
-      <ion-item slot="header" color="light">
+    <ion-accordion value="general" class="section-card">
+      <ion-item slot="header" class="section-header">
         <ion-label>General Information</ion-label>
       </ion-item>
       <div class="ion-padding" slot="content">
@@ -10,7 +10,7 @@
           <ion-item>
             <ion-label class="question-label">Are you moving internationally or domestically?</ion-label>
           </ion-item>
-          <ion-radio-group [(ngModel)]="form.moveType" name="moveType">
+          <ion-radio-group [(ngModel)]="form.moveType" name="moveType" (ionChange)="triggerAutoSave()">
             <ion-item>
               <ion-label>International</ion-label>
               <ion-radio slot="start" value="international"></ion-radio>
@@ -21,22 +21,42 @@
             </ion-item>
           </ion-radio-group>
 
+          <ion-item>
+            <ion-label class="question-label">Destination Country</ion-label>
+          </ion-item>
           <ion-item class="country-select-item">
-            <ng-country-select [lang]="'en'" (countrySelected)="handleSelection($event)" placeholder="Destination"
-              [required]="true"></ng-country-select>
+            <ng-country-select 
+              [lang]="'en'" 
+              (countrySelected)="handleSelection($event)" 
+              placeholder="Select your destination country"
+              [required]="true">
+            </ng-country-select>
           </ion-item>
 
-          <ion-item style="flex-direction: column; align-items: flex-start;">
+          <ion-item style="flex-direction: column; align-items: flex-start;" class="date-picker-container">
             <ion-label position="stacked" class="question-label">Estimated Move Date</ion-label>
-            <ion-datetime class="custom-datetime" [(ngModel)]="form.moveDate" name="moveDate" presentation="date"></ion-datetime>
+            <div class="date-field-wrapper">
+              <ion-datetime 
+                class="custom-datetime" 
+                [(ngModel)]="form.moveDate" 
+                (ionChange)="triggerAutoSave()"
+                name="moveDate" 
+                presentation="date" 
+                [preferWheel]="true"
+                [showDefaultButtons]="true"
+                cancelText="Cancel"
+                doneText="Done">
+              </ion-datetime>
+              <ion-note *ngIf="!form.moveDate" class="helper-text">Please select a date</ion-note>
+            </div>
           </ion-item>
         </ion-list>
       </div>
     </ion-accordion>
 
     <!-- Family -->
-    <ion-accordion value="family">
-      <ion-item slot="header" color="light">
+    <ion-accordion value="family" class="section-card">
+      <ion-item slot="header" class="section-header">
         <ion-label>Family</ion-label>
       </ion-item>
       <div class="ion-padding" slot="content">
@@ -45,11 +65,11 @@
             <ion-label class="question-label">Who are you moving with?</ion-label>
           </ion-item>
           <ion-item>
-            <ion-checkbox [(ngModel)]="form.family.children" name="children" slot="start"></ion-checkbox>
+            <ion-checkbox [(ngModel)]="form.family.children" name="children" slot="start" (ionChange)="triggerAutoSave()"></ion-checkbox>
             <ion-label>Children</ion-label>
           </ion-item>
           <ion-item>
-            <ion-checkbox [(ngModel)]="form.family.pets" name="pets" slot="start"></ion-checkbox>
+            <ion-checkbox [(ngModel)]="form.family.pets" name="pets" slot="start" (ionChange)="triggerAutoSave()"></ion-checkbox>
             <ion-label>Pets</ion-label>
           </ion-item>
         </ion-list>
@@ -57,8 +77,8 @@
     </ion-accordion>
 
     <!-- Housing -->
-    <ion-accordion value="housing">
-      <ion-item slot="header" color="light">
+    <ion-accordion value="housing" class="section-card">
+      <ion-item slot="header" class="section-header">
         <ion-label>Housing</ion-label>
       </ion-item>
       <div class="ion-padding" slot="content">
@@ -66,7 +86,7 @@
           <ion-item>
             <ion-label class="question-label">Do you own or rent your current home?</ion-label>
           </ion-item>
-          <ion-radio-group [(ngModel)]="form.currentHousing" name="currentHousing">
+          <ion-radio-group [(ngModel)]="form.currentHousing" name="currentHousing" (ionChange)="triggerAutoSave()">
             <ion-item>
               <ion-label>Own</ion-label>
               <ion-radio slot="start" value="own"></ion-radio>
@@ -77,15 +97,15 @@
             </ion-item>
           </ion-radio-group>
 
-          <ion-item>
+          <ion-item class="toggle-item">
             <ion-label class="question-label">Do you have housing arranged?</ion-label>
-            <ion-toggle [(ngModel)]="form.hasHousing" name="hasHousing"></ion-toggle>
+            <ion-toggle [(ngModel)]="form.hasHousing" name="hasHousing" (ionChange)="triggerAutoSave()"></ion-toggle>
           </ion-item>
           <div *ngIf="form.hasHousing">
             <ion-item>
               <ion-label class="question-label">What will your housing be at the destination?</ion-label>
             </ion-item>
-            <ion-radio-group [(ngModel)]="form.newHousing" name="newHousing">
+            <ion-radio-group [(ngModel)]="form.newHousing" name="newHousing" (ionChange)="triggerAutoSave()">
               <ion-item>
                 <ion-label>Buying a Home</ion-label>
                 <ion-radio slot="start" value="own"></ion-radio>
@@ -105,8 +125,8 @@
     </ion-accordion>
 
     <!-- Transportation -->
-    <ion-accordion value="transportation">
-      <ion-item slot="header" color="light">
+    <ion-accordion value="transportation" class="section-card">
+      <ion-item slot="header" class="section-header">
         <ion-label>Transportation</ion-label>
       </ion-item>
       <div class="ion-padding" slot="content">
@@ -114,7 +134,7 @@
           <ion-item>
             <ion-label class="question-label">What is your vehicle plan?</ion-label>
           </ion-item>
-          <ion-radio-group [(ngModel)]="form.vehicle" name="vehicle">
+          <ion-radio-group [(ngModel)]="form.vehicle" name="vehicle" (ionChange)="triggerAutoSave()">
             <ion-item>
               <ion-label>Bringing My Own</ion-label>
               <ion-radio slot="start" value="bring"></ion-radio>
@@ -133,9 +153,10 @@
     </ion-accordion>
 
     <!-- Services -->
-    <ion-accordion value="services">
-      <ion-item slot="header" color="light">
+    <ion-accordion value="services" class="section-card">
+      <ion-item slot="header" class="section-header">
         <ion-label>Services</ion-label>
+        <ion-icon name="information-circle-outline" class="info-icon" (click)="showTooltip($event, 'services')"></ion-icon>
       </ion-item>
       <div class="ion-padding" slot="content">
         <ion-list lines="none">
@@ -143,23 +164,23 @@
             <ion-label class="question-label">Do you need help with setting up any of the following?</ion-label>
           </ion-item>
           <ion-item>
-            <ion-checkbox [(ngModel)]="form.services.internet" name="internet" slot="start"></ion-checkbox>
+            <ion-checkbox [(ngModel)]="form.services.internet" name="internet" slot="start" (ionChange)="triggerAutoSave()"></ion-checkbox>
             <ion-label>Internet</ion-label>
           </ion-item>
           <ion-item>
-            <ion-checkbox [(ngModel)]="form.services.utilities" name="utilities" slot="start"></ion-checkbox>
+            <ion-checkbox [(ngModel)]="form.services.utilities" name="utilities" slot="start" (ionChange)="triggerAutoSave()"></ion-checkbox>
             <ion-label>Utilities</ion-label>
           </ion-item>
           <ion-item>
-            <ion-checkbox [(ngModel)]="form.services.healthInsurance" name="healthInsurance" slot="start"></ion-checkbox>
+            <ion-checkbox [(ngModel)]="form.services.healthInsurance" name="healthInsurance" slot="start" (ionChange)="triggerAutoSave()"></ion-checkbox>
             <ion-label>Health Insurance</ion-label>
           </ion-item>
           <ion-item>
-            <ion-checkbox [(ngModel)]="form.services.homeInsurance" name="homeInsurance" slot="start"></ion-checkbox>
+            <ion-checkbox [(ngModel)]="form.services.homeInsurance" name="homeInsurance" slot="start" (ionChange)="triggerAutoSave()"></ion-checkbox>
             <ion-label>Home Insurance</ion-label>
           </ion-item>
           <ion-item>
-            <ion-checkbox [(ngModel)]="form.services.carInsurance" name="carInsurance" slot="start"></ion-checkbox>
+            <ion-checkbox [(ngModel)]="form.services.carInsurance" name="carInsurance" slot="start" (ionChange)="triggerAutoSave()"></ion-checkbox>
             <ion-label>Car Insurance</ion-label>
           </ion-item>
         </ion-list>
@@ -167,15 +188,15 @@
     </ion-accordion>
 
     <!-- Employment -->
-    <ion-accordion value="employment">
-      <ion-item slot="header" color="light">
+    <ion-accordion value="employment" class="section-card">
+      <ion-item slot="header" class="section-header">
         <ion-label>Employment</ion-label>
       </ion-item>
       <div class="ion-padding" slot="content">
         <ion-list lines="none">
-          <ion-item>
+          <ion-item class="toggle-item">
             <ion-label class="question-label">Do you already have a job at your destination?</ion-label>
-            <ion-toggle [(ngModel)]="form.hasJob" name="hasJob"></ion-toggle>
+            <ion-toggle [(ngModel)]="form.hasJob" name="hasJob" (ionChange)="triggerAutoSave()"></ion-toggle>
           </ion-item>
         </ion-list>
       </div>

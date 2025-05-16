@@ -19,27 +19,152 @@
   </ion-toolbar>
 
   <ion-toolbar>
-    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="applyFiltersAndSearch()" placeholder="Search tasks or notes..."
+    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="onSearchInput($event)" placeholder="Search tasks or notes..."
       [disabled]="isGeneratingChecklist || !isQuestionnaireFilled" debounce="300"></ion-searchbar>
   </ion-toolbar>
 
   <ion-toolbar>
-    <ion-segment [(ngModel)]="selectedStage" (ionChange)="handleChange()">
-      <ion-segment-button value="predeparture">
-        <ion-label>{{ predepartureLabel }}</ion-label>
+    <ion-segment [(ngModel)]="selectedStage" (ionChange)="handleStageChange()">
+      <ion-segment-button value="predeparture" 
+                         [class.segment-generating]="isGeneratingChecklist && workingOnStage === 'predeparture'">
+        <ion-label>
+          Predeparture
+          <span class="task-badge" 
+                [class.generating-badge]="isGeneratingChecklist && (workingOnStage === 'predeparture' || (workingOnStage === 'preparing' && initialStructureReceived))"
+                [class.completed-badge]="!isGeneratingChecklist && isStageCompleted('predeparture')">
+                {{ !isGeneratingChecklist ? getCompletedTasksCountForStage('predeparture') : 
+                   (workingOnStage === 'preparing' || !stagesWithTotalsRendered.has('predeparture')) ? '0' :
+                   getGeneratedTasksCountForStage('predeparture') }}/{{ getTotalTasksForStage('predeparture') }}
+          </span>
+        </ion-label>
       </ion-segment-button>
-      <ion-segment-button value="departure">
-        <ion-label>{{ departureLabel }}</ion-label>
+      <ion-segment-button value="departure"
+                         [class.segment-generating]="isGeneratingChecklist && workingOnStage === 'departure'">
+        <ion-label>
+          Departure
+          <span class="task-badge" 
+                [class.generating-badge]="isGeneratingChecklist && (workingOnStage === 'departure' || (workingOnStage === 'preparing' && initialStructureReceived))"
+                [class.completed-badge]="!isGeneratingChecklist && isStageCompleted('departure')">
+            {{ !isGeneratingChecklist ? getCompletedTasksCountForStage('departure') : 
+               (workingOnStage === 'preparing' || !stagesWithTotalsRendered.has('departure')) ? '0' :
+               getGeneratedTasksCountForStage('departure') }}/{{ getTotalTasksForStage('departure') }}
+          </span>
+        </ion-label>
       </ion-segment-button>
-      <ion-segment-button value="arrival">
-        <ion-label>{{ arrivalLabel }}</ion-label>
+      <ion-segment-button value="arrival"
+                         [class.segment-generating]="isGeneratingChecklist && workingOnStage === 'arrival'">
+        <ion-label>
+          Arrival
+          <span class="task-badge" 
+                [class.generating-badge]="isGeneratingChecklist && (workingOnStage === 'arrival' || (workingOnStage === 'preparing' && initialStructureReceived))"
+                [class.completed-badge]="!isGeneratingChecklist && isStageCompleted('arrival')">
+            {{ !isGeneratingChecklist ? getCompletedTasksCountForStage('arrival') : 
+               (workingOnStage === 'preparing' || !stagesWithTotalsRendered.has('arrival')) ? '0' :
+               getGeneratedTasksCountForStage('arrival') }}/{{ getTotalTasksForStage('arrival') }}
+          </span>
+        </ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 
-  <ion-toolbar *ngIf="isGeneratingChecklist && workingOnStage">
-    <div class="ion-padding-horizontal ion-text-center">
-      <p>Working on {{ workingOnStage | titlecase }} tasks...</p>
+  <!-- Progress toolbar - always visible when questionnaire is filled -->
+  <ion-toolbar *ngIf="(isQuestionnaireFilled && totalTasksToGenerate > 0) || isGeneratingChecklist" class="generation-status-toolbar">
+    <div class="ion-padding-horizontal">
+      <!-- Preparing phase header -->
+      <div *ngIf="isGeneratingChecklist && workingOnStage === 'preparing'" class="generation-status-header">
+        <ion-icon name="hourglass-outline" color="tertiary"></ion-icon>
+        <span>Preparing task structure</span>
+      </div>
+      
+      <!-- Active generation phase header -->
+      <div *ngIf="isGeneratingChecklist && workingOnStage !== 'preparing'" class="generation-status-header">
+        <ion-icon name="flash-outline" color="primary"></ion-icon>
+        <span>
+          Working on <strong>{{ workingOnStage | titlecase }}</strong> tasks
+          <span class="task-count-badge">{{ getGeneratedTasksCountForStage(workingOnStage) }}/{{ getTotalTasksForStage(workingOnStage) }}</span>
+        </span>
+      </div>
+      
+      <!-- Task completion phase header when not generating -->
+      <div *ngIf="!isGeneratingChecklist && totalTasksToGenerate > 0" class="generation-status-header">
+        <ion-icon name="checkbox-outline" color="success"></ion-icon>
+        <span>Track your progress for each stage</span>
+      </div>
+      
+      <!-- Structure preparation progress bar with improved styling -->
+      <ion-progress-bar *ngIf="isGeneratingChecklist && workingOnStage === 'preparing'"
+        class="stage-progress-bar preparing-progress-bar"
+        [value]="preparingProgress"
+        color="tertiary">
+      </ion-progress-bar>
+      
+      <!-- Stage progress information while still in preparing phase -->
+      <div *ngIf="isGeneratingChecklist && workingOnStage === 'preparing' && initialStructureReceived" class="ion-padding-top ion-text-center">
+        <small>Preparing {{ totalTasksToGenerate }} tasks across all stages</small>
+      </div>
+      
+      <!-- Always show stage progress, in both generating and completion phases -->
+      <div *ngIf="(stagesWithTotalsRendered.size > 0 || workingOnStage !== 'preparing' || !isGeneratingChecklist) && totalTasksToGenerate > 0">
+        <!-- Current stage progress -->
+        <div [ngSwitch]="selectedStage">
+          <!-- Predeparture progress -->
+          <div *ngSwitchCase="'predeparture'" class="active-stage-progress">
+            <div class="stage-progress-header">
+              <span class="stage-name">Predeparture Progress</span>
+              <span class="stage-counts" [class.generating-badge]="isGeneratingChecklist">
+                {{ isGeneratingChecklist ? 
+                   (workingOnStage === 'preparing' || !stagesWithTotalsRendered.has('predeparture')) ? '0' : getGeneratedTasksCountForStage('predeparture') : 
+                   getCompletedTasksCountForStage('predeparture') }}/{{ getTotalTasksForStage('predeparture') }}
+              </span>
+              <ion-icon *ngIf="isStageCompleted('predeparture')" name="checkmark-circle" color="success"></ion-icon>
+            </div>
+            <ion-progress-bar 
+              [value]="getStageProgressValue('predeparture')" 
+              [color]="getStageProgressColor('predeparture')"
+              class="stage-progress-bar"
+              [class.draining]="isDraining">
+            </ion-progress-bar>
+          </div>
+          
+          <!-- Departure progress -->
+          <div *ngSwitchCase="'departure'" class="active-stage-progress">
+            <div class="stage-progress-header">
+              <span class="stage-name">Departure Progress</span>
+              <span class="stage-counts" [class.generating-badge]="isGeneratingChecklist">
+                {{ isGeneratingChecklist ? 
+                   (workingOnStage === 'preparing' || !stagesWithTotalsRendered.has('departure')) ? '0' : getGeneratedTasksCountForStage('departure') : 
+                   getCompletedTasksCountForStage('departure') }}/{{ getTotalTasksForStage('departure') }}
+              </span>
+              <ion-icon *ngIf="isStageCompleted('departure')" name="checkmark-circle" color="success"></ion-icon>
+            </div>
+            <ion-progress-bar 
+              [value]="getStageProgressValue('departure')" 
+              [color]="getStageProgressColor('departure')"
+              class="stage-progress-bar"
+              [class.draining]="isDraining">
+            </ion-progress-bar>
+          </div>
+          
+          <!-- Arrival progress -->
+          <div *ngSwitchCase="'arrival'" class="active-stage-progress">
+            <div class="stage-progress-header">
+              <span class="stage-name">Arrival Progress</span>
+              <span class="stage-counts" [class.generating-badge]="isGeneratingChecklist">
+                {{ isGeneratingChecklist ? 
+                   (workingOnStage === 'preparing' || !stagesWithTotalsRendered.has('arrival')) ? '0' : getGeneratedTasksCountForStage('arrival') : 
+                   getCompletedTasksCountForStage('arrival') }}/{{ getTotalTasksForStage('arrival') }}
+              </span>
+              <ion-icon *ngIf="isStageCompleted('arrival')" name="checkmark-circle" color="success"></ion-icon>
+            </div>
+            <ion-progress-bar 
+              [value]="getStageProgressValue('arrival')" 
+              [color]="getStageProgressColor('arrival')"
+              class="stage-progress-bar"
+              [class.draining]="isDraining">
+            </ion-progress-bar>
+          </div>
+        </div>
+      </div>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -88,65 +213,67 @@
           </ion-item>
 
           <div *ngIf="category.isExpanded" class="task-items-container">
-  <ion-item *ngFor="let item of category.tasks;"
-    (click)="handleTaskItemClick(item, $event)"
-    (dblclick)="handleTaskItemDoubleClick(item, stageKey, category.name, $event)"
-    class="task-item"
-    [class.is-favorite]="item.isImportant"
-    [class.high-priority-incomplete]="item.priority === 'High' && !item.completed">
+            <ion-list lines="none">
+              <ion-item *ngFor="let item of category.tasks; trackBy: trackByTaskId"
+                (click)="handleTaskItemClick(item, $event)"
+                (dblclick)="handleTaskItemDoubleClick(item, stageKey, category.name, $event)"
+                class="task-item"
+                [class.is-favorite]="item.isImportant"
+                [class.high-priority-incomplete]="item.priority === 'High' && !item.completed">
 
-    <ion-checkbox slot="start" class="task-checkbox"
-      (ionChange)="markCheck(item, stageKey, category.name); $event.stopPropagation()"
-      [checked]="getCheckStatus(item)"></ion-checkbox>
+              <ion-checkbox slot="start" class="task-checkbox" [(ngModel)]="item.completed" 
+                (ionChange)="markCheck(item, stageKey, category.name); $event.stopPropagation()">
+              </ion-checkbox>
 
-    <ion-label class="ion-text-wrap task-label">
-      <h3 [class.checked]="getCheckStatus(item)">
-        <ion-icon *ngIf="item.isImportant" name="star" color="warning" class="favorite-star-inline"></ion-icon>
-        {{item.task_description}}
-      </h3>
-      <p class="task-meta">
-            <span class="priority-indicator"
-              [ngClass]="{'high-priority': item.priority === 'High', 'medium-priority': item.priority === 'Medium', 'low-priority': item.priority === 'Low'}">
-              <ion-icon [name]="getPriorityIcon(item.priority)" class="priority-icon"></ion-icon>
-              {{item.priority}}
-            </span>
+              <ion-label class="task-label">
+                <h3 [class.checked]="item.completed">
+                  <ion-icon *ngIf="item.isImportant" name="star" color="warning" class="favorite-star-inline"></ion-icon>
+                  {{ item.task_description }}
+                </h3>
+                <p class="task-meta">
+                  <span class="priority-indicator" [class.high-priority]="item.priority === 'High'"
+                    [class.medium-priority]="item.priority === 'Medium'"
+                    [class.low-priority]="item.priority === 'Low'">
+                    <ion-icon [name]="getPriorityIcon(item.priority)" class="priority-icon"></ion-icon>
+                    {{ item.priority }}
+                  </span>
                   
-            <!-- Inside src/app/tabs/tab_checklist/tab_checklist.page.html -->
-            <span class="due-date-indicator">
-              <ion-icon name="calendar-outline" class="due-date-icon"></ion-icon>
-              Due:
-              <ng-container *ngIf="item.due_date">
-                <ng-container *ngIf="isAbsoluteDate(item.due_date); else showRelativeFormattedStringForNonAbsolute">
-                  {{ formatDateWithOrdinal(item.due_date) }}
-                  <span *ngIf="getRelativeDueDate(item.due_date) as relativeDue" class="relative-due-date">
-                    <ng-container *ngIf="relativeDue && (relativeDue !== formatDateWithOrdinal(item.due_date))">
-                      ({{ relativeDue }})
+                  <span class="due-date-indicator">
+                    <ion-icon name="calendar-outline" class="due-date-icon"></ion-icon>
+                    Due:
+                    <ng-container *ngIf="item.due_date">
+                      <ng-container *ngIf="isAbsoluteDate(item.due_date); else showRelativeFormattedStringForNonAbsolute">
+                        {{ formatDateWithOrdinal(item.due_date) }}
+                        <span *ngIf="getRelativeDueDate(item.due_date) as relativeDue" class="relative-due-date">
+                          <ng-container *ngIf="relativeDue && (relativeDue !== formatDateWithOrdinal(item.due_date))">
+                            ({{ relativeDue }})
+                          </ng-container>
+                        </span>
+                      </ng-container>
+                      <ng-template #showRelativeFormattedStringForNonAbsolute>
+                        {{ getRelativeDueDate(item.due_date) }}
+                      </ng-template>
+                    </ng-container>
+                    <ng-container *ngIf="!item.due_date">
+                      N/A
                     </ng-container>
                   </span>
-                </ng-container>
-                <ng-template #showRelativeFormattedStringForNonAbsolute>
-                  {{ getRelativeDueDate(item.due_date) }}
-                </ng-template>
-              </ng-container>
-              <ng-container *ngIf="!item.due_date">
-                N/A
-              </ng-container>
-            </span>
-          </p>
-      <!-- Brief notes preview, if any -->
-      <p *ngIf="item.notes && item.notes.length > 0" class="task-notes-preview">
-          <ion-icon name="document-text-outline"></ion-icon> {{ item.notes | slice:0:50 }}{{ item.notes.length > 50 ? '...' : ''}}
-      </p>
-    </ion-label>
+                </p>
+                <!-- Brief notes preview, if any -->
+                <p *ngIf="item.notes && item.notes.length > 0" class="task-notes-preview">
+                    <ion-icon name="document-text-outline"></ion-icon> {{ item.notes | slice:0:50 }}{{ item.notes.length > 50 ? '...' : ''}}
+                </p>
+              </ion-label>
 
-    <ion-buttons slot="end" class="task-actions-end">
-      <!-- The click handler for opening the modal already has $event.stopPropagation() -->
-      <ion-button fill="clear" color="medium" (click)="openDetailedTaskModal(item); $event.stopPropagation()" class="info-button">
-        <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-item>
-</div>
+              <ion-buttons slot="end" class="task-actions-end">
+                <!-- The click handler for opening the modal already has $event.stopPropagation() -->
+                <ion-button fill="clear" color="medium" (click)="openDetailedTaskModal(item); $event.stopPropagation()" class="info-button">
+                  <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </ion-item>
+            </ion-list>
+          </div>
         </ng-container>
       </ion-list>
 
@@ -169,21 +296,35 @@
 
 <ion-footer *ngIf="isQuestionnaireFilled && !isGeneratingChecklist && totalTasksToGenerate > 0" class="ion-no-border">
   <ion-toolbar>
-    <div class="overall-progress-container ion-padding-horizontal">
-      <ion-label>Overall Progress: {{ totalCompletedTasks }} / {{ totalTasksToGenerate }}</ion-label>
+    <div class="overall-progress-container ion-padding">
+      <div class="overall-progress-info">
+        <span class="progress-label">Task Completion</span>
+        <span class="progress-count">{{ totalCompletedTasks }} / {{ totalTasksToGenerate }}</span>
+      </div>
       <ion-progress-bar [value]="totalTasksToGenerate > 0 ? totalCompletedTasks / totalTasksToGenerate : 0"
-        color="success"></ion-progress-bar>
+        color="success" class="overall-progress-bar" [class.draining]="isDraining"></ion-progress-bar>
     </div>
   </ion-toolbar>
 </ion-footer>
 
-<ion-footer *ngIf="isGeneratingChecklist" class="ion-no-border">
+<ion-footer *ngIf="isGeneratingChecklist" class="ion-no-border generation-footer">
   <ion-toolbar>
-     <div class="overall-progress-container ion-padding-horizontal">
-        <ion-label *ngIf="totalTasksToGenerate > 0">Generating: {{ generatedTasksCount }} / {{ totalTasksToGenerate }}</ion-label>
-        <ion-label *ngIf="totalTasksToGenerate === 0">Analyzing requirements...</ion-label>
+     <div class="overall-progress-container ion-padding">
+        <div class="overall-progress-info">
+          <span class="progress-label" *ngIf="totalTasksToGenerate > 0">
+            {{ workingOnStage === 'preparing' ? 'Preparing' : 'Generating Tasks' }}
+          </span>
+          <span class="progress-count" *ngIf="totalTasksToGenerate > 0">
+            {{ generatedTasksCount }} / {{ totalTasksToGenerate }}
+          </span>
+        </div>
+        
+        <!-- Overall progress bar with dynamic styling -->
         <ion-progress-bar
-        [value]="totalTasksToGenerate > 0 ? generatedTasksCount / totalTasksToGenerate : (generatedTasksCount > 0 ? 0.05 : 0)" [buffer]="totalTasksToGenerate > 0 ? (generatedTasksCount +1 ) / totalTasksToGenerate : 0.1"></ion-progress-bar>
+          class="overall-progress-bar"
+          [value]="totalTasksToGenerate > 0 ? generatedTasksCount / totalTasksToGenerate : preparingProgress" 
+          [color]="workingOnStage === 'preparing' ? 'tertiary' : 'primary'">
+        </ion-progress-bar>
      </div>
   </ion-toolbar>
 </ion-footer>

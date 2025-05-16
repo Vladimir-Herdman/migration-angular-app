@@ -1,152 +1,401 @@
 :host {
     display: block;
     width: 100%;
-    height: 100%;
+    
+    // Global styles for toasts
+    ::ng-deep {
+        .info-tooltip {
+            --background: rgba(0, 0, 0, 0.85);
+            --color: white;
+            --width: 300px;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-size: 14px;
+            padding: 8px 16px;
+            z-index: 9999;
+            
+            .toast-wrapper {
+                padding: 10px;
+            }
+            
+            ion-button {
+                font-size: 1.5rem;
+                margin-left: 8px;
+            }
+        }
+        
+        .auto-save-toast {
+            --background: rgba(0, 128, 0, 0.8);  
+            --color: white;
+            --border-radius: 20px;
+            --min-height: 48px;
+            --button-color: white;
+            --width: auto;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            
+            .toast-wrapper {
+                padding: 8px 16px;
+            }
+        }
+    }
 }
 
 form.content-wrapper {
     padding: 0;
-    width: 100%; // Ensure form takes full width for accordion group
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 ion-accordion-group {
-    width: 90%;
-    max-width: 600px;
-    margin: 0 auto 20px auto; // Center the accordion group
-    border-radius: 8px; // Add some rounding to the group
-    overflow: hidden; // Clip child item borders for cleaner look
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: none;
+    padding: 0 10px;
     
     @media (prefers-color-scheme: dark) {
-      background: var(--ion-item-background, #1e1e1e); // Match item background for seamless look
+      background: transparent;
     }
     @media (prefers-color-scheme: light) {
       background: var(--ion-item-background, #ffffff);
     }
+    
+    @media (max-width: 480px) {
+        padding: 0 5px;
+    }
+}
+
+.section-card {
+    margin-bottom: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    
+    @media (prefers-color-scheme: dark) {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
 }
 
 ion-accordion {
+    margin-bottom: 4px;
+    
+    // Add padding to all accordion header items 
     ion-item[slot="header"] {
-        --background: var(--ion-color-light); // Use a light color for header for contrast
-        --color: var(--ion-text-color); // Ensure text is readable
-        font-weight: bold;
-         border-bottom: 1px solid var(--ion-border-color, var(--ion-color-medium-tint));
-
-
+        --padding-start: 16px; // Add padding for all accordion headers
+    }
+    
+    &.section-card[expanded="true"] {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        
         @media (prefers-color-scheme: dark) {
-            --background: var(--ion-color-step-150, #363636);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+    }
+    
+    .section-header {
+        --background: var(--ion-color-light-shade);
+        --color: var(--ion-text-color);
+        font-weight: 600;
+        font-size: 1rem;
+        border-bottom: 1px solid var(--ion-border-color, var(--ion-color-medium-tint));
+        border-radius: 10px 10px 0 0;
+        overflow: hidden;
+        --padding-start: 16px;
+        
+        @media (prefers-color-scheme: dark) {
+            --background: rgba(45, 45, 45, 0.8);
             --color: var(--ion-text-color, #ffffff);
-            border-bottom: 1px solid var(--ion-border-color, #2f2f2f);
+            border-bottom: 1px solid rgba(60, 60, 60, 0.8);
+        }
+        
+        ion-label {
+            margin: 14px 0;
+            padding-left: 6px;
         }
     }
 
     .ion-padding[slot="content"] {
-        // Add padding to content area for better spacing
-        padding-top: 8px;
-        padding-bottom: 16px;
-         background: var(--ion-background-color);
+        padding: 20px 16px;
+        background: transparent;
 
         @media (prefers-color-scheme: dark) {
-             background: var(--ion-background-color);
+            background: rgba(30, 30, 30, 0.5);
         }
     }
 }
 
 ion-list {
-    width: 100%; // List inside accordion should take full width of its container
-    max-width: none; // Override previous max-width if any
-    margin-bottom: 0; // No margin for lists inside accordion
-    background: transparent; // Make list background transparent to inherit accordion content background
-    padding: 0 8px; // Add some horizontal padding within the content slot
+    width: 100%;
+    margin-bottom: 0;
+    background: transparent;
+    padding: 0;
 }
 
 ion-item {
-    --padding-start: 0; // Remove default item padding
-     --inner-padding-end: 0;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    --min-height: 52px;
+    --background: transparent;
+    
+    @media (prefers-color-scheme: dark) {
+        --border-color: rgba(60, 60, 60, 0.8);
+    }
+    
+    &:last-child {
+        --border-style: none;
+    }
+    
+    &.toggle-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
+        ion-toggle {
+            margin-left: 16px;
+        }
+    }
 }
 
 .question-label {
-    font-weight: 500;
+    font-weight: 600;
     font-size: 1rem;
-    color: var(--ion-text-color);
-    margin-bottom: 8px; // Add some space below question labels
-    display: block; // Ensure it takes full width
-    white-space: normal; // Allow text wrapping
+    color: var(--ion-color-primary);
+    margin-bottom: 18px;
+    display: block;
+    white-space: normal;
+    padding: 0 4px;
+    
+    @media (prefers-color-scheme: dark) {
+        color: #4a96f5;
+    }
 }
 
-ion-radio-group ion-item,
-ion-item ion-checkbox {
-    margin-bottom: 8px; // Space between radio/checkbox options
+ion-radio-group, ion-checkbox {
+    --color-checked: var(--ion-color-primary);
+    
+    ion-item {
+        --padding-start: 16px;
+        --inner-padding-end: 16px;
+        --min-height: 48px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        --background: var(--ion-color-light-tint);
+        
+        @media (prefers-color-scheme: dark) {
+            --background: rgba(45, 45, 45, 0.6);
+            --border-color: transparent;
+        }
+        
+        &:last-child {
+            margin-bottom: 20px;
+        }
+        
+        ion-label {
+            font-size: 0.95rem;
+            margin-left: 12px;
+        }
+    }
+}
+
+ion-radio {
+    --color: var(--ion-color-medium);
+    --color-checked: var(--ion-color-primary);
+    margin: 0 4px;
+    width: 24px;
+    height: 24px;
+    
+    @media (prefers-color-scheme: dark) {
+        --color: rgba(255, 255, 255, 0.5);
+        --color-checked: #4a96f5;
+    }
+}
+
+ion-checkbox {
+    --border-color: var(--ion-color-medium);
+    --border-color-checked: var(--ion-color-primary);
+    --background-checked: var(--ion-color-primary);
+    margin: 0 4px;
+    width: 24px;
+    height: 24px;
+    
+    @media (prefers-color-scheme: dark) {
+        --border-color: rgba(255, 255, 255, 0.5);
+        --border-color-checked: #4a96f5;
+        --background-checked: #4a96f5;
+    }
+}
+
+ion-toggle {
+    --background: var(--ion-color-medium-shade);
+    --background-checked: var(--ion-color-primary);
+    --handle-background: white;
+    --handle-background-checked: white;
+    padding: 12px 0;
+    
+    @media (prefers-color-scheme: dark) {
+        --background: rgba(80, 80, 80, 0.8);
+        --background-checked: #4a96f5;
+    }
+}
+
+.date-picker-container {
+    --inner-padding-end: 0;
+    --inner-padding-start: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+}
+
+.date-field-wrapper {
+    width: 100%;
+    position: relative;
+    
+    .helper-text {
+        display: block;
+        color: var(--ion-color-medium);
+        font-size: 0.85rem;
+        margin-top: 8px;
+        margin-left: 4px;
+    }
 }
 
 ion-datetime.custom-datetime {
     margin-top: 8px;
     margin-bottom: 8px;
-    padding: 8px;
-    border: 1px solid var(--ion-border-color, var(--ion-color-medium-tint));
+    padding: 12px;
+    border: 1px solid var(--ion-border-color, var(--ion-color-light-shade));
     border-radius: 8px;
-    background-color: var(--ion-item-background); // Match item background for consistency
-
+    background-color: var(--ion-color-light-tint);
+    width: 100%;
+    
     @media (prefers-color-scheme: dark) {
-        border-color: var(--ion-border-color, #2f2f2f);
-        background-color: var(--ion-color-step-100, #2a2a2a);
+        border-color: rgba(60, 60, 60, 0.8);
+        background-color: rgba(40, 40, 40, 0.6);
+        color: white;
     }
 }
 
 .country-select-item {
-  margin-top: 16px;
-  margin-bottom: 16px;
-  // Styles for ng-country-select need to target its internal elements.
-  // Since it's a third-party component, you might need to use ::ng-deep or inspect its structure
-  // For now, remove the red border:
+    margin-top: 16px;
+    margin-bottom: 16px;
+    
+    @media (prefers-color-scheme: dark) {
+        --background: transparent;
+    }
 }
 
-// Remove debug borders
-// ng-country-select .mat-form-field-flex {
-//   border: 5px solid red; // REMOVE THIS
-// }
-// ng-country-select .mat-form-field-underline {
-//   border: 5px solid red; // REMOVE THIS
-// }
+.info-icon {
+    font-size: 20px;
+    color: var(--ion-color-medium);
+    margin-right: 8px;
+    margin-left: 4px;
+    
+    @media (prefers-color-scheme: dark) {
+        color: rgba(200, 200, 200, 0.7);
+    }
+}
 
-// ng-country-select .mat-form-field-wrapper {
-//   border: 5px solid red; // REMOVE THIS
-// }
-
-// Attempt to style ng-country-select, might need ::ng-deep or more specific selectors
 ::ng-deep ng-country-select {
-  .mat-form-field-wrapper {
-    padding-bottom: 0 !important;
-  }
-  .mat-form-field-infix {
-    border-top: none !important;
-    padding: 0.5em 0 !important;
-  }
-  .mat-form-field-underline {
-    background-color: var(--ion-border-color, var(--ion-color-medium-tint)) !important;
-  }
-  .mat-form-field-label {
-    color: var(--ion-color-medium) !important;
-  }
-  .mat-select-value-text {
-    color: var(--ion-text-color) !important;
-  }
-  .mat-select-arrow {
-    color: var(--ion-color-medium) !important;
-  }
-
-  // Dark mode specific overrides for ng-country-select
-  @media (prefers-color-scheme: dark) {
+    width: 100%;
+    
+    .mat-form-field-wrapper {
+        padding-bottom: 0 !important;
+    }
+    
+    .mat-form-field-infix {
+        border-top: none !important;
+        padding: 0.75em 0 !important;
+    }
+    
     .mat-form-field-underline {
-      background-color: var(--ion-border-color, #505050) !important;
+        background-color: var(--ion-border-color, var(--ion-color-medium-tint)) !important;
+        height: 1px !important;
     }
+    
     .mat-form-field-label {
-      color: var(--ion-color-step-850, #cccccc) !important;
+        color: var(--ion-color-medium) !important;
+        font-size: 0.95rem !important;
     }
+    
     .mat-select-value-text {
-      color: var(--ion-text-color, #ffffff) !important;
+        color: var(--ion-text-color) !important;
+        font-size: 1rem !important;
     }
+    
     .mat-select-arrow {
-      color: var(--ion-color-step-850, #cccccc) !important;
+        color: var(--ion-color-medium) !important;
     }
-  }
+
+    @media (prefers-color-scheme: dark) {
+        .mat-form-field-underline {
+            background-color: rgba(100, 100, 100, 0.8) !important;
+        }
+        
+        .mat-form-field-label {
+            color: rgba(200, 200, 200, 0.7) !important;
+        }
+        
+        .mat-select-value-text {
+            color: white !important;
+        }
+        
+        .mat-select-arrow {
+            color: rgba(200, 200, 200, 0.7) !important;
+        }
+        
+        .mat-form-field-appearance-legacy .mat-form-field-underline {
+            background-color: rgba(100, 100, 100, 0.8) !important;
+        }
+        
+        .mat-select-panel {
+            background: #2d2d2d !important;
+        }
+        
+        .mat-option {
+            color: white !important;
+        }
+        
+        .mat-option.mat-selected:not(.mat-option-disabled) {
+            color: #4a96f5 !important;
+        }
+    }
+}
+
+// Add mobile-specific styles for smaller screens
+@media (max-width: 480px) {
+    ion-item {
+        --min-height: 56px;
+    }
+    
+    ion-radio-group ion-item, ion-item ion-checkbox {
+        --min-height: 52px;
+    }
+    
+    ion-toggle {
+        transform: scale(1.1);
+    }
+    
+    .question-label {
+        margin-bottom: 20px;
+    }
+    
+    ion-radio-group ion-item ion-label, ion-item ion-checkbox + ion-label {
+        font-size: 1rem;
+    }
+    
+    .section-card {
+        margin-bottom: 16px;
+    }
+    
+    ion-datetime.custom-datetime {
+        padding: 16px;
+    }
+    
+    .info-icon {
+        font-size: 22px;
+    }
 }

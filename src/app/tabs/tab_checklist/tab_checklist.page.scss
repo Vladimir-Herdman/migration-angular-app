@@ -168,10 +168,12 @@ ion-item.task-item {
   --padding-end: 8px; // Less padding on the end to accommodate action button
   --min-height: auto; // Auto height based on content
   align-items: flex-start; // Align checkbox with top of text
-  padding-top: 12px; // Increased padding
-  padding-bottom: 12px;
+  padding-top: 14px;
+  padding-bottom: 14px;
   cursor: default; // Default cursor as click opens modal
   --background: transparent; // Inherit from .task-items-container
+  margin-bottom: 2px; // Slight separation between tasks
+  border-bottom: 1px solid rgba(var(--ion-color-medium-rgb), 0.1);
 
   &.is-favorite {
     // Subtle favorite indication, star icon is primary
@@ -355,5 +357,674 @@ ion-footer ion-toolbar .overall-progress-container {
   }
   .priority-indicator, .due-date-indicator {
     // background-color: rgba(var(--ion-color-step-850-rgb), 0.15);
+  }
+}
+
+// Generation progress styles
+.generation-label {
+  display: block;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+// Segment button styles during generation
+ion-segment-button.segment-generating {
+  position: relative;
+  --color: var(--ion-color-primary);
+  --color-checked: var(--ion-color-primary);
+  --background-checked: rgba(var(--ion-color-primary-rgb), 0.1);
+  --border-color: var(--ion-color-primary);
+  animation: pulse 1.5s infinite;
+  
+  .generation-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.65rem;
+    --color: var(--ion-color-primary);
+    --background: rgba(var(--ion-color-light-rgb), 0.9);
+    border: 1px solid var(--ion-color-primary-tint);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-primary-rgb), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(var(--ion-color-primary-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-primary-rgb), 0);
+  }
+}
+
+// Enhanced generation footer styles
+.generation-footer {
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  
+  @media (prefers-color-scheme: dark) {
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.generation-label {
+  display: block;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 12px;
+  
+  .main-label {
+    font-size: 1rem;
+    color: var(--ion-text-color);
+  }
+  
+  .stage-label {
+    font-size: 0.85rem;
+    color: var(--ion-color-medium-shade);
+  }
+}
+
+.generation-status-toolbar {
+  --background: var(--ion-color-light-tint);
+  
+  @media (prefers-color-scheme: dark) {
+    --background: var(--ion-color-step-50);
+  }
+  
+  .generation-status-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    
+    ion-icon {
+      margin-right: 8px;
+      font-size: 1.2rem;
+    }
+    
+    strong {
+      font-weight: 600;
+      color: var(--ion-color-primary);
+    }
+    
+    .task-count-badge {
+      background: var(--ion-color-primary-tint);
+      color: var(--ion-color-primary-contrast);
+      border-radius: 12px;
+      padding: 2px 8px;
+      margin-left: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  }
+  
+  // Preparing stage progress bar with special animation
+  .preparing-progress-bar {
+    height: 8px;
+    border-radius: 4px;
+    --background: rgba(var(--ion-color-tertiary-rgb), 0.1);
+    --buffer-background: rgba(var(--ion-color-tertiary-rgb), 0.2);
+    --progress-background: var(--ion-color-tertiary);
+    transition: width 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    animation: pulse-glow 2s infinite;
+    
+    &.complete {
+      --progress-background: var(--ion-color-success);
+      animation: success-pulse 1.5s ease-in-out;
+    }
+  }
+
+  // Stage progress container
+  .stage-progress-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  // Each stage section
+  .stage-progress-section {
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    
+    .stage-progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      
+      .stage-name {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--ion-color-medium-shade);
+      }
+      
+      .stage-counts {
+        font-size: 0.85rem;
+        color: var(--ion-color-medium);
+        margin-right: 8px;
+      }
+      
+      ion-icon {
+        font-size: 1.1rem;
+      }
+    }
+    
+    .stage-progress-bar {
+      height: 12px !important;
+      border-radius: 6px !important;
+      --background: rgba(var(--ion-color-medium-rgb), 0.15);
+      --progress-background: var(--ion-color-primary);
+      overflow: hidden;
+      position: relative;
+      transform-origin: left center;
+      transition: transform 0.3s ease-out;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, 
+          rgba(255, 255, 255, 0.1) 0%, 
+          rgba(255, 255, 255, 0.2) 50%, 
+          rgba(255, 255, 255, 0.1) 100%);
+        animation: progress-shimmer 2s infinite linear;
+      }
+      
+      &[color="success"] {
+        --progress-background: var(--ion-color-success);
+        animation: success-pulse 1.5s ease-in-out;
+      }
+    }
+    
+    // Active stage styling
+    &.active-stage-section {
+      background-color: rgba(var(--ion-color-primary-rgb), 0.08);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      
+      .stage-name, .stage-counts {
+        color: var(--ion-color-primary);
+        font-weight: 600;
+      }
+      
+      .stage-progress-bar {
+        height: 8px; // Slightly larger for active stage
+        --background: rgba(var(--ion-color-primary-rgb), 0.15);
+        --progress-background: var(--ion-color-primary);
+      }
+    }
+    
+    // Completed stage styling
+    &.completed-stage-section {
+      .stage-name, .stage-counts {
+        color: var(--ion-color-success-shade);
+      }
+      
+      .stage-progress-bar {
+        --background: rgba(var(--ion-color-success-rgb), 0.1);
+        --progress-background: var(--ion-color-success);
+      }
+      
+      // Apply a subtle "completed" animation
+      animation: completed-pulse 1.5s ease-in-out;
+    }
+  }
+}
+
+// Footer progress bar styles
+.generation-footer {
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  
+  @media (prefers-color-scheme: dark) {
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .overall-progress-container {
+    padding: 12px 16px;
+    
+    .generation-label {
+      display: block;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 10px;
+      
+      .main-label {
+        font-size: 1rem;
+        color: var(--ion-text-color);
+      }
+    }
+    
+    .total-progress-bar {
+      height: 10px; // Taller for emphasis
+      border-radius: 5px;
+      --background: rgba(var(--ion-color-primary-rgb), 0.1);
+      --buffer-background: rgba(var(--ion-color-primary-rgb), 0.2);
+      --progress-background: var(--ion-color-primary);
+      margin-top: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      
+      // Add subtle animation
+      animation: glow-pulse 3s infinite;
+    }
+  }
+}
+
+// Animations
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-primary-rgb), 0.4);
+  }
+  50% {
+    box-shadow: 0 0 5px 0 rgba(var(--ion-color-primary-rgb), 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-primary-rgb), 0.4);
+  }
+}
+
+@keyframes glow-pulse {
+  0% {
+    box-shadow: 0 0 2px rgba(var(--ion-color-primary-rgb), 0.4);
+  }
+  50% {
+    box-shadow: 0 0 4px rgba(var(--ion-color-primary-rgb), 0.6);
+  }
+  100% {
+    box-shadow: 0 0 2px rgba(var(--ion-color-primary-rgb), 0.4);
+  }
+}
+
+@keyframes completed-pulse {
+  0% {
+    background-color: rgba(var(--ion-color-success-rgb), 0.2);
+  }
+  50% {
+    background-color: rgba(var(--ion-color-success-rgb), 0.05);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+// Updated stage progress bar animation with proper left-to-right fill animation
+.stage-progress-bar {
+  height: 12px !important;
+  border-radius: 6px !important;
+  --background: rgba(var(--ion-color-medium-rgb), 0.2);
+  margin: 10px 0 5px 0;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+  position: relative;
+  width: 100% !important;
+  
+  // This ensures bar always fills from left to right
+  transform-origin: left center;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.15) 50%, 
+      transparent 100%);
+    animation: progress-shimmer 2s infinite linear;
+  }
+  
+  // Force hardware acceleration for smoother animations
+  transform: translateZ(0);
+  will-change: transform;
+  
+  // Specifically target the progress part of ion-progress-bar
+  &::part(progress) {
+    transform-origin: left center;
+    transition: transform 0.5s ease-out;
+  }
+  
+  &.draining {
+    --progress-background: var(--ion-color-medium);
+    
+    &::part(progress) {
+      transform-origin: right center;
+      transition: transform 0.8s ease-in;
+    }
+  }
+}
+
+// Add animated success state
+ion-progress-bar.stage-progress-bar[color="success"] {
+  --progress-background: var(--ion-color-success);
+  animation: success-pulse 1.5s ease-in-out;
+}
+
+// Overall progress bar at bottom - matching stage progress bar styling
+.overall-progress-bar {
+  height: 10px !important;
+  border-radius: 6px !important;
+  --background: rgba(var(--ion-color-medium-rgb), 0.2);
+  overflow: hidden;
+  position: relative;
+  margin: 8px 0;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.15) 50%, 
+      transparent 100%);
+    animation: progress-shimmer 2s infinite linear;
+  }
+  
+  &.draining {
+    --progress-background: var(--ion-color-medium);
+    
+    &::part(progress) {
+      transform-origin: right center;
+      transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: scaleX(0);
+      animation: drain-flash 1.2s ease-in;
+    }
+  }
+}
+
+// Updated active-stage-progress styling for consistency
+.active-stage-progress {
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgba(var(--ion-color-primary-rgb), 0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transform: scale(1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  
+  .stage-progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    
+    .stage-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ion-color-primary-shade);
+    }
+    
+    .stage-counts {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ion-color-primary);
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+      border-radius: 16px;
+      padding: 2px 10px;
+      
+      &.generating-badge {
+        background: rgba(var(--ion-color-primary-rgb), 0.2);
+        color: var(--ion-color-primary);
+        animation: counter-pulse 2s infinite;
+      }
+    }
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(var(--ion-color-primary-rgb), 0.15);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    
+    .stage-progress-header {
+      .stage-name {
+        color: var(--ion-color-primary-tint);
+      }
+      
+      .stage-counts {
+        color: var(--ion-color-primary-tint);
+        background: rgba(var(--ion-color-primary-rgb), 0.2);
+        
+        &.generating-badge {
+          background: rgba(var(--ion-color-primary-rgb), 0.3);
+          color: var(--ion-color-primary-tint);
+        }
+      }
+    }
+  }
+}
+
+// Footer progress container styling - consistent for both generating and normal states
+.overall-progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%; // Ensure it takes full width
+  padding: 12px 16px; // Consistent padding in both footers
+  
+  .overall-progress-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0px;
+  }
+
+  .progress-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .progress-label {
+      color: var(--ion-color-primary-contrast);
+    }
+  }
+}
+
+// Styled progress count in footer
+.progress-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--ion-color-primary-rgb), 0.1);
+  color: var(--ion-color-primary);
+  border-radius: 6px;
+  padding: 2px 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  
+  @media (prefers-color-scheme: dark) {
+    background: rgba(var(--ion-color-primary-rgb), 0.2);
+    color: var(--ion-color-primary-tint);
+  }
+}
+
+// Generation status header with improved appearance
+.generation-status-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  
+  ion-icon {
+    margin-right: 10px;
+    font-size: 1.4rem;
+  }
+  
+  span {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  
+  strong {
+    font-weight: 600;
+    color: var(--ion-color-primary);
+  }
+  
+  .task-count-badge {
+    background: var(--ion-color-primary-tint);
+    color: var(--ion-color-primary-contrast);
+    border-radius: 12px;
+    padding: 2px 8px;
+    margin-left: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+}
+
+// Animation keyframes
+@keyframes progress-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Animation for the drain effect
+@keyframes drain-animation {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes success-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-success-rgb), 0.7);
+  }
+  70% {
+    box-shadow: 0 0 10px 3px rgba(var(--ion-color-success-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-success-rgb), 0);
+  }
+}
+
+// Add force-visible class to ensure progress bars display properly
+.force-visible ion-progress-bar {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+// Tasks badge counter styling
+.task-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--ion-color-medium-rgb), 0.15);
+  color: var(--ion-color-medium-shade);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-left: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  
+  &.generating-badge {
+    background: rgba(var(--ion-color-primary-rgb), 0.2);
+    color: var(--ion-color-primary);
+    animation: counter-pulse 2s infinite;
+  }
+  
+  &.completed-badge {
+    background: rgba(var(--ion-color-success-rgb), 0.2);
+    color: var(--ion-color-success);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    background: rgba(var(--ion-color-medium-rgb), 0.3);
+    color: var(--ion-color-medium-tint);
+    
+    &.generating-badge {
+      background: rgba(var(--ion-color-primary-rgb), 0.3);
+      color: var(--ion-color-primary-tint);
+    }
+    
+    &.completed-badge {
+      background: rgba(var(--ion-color-success-rgb), 0.3);
+      color: var(--ion-color-success-tint);
+    }
+  }
+}
+
+// Counter pulse animation
+@keyframes counter-pulse {
+  0% { 
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-primary-rgb), 0.4);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 5px 0 rgba(var(--ion-color-primary-rgb), 0.0);
+    transform: scale(1.05);
+  }
+  100% { 
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-primary-rgb), 0.0);
+    transform: scale(1);
+  }
+}
+
+// Larger task checkboxes with better alignment
+ion-checkbox.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-right: 16px;
+  margin-top: 0;
+  --border-radius: 4px;
+  --size: 22px;
+  
+  @media (prefers-color-scheme: dark) {
+    --background-checked: var(--ion-color-primary);
+  }
+}
+
+// Stage progress bar styling with enhanced drain animation
+ion-progress-bar.stage-progress-bar {
+  border-radius: 6px !important;
+  height: 8px !important;
+  overflow: hidden;
+  
+  &::part(progress) {
+    transition: transform 0.3s ease-out;
+  }
+  
+  &.draining {
+    --progress-background: var(--ion-color-medium);
+    
+    &::part(progress) {
+      transform-origin: right center;
+      transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: scaleX(0);
+      animation: drain-flash 1.2s ease-in;
+    }
+  }
+}
+
+// Animation for the drain effect - added a flash effect
+@keyframes drain-flash {
+  0% {
+    opacity: 1;
+    background-color: var(--progress-background);
+  }
+  10% {
+    opacity: 1;
+    background-color: var(--ion-color-primary);
+  }
+  30% {
+    opacity: 0.8;
+    background-color: var(--progress-background);
+  }
+  100% {
+    opacity: 0.4;
+    background-color: var(--ion-color-medium);
   }
 }

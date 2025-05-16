@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormDataService } from 'src/app/components/quiz/form-data.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Subscription } from 'rxjs';
@@ -14,40 +14,17 @@ import { FormsModule } from '@angular/forms';
 import { AccountButtonComponent } from 'src/app/components/account-button/account-button.component';
 import { FilterPopoverComponent, ChecklistFilterData } from '../../components/filter-popover/filter-popover.component';
 import { filter } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
-
-// --- Keep existing interfaces ---
-interface ServiceRecommendation {
-  service_id: string;
-  name: string;
-  description: string;
-  url: string;
-}
-interface RelocationTask {
-  task_description: string;
-  priority: 'High' | 'Medium' | 'Low';
-  due_date: string; // Keep as string from backend, format for display
-  importance_explanation?: string;
-  importance_explanation_summary?: string;
-  recommended_services: ServiceRecommendation[];
-  isExpanded?: boolean; // For inline expansion, less relevant if moving to modal-first
-  completed?: boolean;
-  isImportant?: boolean;
-  task_id?: string;
-  stage?: string;
-  category?: string;
-  notes?: string;
-}
-interface TaskCategory {
-  name: string;
-  tasks: RelocationTask[];
-  isExpanded?: boolean;
-}
-interface ChecklistByStageAndCategory {
-  predeparture: TaskCategory[];
-  departure: TaskCategory[];
-  arrival: TaskCategory[];
-}
+// Import utility classes
+import { DateUtils } from 'src/app/utils/date-utils';
+import { FilterUtils, TaskCategory, RelocationTask, ChecklistByStageAndCategory, ServiceRecommendation } from 'src/app/utils/filter-utils';
+import { ProgressUtils } from 'src/app/utils/progress-utils';
+import { CacheUtils } from 'src/app/utils/cache-utils';
+import { TaskGenerationService } from 'src/app/utils/task-generation.service';
+import { ChecklistUIService } from 'src/app/utils/checklist-ui.service';
+import { StageManagementService } from 'src/app/utils/stage-management.service';
 
 @Component({
   selector: 'app-tab_checklist',
@@ -61,10 +38,18 @@ interface ChecklistByStageAndCategory {
     HttpClientModule,
     AccountButtonComponent,
     RouterLink,
-    DatePipe,
     // FilterPopoverComponent is presented via PopoverController, not directly in template
   ],
-  providers: [DatePipe] // Add DatePipe to providers
+  providers: [
+    DatePipe, 
+    DateUtils, 
+    FilterUtils, 
+    ProgressUtils, 
+    CacheUtils,
+    TaskGenerationService,
+    ChecklistUIService,
+    StageManagementService
+  ]
 })
 export class TabChecklistPage implements OnInit, OnDestroy {
    formData: any;
@@ -86,11 +71,6 @@ export class TabChecklistPage implements OnInit, OnDestroy {
 
   isQuestionnaireFilled: boolean = false;
   isGeneratingChecklist: boolean = false;
-
-  isOpeningDetailedModal = false;
-  isOpeningAddTaskModal = false;
-  private clickTimeout: any = null;
-  private readonly DOUBLE_CLICK_THRESHOLD = 250;
 
   totalTasksToGenerate: number = 0; 
   generatedTasksCount: number = 0; 
@@ -125,6 +105,33 @@ export class TabChecklistPage implements OnInit, OnDestroy {
   };
   activeFiltersCount: number = 0;
 
+  // Add cache maps for expensive calculations
+  private dueDateCache: Map<string, Date | null> = new Map();
+  private relativeDueDateCache: Map<string, string> = new Map();
+  private formattedDateCache: Map<string, string> = new Map();
+  private isAbsoluteDateCache: Map<string, boolean> = new Map();
+  
+  // Add debounce for search
+  private searchTerms = new Subject<string>();
+
+  // Add new properties for enhanced progress tracking
+  preparingProgress: number = 0; // For the animated "preparing" progress bar
+  private preparingAnimationInterval: any = null; // For controlling animation timing
+  private preparingAnimationComplete: boolean = false; // Flag to track if preparation is complete
+  private preparingMinDurationPromise: Promise<void> | null = null; // Promise for minimum preparing duration
+  public initialStructureReceived: boolean = false; // Flag to track if initial structure was received
+  
+  // New queue system for controlled rendering
+  private init_queue: {type: 'stageTotals' | 'category', stage: string, data: any}[] = [];
+  private gen_tasks: any[] = [];
+  private initQueueProcessing: boolean = false;
+  private genTasksProcessing: boolean = false;
+  private preparingAnimationDuration: number = 4200; // Fixed 4.2 seconds for preparing animation
+  public stagesWithTotalsRendered: Set<string> = new Set();
+
+  // Add new properties for progress drain animation
+  isDraining: boolean = false;
+  progressResetInProgress: boolean = false;
 
   constructor(
     private formDataService: FormDataService,
@@ -137,8 +144,16 @@ export class TabChecklistPage implements OnInit, OnDestroy {
     public authService: AuthService,
     private modalController: ModalController,
     private router: Router,
-    private popoverController: PopoverController, // Added PopoverController
-    public datePipe: DatePipe // Inject DatePipe
+    private popoverController: PopoverController,
+    public datePipe: DatePipe,
+    private ngZone: NgZone,
+    private dateUtils: DateUtils,
+    private filterUtils: FilterUtils,
+    private progressUtils: ProgressUtils,
+    private cacheUtils: CacheUtils,
+    private taskGenerationService: TaskGenerationService,
+    private checklistUIService: ChecklistUIService,
+    private stageManagementService: StageManagementService
   ) {}
 
   public getDisplayedCategoriesForStage(stageKey: string): TaskCategory[] {
@@ -158,9 +173,20 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
     console.log('Checklist Page Initialized. Backend URL:', this.backendUrl);
     await this.storage.create();
 
-    const userEmailPrefix = this.authService.email_key.replace(/[^a-zA-Z0-9]/g, '_') || 'default_user';
-    this.CACHED_CHECKLIST_KEY = `${userEmailPrefix}_${this.CACHED_CHECKLIST_KEY_BASE}`;
-    this.CACHED_FORM_DATA_KEY = `${userEmailPrefix}_${this.CACHED_FORM_DATA_KEY_BASE}`;
+    const userEmailPrefix = this.authService.email_key || 'default_user';
+    const cacheKeys = this.cacheUtils.getUserSpecificCacheKeys(userEmailPrefix);
+    this.CACHED_CHECKLIST_KEY = cacheKeys.checklistKey;
+    this.CACHED_FORM_DATA_KEY = cacheKeys.formDataKey;
+
+    // Setup search debounce to avoid excessive filtering on each keystroke
+    this.searchTerms.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      this.ngZone.run(() => {
+        this.applyFiltersAndSearch();
+      });
+    });
 
     this.loadInitialData();
   }
@@ -208,65 +234,109 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
     if (this.formDataSubscription) {
       this.formDataSubscription.unsubscribe();
     }
+    this.searchTerms.complete();
+    this.stopPreparingAnimation(); // Ensure we stop any animations
   }
 
   updateStageProgressAndLabelsFromData(sourceData: ChecklistByStageAndCategory) {
-    Object.keys(this.stageProgress).forEach(stageKey => {
-      const stageCategories = sourceData[stageKey as keyof ChecklistByStageAndCategory];
-      let current = 0;
-      let total = 0;
-      if (stageCategories) {
-        stageCategories.forEach(cat => {
-          total += cat.tasks.length;
-          current += cat.tasks.filter(t => t.completed).length;
-        });
-      }
-      this.stageProgress[stageKey].current = current;
-      this.stageProgress[stageKey].total = total;
-    });
-    this.updateOverallProgress(); // This will call updateStageLabelsBasedOnOriginalData
+    this.stageManagementService.updateStageProgressFromData(sourceData, this.selectedStage);
+    this.stageProgress = this.stageManagementService.getStageProgress();
+    this.updateStageLabels();
   }
 
+  updateStageLabels() {
+    // Update stage labels based on current progress and generation state
+    const stages = ['predeparture', 'departure', 'arrival'];
+    stages.forEach(stageKey => {
+      const labelKey = `${stageKey}Label` as 'predepartureLabel' | 'departureLabel' | 'arrivalLabel';
+      this[labelKey] = this.stageManagementService.getStageLabel(
+        stageKey,
+        this.isGeneratingChecklist,
+        this.workingOnStage,
+        this.isQuestionnaireFilled,
+        this.initialStructureReceived
+      );
+    });
+  }
 
   checkIfQuestionnaireFilled(form: any): boolean {
       return this.formDataService.isFilled(form);
   }
 
   generateSummary(explanation: string | undefined, maxLength: number = 100): string {
-    if (!explanation) return 'Tap "More Info" for details.';
-    if (explanation.length <= maxLength) return explanation;
-    return explanation.substring(0, maxLength - 3) + '...';
+    return this.checklistUIService.generateSummary(explanation, maxLength);
   }
 
   async loadCachedChecklistOrGenerate(currentForm: any) {
-      const cachedChecklist = await this.storage.get(this.CACHED_CHECKLIST_KEY);
-      this.cachedFormData = await this.storage.get(this.CACHED_FORM_DATA_KEY);
+    try {
+      const [cachedChecklist, cachedFormData] = await Promise.all([
+        this.storage.get(this.CACHED_CHECKLIST_KEY),
+        this.storage.get(this.CACHED_FORM_DATA_KEY)
+      ]);
+      
+      this.cachedFormData = cachedFormData;
       const formDataChanged = JSON.stringify(currentForm) !== JSON.stringify(this.cachedFormData);
 
       if (cachedChecklist && !formDataChanged) {
-          console.log("Loading cached checklist.");
-          this.checklistData = {
-              predeparture: cachedChecklist.predeparture || [],
-              departure: cachedChecklist.departure || [],
-              arrival: cachedChecklist.arrival || []
-          };
-          Object.values(this.checklistData).flat().forEach((category: TaskCategory) => {
-            category.tasks.forEach((task: RelocationTask) => {
-                task.importance_explanation_summary = this.generateSummary(task.importance_explanation);
-                task.isImportant = task.isImportant || false;
-                task.notes = task.notes || '';
-            });
-          });
-          this.updateStageProgressAndLabelsFromData(this.checklistData);
-          this.applyFiltersAndSearch(); // Apply default or previously saved filters
+        console.log("Loading cached checklist.");
+        this.checklistData = {
+          predeparture: cachedChecklist.predeparture || [],
+          departure: cachedChecklist.departure || [],
+          arrival: cachedChecklist.arrival || []
+        };
+        
+        // Clear caches whenever form data changes
+        this.clearCaches();
+        
+        // If stageProgress is stored in cache, load it as well to preserve task counts
+        if (cachedChecklist.stageProgress) {
+          this.stageProgress = cachedChecklist.stageProgress;
+          this.totalTasksToGenerate = 
+            (this.stageProgress['predeparture']?.total || 0) + 
+            (this.stageProgress['departure']?.total || 0) + 
+            (this.stageProgress['arrival']?.total || 0);
+        } else {
+          // If no stageProgress in cache, initialize it from the loaded data
+          this.initializeStageProgressFromData();
+        }
+        
+        // Only process visible stage immediately for faster UI response
+        this.updateStageProgressAndLabelsFromData(this.checklistData);
+        this.applyFiltersAndSearch();
 
-           if (this.totalTasksToGenerate > 0) {
-              this.showToast('Checklist loaded from cache.', 'success');
-           }
+        if (this.totalTasksToGenerate > 0) {
+          this.showToast('Checklist loaded from cache.', 'success');
+        }
       } else {
-          console.log("Generating new checklist (questionnaire changed or no cache).");
-          this.generateChecklist(currentForm);
+        console.log("Generating new checklist (questionnaire changed or no cache).");
+        this.generateChecklist(currentForm);
       }
+    } catch (error) {
+      console.error("Error loading cached checklist:", error);
+      this.generateChecklist(currentForm);
+    }
+  }
+
+  // Initialize stage progress tracking from checklist data
+  private initializeStageProgressFromData() {
+    const stages: (keyof ChecklistByStageAndCategory)[] = ['predeparture', 'departure', 'arrival'];
+    
+    stages.forEach(stage => {
+      const totalTasks = this.checklistData[stage].reduce(
+        (acc, category) => acc + category.tasks.length, 0);
+      const completedTasks = this.checklistData[stage].reduce(
+        (acc, category) => acc + category.tasks.filter(t => t.completed).length, 0);
+      
+      this.stageProgress[stage] = { 
+        current: completedTasks,
+        total: totalTasks 
+      };
+    });
+    
+    this.totalTasksToGenerate = 
+      this.stageProgress['predeparture'].total + 
+      this.stageProgress['departure'].total + 
+      this.stageProgress['arrival'].total;
   }
 
   clearChecklist() {
@@ -280,10 +350,16 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
     this.applyFiltersAndSearch(); // This will update labels via updateOverallProgress
   }
 
-  public async generateChecklist(form: any) {
+  async generateChecklist(form: any) {
     this.isGeneratingChecklist = true;
     this.clearChecklist();
-    // form.destination = form.destination.translations.en;
+    
+    // Start the preparation animation immediately
+    this.workingOnStage = 'preparing';
+    this.startPreparingAnimation();
+    this.startPreparingMinDurationTimer(); // Start 4.2-second minimum timer
+    this.initialStructureReceived = false; // Reset flag for new generation
+    this.changeDetectorRef.detectChanges();
 
     try {
       const response = await fetch(`${this.backendUrl}/generate_tasks`, {
@@ -295,657 +371,278 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
       if (!response.body) {
         this.showToast('Checklist generation failed: No response body.', 'danger');
         this.isGeneratingChecklist = false;
+        this.stopPreparingAnimation();
         this.applyFiltersAndSearch();
         return;
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let partialData = '';
+      // Reset counters and queues
       this.generatedTasksCount = 0;
+      this.taskGenerationService.clearQueues();
+      
+      // Process the task stream using TaskGenerationService
+      await this.taskGenerationService.processTaskStream(
+        response,
+        {
+          onInitialStructure: (data) => {
+            // Mark that we've received the initial structure
+            this.initialStructureReceived = true;
+            
+            // Store the total applicable tasks count from backend
+            this.totalTasksToGenerate = data.total_applicable_tasks || 0;
+            console.log('Total tasks to generate:', this.totalTasksToGenerate);
+            
+            // Set stage totals from backend data
+            this.stageManagementService.setStageProgressFromBackend(data.stage_totals || {});
+            this.stageProgress = this.stageManagementService.getStageProgress();
+            
+            console.log('Stage progress totals received from backend:', JSON.stringify(this.stageProgress));
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        partialData += decoder.decode(value, { stream: true });
-        const lines = partialData.split('\n');
-        partialData = lines.pop() || '';
-
-        for (const line of lines) {
-          if (line.trim()) {
-            try {
-              const data = JSON.parse(line);
-              if (data.event_type === 'initial_structure') {
-                this.totalTasksToGenerate = data.total_applicable_tasks || 0;
-                Object.assign(this.stageProgress, {
-                    predeparture: { current: 0, total: data.stage_totals?.predeparture || 0 },
-                    departure: { current: 0, total: data.stage_totals?.departure || 0 },
-                    arrival: { current: 0, total: data.stage_totals?.arrival || 0 }
-                });
-                this.updateStageLabelsBasedOnOriginalData();
-              } else if (data.event_type === 'task_item') {
-                const taskData = data;
-                const stageKey = taskData.stage as keyof ChecklistByStageAndCategory;
-                const categoryName = taskData.category || 'General';
-
-                if (stageKey && this.checklistData[stageKey]) {
-                  let category = this.checklistData[stageKey].find(cat => cat.name === categoryName);
-                  if (!category) {
-                    category = { name: categoryName, tasks: [], isExpanded: false };
-                    this.checklistData[stageKey].push(category);
-                    this.checklistData[stageKey].sort((a, b) => a.name.localeCompare(b.name));
-                  }
-                  const newTask: RelocationTask = {
-                      task_id: taskData.task_id,
-                      task_description: taskData.task_description,
-                      priority: taskData.priority,
-                      due_date: taskData.due_date, // Keep as string
-                      importance_explanation: taskData.importance_explanation,
-                      importance_explanation_summary: this.generateSummary(taskData.importance_explanation),
-                      recommended_services: taskData.recommended_services,
-                      isExpanded: false,
-                      completed: taskData.completed !== undefined ? taskData.completed : false,
-                      isImportant: taskData.isImportant !== undefined ? taskData.isImportant : false,
-                      stage: stageKey,
-                      category: categoryName,
-                      notes: taskData.notes || ''
-                  };
-                  category.tasks.push(newTask);
-                  this.generatedTasksCount++;
-                  this.workingOnStage = stageKey;
-                  this.updateStageLabelsBasedOnOriginalData();
-                  this.changeDetectorRef.detectChanges(); // Trigger change detection for progress bar
-                }
-              } else if (data.event_type === 'stream_end') {
-                console.log(`Stream ended. Total tasks streamed by backend: ${data.total_streamed}`);
-              }
-            } catch (e) {
-              console.error('Error parsing streamed JSON:', e, 'Line:', line);
+            // Clear previous categories
+            this.checklistData.predeparture = [];
+            this.checklistData.departure = [];
+            this.checklistData.arrival = [];
+            this.stagesWithTotalsRendered.clear();
+            
+            // Update labels to show the total assigned task counts
+            this.updateStageLabels();
+            
+            // Start processing the init_queue with controlled timing
+            this.startProcessingInitQueue();
+          },
+          onTaskItemAdded: (data) => {
+            // Update the working stage
+            this.workingOnStage = data.stage as keyof ChecklistByStageAndCategory;
+            
+            // Start processing gen_tasks if animation is complete
+            if ((this.preparingAnimationComplete || this.workingOnStage !== 'preparing') && !this.genTasksProcessing) {
+              this.startProcessingGenTasks();
             }
+          },
+          onStreamEnd: (data) => {
+            console.log(`Stream ended. Total tasks streamed by backend: ${data.total_streamed}`);
+          },
+          onError: (error) => {
+            console.error('Error processing task stream:', error);
+          },
+          onComplete: () => {
+            // Processing is complete
           }
         }
+      );
+
+      // Wait for the minimum preparing duration before transitioning if still in preparing phase
+      if (this.workingOnStage === 'preparing' && !this.preparingAnimationComplete) {
+        try {
+          // Wait for the 4.2-second minimum timer to complete
+          await this.preparingMinDurationPromise;
+          
+          // Only then, complete the preparing animation
+          this.completePreparingAnimation();
+          
+          // Give the animation time to complete before moving on
+          await new Promise(resolve => setTimeout(resolve, 800));
+        } catch (e) {
+          console.error('Error waiting for preparing animation:', e);
+        }
       }
+      
     } catch (error) {
       console.error('Error generating checklist:', error);
       this.showToast('Error generating checklist. Please try again.', 'danger');
     } finally {
+      // Final update to ensure all UI elements are current
+      this.updateStageLabels();
+      this.applyFiltersAndSearch();
+      
       this.isGeneratingChecklist = false;
       this.workingOnStage = '';
+      this.stopPreparingAnimation();
 
-      if (this.generatedTasksCount > 0 && this.generatedTasksCount === this.totalTasksToGenerate) {
-          this.showToast('Checklist generation complete!', 'success');
-      } else if (this.totalTasksToGenerate > 0 && this.generatedTasksCount < this.totalTasksToGenerate) {
-          this.showToast('Checklist generation partially complete. Some tasks might be missing.', 'warning');
-      } else if (this.totalTasksToGenerate > 0 && this.generatedTasksCount === 0) {
-          this.showToast('Checklist generated, but no tasks match your current criteria.', 'warning');
-      } else if (this.totalTasksToGenerate === 0 && this.generatedTasksCount === 0 && this.isQuestionnaireFilled) {
-           this.showToast('No tasks applicable to your selections.', 'primary');
+      // IMPORTANT: Always reset progress bars to 0 completion after generation
+      if (this.generatedTasksCount > 0) {
+        // Reset all task completion states
+        this.checklistData = this.taskGenerationService.resetTaskCompletionStatus(this.checklistData);
+        
+        // Reset the current completion counters to 0 while preserving totals
+        this.stageManagementService.resetStageProgress();
+        this.stageProgress = this.stageManagementService.getStageProgress();
+        
+        // Run the drain animation to visually reset progress bars
+        this.resetProgressBarsWithAnimation();
+      }
+
+      // Calculate if all expected tasks have been generated
+      const expectedTotal = this.totalTasksToGenerate;
+      const actualGenerated = this.generatedTasksCount;
+      const allStagesComplete = Object.keys(this.stageProgress).every(stageKey => {
+        const { current, total } = this.stageProgress[stageKey];
+        return total === 0 || current >= total;
+      });
+
+      if (expectedTotal > 0 && actualGenerated === expectedTotal && allStagesComplete) {
+        this.showToast('Checklist generation complete!', 'success');
+      } else if (expectedTotal > 0 && actualGenerated < expectedTotal) {
+        this.showToast('Checklist generation partially complete. Some tasks might be missing.', 'warning');
+      } else if (expectedTotal > 0 && actualGenerated === 0) {
+        this.showToast('Checklist generated, but no tasks match your current criteria.', 'warning');
+      } else if (expectedTotal === 0 && actualGenerated === 0 && this.isQuestionnaireFilled) {
+        this.showToast('No tasks applicable to your selections.', 'primary');
       }
       
-      this.applyFiltersAndSearch(); // This also calls updateStageProgressAndLabelsFromData
       this.saveChecklistToCache(); 
       this.changeDetectorRef.detectChanges();
     }
   }
 
-    async regenerateChecklist() {
-        if (this.isGeneratingChecklist || !this.isQuestionnaireFilled) return;
-        const confirmationAlert = await this.alertController.create({
-             header: 'Regenerate Checklist?',
-             message: 'This will clear your current checklist progress (completed tasks, favorites, notes) and generate a new one based on your latest questionnaire answers. Are you sure?',
-             buttons: [
-                 { text: 'Cancel', role: 'cancel', cssClass: 'alert-button-cancel' },
-                 {
-                     text: 'Regenerate',
-                     role: 'destructive',
-                     cssClass: 'alert-button-destructive',
-                     handler: async () => {
-                         const latestFormData = await this.formDataService.getForm();
-                         if (latestFormData) {
-                             this.generateChecklist(latestFormData);
-                         } else {
-                             this.showToast('Could not retrieve questionnaire data.', 'danger');
-                         }
-                     }
-                 }
-             ]
-         });
-         await confirmationAlert.present();
-    }
-
-  public handleChange() {
-    //this.applyFiltersAndSearch(); // No need to call here, segment change triggers view update
-  }
-
-  handleTaskItemClick(item: RelocationTask, event: MouseEvent) {
-  // If the click was on the checkbox or the info button, let their specific handlers manage it
-  const target = event.target as HTMLElement;
-  if (target.closest('.task-checkbox') || target.closest('.info-button')) {
-    return;
-  }
-
-  // Clear any existing timeout to prevent single click if double click is happening
-  if (this.clickTimeout) {
-    clearTimeout(this.clickTimeout);
-    this.clickTimeout = null;
-    // This path is taken on the second click of a double-click pair
-    // The dblclick handler will take care of the action
-    return;
-  }
-
-  // Set a timeout for single click action
-  this.clickTimeout = setTimeout(() => {
-    this.openDetailedTaskModal(item);
-    this.clickTimeout = null; // Reset after action
-  }, this.DOUBLE_CLICK_THRESHOLD);
-}
-
-// New method to handle double clicks on the task item
-handleTaskItemDoubleClick(item: RelocationTask, stageKeyStr: string, categoryName: string, event: MouseEvent) {
-  event.preventDefault(); // Prevent any default double-click behavior (like text selection)
-  event.stopPropagation(); // Stop event from bubbling further
-
-  // Clear the single click timeout if it's still pending
-  if (this.clickTimeout) {
-    clearTimeout(this.clickTimeout);
-    this.clickTimeout = null;
-  }
-
-  // Now, toggle the favorite status
-  const originalTask = this.findTaskInOriginalData(item.task_id, stageKeyStr as keyof ChecklistByStageAndCategory, categoryName);
-
-  if (originalTask) {
-    originalTask.isImportant = !originalTask.isImportant;
-    item.isImportant = originalTask.isImportant; // Sync displayed item
-
-    this.saveChecklistToCache();
-    this.applyFiltersAndSearch(); // Re-apply filters if "Show Only Favorites" is active
-    this.changeDetectorRef.detectChanges();
-
-    const toastMessage = originalTask.isImportant ? 'Task marked as important!' : 'Task unmarked as important.';
-    this.showToast(toastMessage, originalTask.isImportant ? 'success' : 'secondary', 1500);
-  }
-}
-
-  toggleCategory(categoryFromDisplay: TaskCategory) {
-    // The 'categoryFromDisplay' is an object from 'this.displayedChecklistData'.
-    // We need to find its corresponding object in 'this.checklistData' (the master list)
-    // to ensure the 'isExpanded' state is persisted there.
-
-    // Determine the stage of the categoryFromDisplay.
-    // We need a way to know which stage this category belongs to in checklistData.
-    // If categoryFromDisplay doesn't have a 'stage' property, we might need to infer it
-    // or, ideally, ensure categories carry their stage key.
-    // For now, let's assume we can find it by name across all stages, or
-    // if you know the current `this.selectedStage`, you can use that.
-
-    let originalCategoryInMasterList: TaskCategory | undefined;
-    const stageKeys: (keyof ChecklistByStageAndCategory)[] = ['predeparture', 'departure', 'arrival'];
-
-    // Search for the category by name in the master list across all stages
-    for (const stageKey of stageKeys) {
-      if (this.checklistData[stageKey]) {
-        originalCategoryInMasterList = this.checklistData[stageKey].find(
-          cat => cat.name === categoryFromDisplay.name // Assuming category names are unique enough for this.
-                                                        // A unique ID on categories would be more robust.
-        );
-        if (originalCategoryInMasterList) {
-          break; // Found it
-        }
-      }
-    }
-
-    if (originalCategoryInMasterList) {
-      // Toggle the state on the master list's category
-      originalCategoryInMasterList.isExpanded = !originalCategoryInMasterList.isExpanded;
-
-      // Also update the 'categoryFromDisplay' (from displayedChecklistData) for immediate UI reflection.
-      // This is important because applyFiltersAndSearch might not run immediately,
-      // or if it does, we want the UI to feel responsive.
-      categoryFromDisplay.isExpanded = originalCategoryInMasterList.isExpanded;
-
-    } else {
-      // This case should ideally not happen if categoryFromDisplay originated from displayedChecklistData
-      // which itself is derived from checklistData.
-      // If it does, it might indicate that 'categoryFromDisplay' is a stale reference or from an unexpected source.
-      console.warn('Toggled category not found in master checklistData during toggleCategory:', categoryFromDisplay.name);
-      // Fallback: just toggle the one we have, but be aware this state might be lost on the next filter/sort.
-      categoryFromDisplay.isExpanded = !categoryFromDisplay.isExpanded;
-    }
-
-    // It's usually a good idea to save to cache if a persistent state like isExpanded changes.
-    this.saveChecklistToCache(); // Add this if you want expanded states to persist across sessions
-
-    this.changeDetectorRef.detectChanges(); // Update UI immediately after toggle
-  }
-
-  // Inline expansion via showTaskDetails is removed to favor modal for details.
-  // If some very brief inline info is needed on click before modal, this could be reinstated.
-  // showTaskDetails(item: RelocationTask) {
-  // item.isExpanded = !item.isExpanded;
-  // this.changeDetectorRef.detectChanges();
-  // }
-
-  markCheck(item : RelocationTask, stageKeyStr: string, categoryName: string){
-      const stageKey = stageKeyStr as keyof ChecklistByStageAndCategory;
-      const taskInOriginalData = this.findTaskInOriginalData(item.task_id, stageKey, categoryName);
-      if (taskInOriginalData) {
-          taskInOriginalData.completed = !taskInOriginalData.completed;
-          item.completed = taskInOriginalData.completed; // Sync displayed item
-
-          this.updateStageProgressAndLabelsFromData(this.checklistData); // Recalculate all progress
-          this.saveChecklistToCache();
-          // No need to call applyFiltersAndSearch() if filter isn't by completion status,
-          // but good to call if it might affect visibility.
-          this.applyFiltersAndSearch(); 
-          this.changeDetectorRef.detectChanges();
-      }
-  }
-
-  getCheckStatus(item : RelocationTask): boolean{
-      const taskInOriginalData = this.findTaskInOriginalData(item.task_id, item.stage as keyof ChecklistByStageAndCategory, item.category);
-      return taskInOriginalData?.completed || false;
-  }
-
-    async showToast(message: string, color: string = 'success', duration: number = 2000) {
-        const toast = await this.toastController.create({
-            message,
-            duration,
-            color,
-            position: 'bottom', // Changed to bottom for less intrusive toasts
-            cssClass: 'custom-toast'
+  // Reset progress bars with animation
+  resetProgressBarsWithAnimation() {
+    if (this.progressResetInProgress) return;
+    this.progressResetInProgress = true;
+    
+    this.progressUtils.resetProgressBarsWithAnimation(
+      // onDrainStart
+      () => {
+        this.isDraining = true;
+        this.changeDetectorRef.detectChanges();
+      },
+      // onAnimationComplete
+      () => {
+        // Keep total tasks but reset completion counters to 0
+        this.totalCompletedTasks = 0;
+        
+        // Reset stage progress tracking to show all tasks as not completed, keeping totals intact
+        Object.keys(this.stageProgress).forEach(stageKey => {
+          if (this.stageProgress[stageKey]) {
+            // Preserve the total but set current to 0
+            const total = this.stageProgress[stageKey].total;
+            this.stageProgress[stageKey] = { current: 0, total };
+          }
         });
-        await toast.present();
-    }
-
-    async removeItem(item : RelocationTask, stageKeyStr: string, categoryName: string){
-      const alert = await this.alertController.create({
-        header: 'Confirm Removal',
-        message: `Are you sure you want to remove the task "${item.task_description}"? This cannot be undone.`,
-        buttons: [
-          { text: 'Cancel', role: 'cancel' },
-          {
-            text: 'Remove',
-            role: 'destructive',
-            handler: () => {
-              const stageKey = stageKeyStr as keyof ChecklistByStageAndCategory;
-              const categoryInOriginal = this.checklistData[stageKey].find(cat => cat.name === categoryName);
-              if (categoryInOriginal) {
-                  const index = categoryInOriginal.tasks.findIndex(t => t.task_id === item.task_id);
-                  if (index > -1) {
-                      categoryInOriginal.tasks.splice(index, 1);
-                      
-                      if (categoryInOriginal.tasks.length === 0 && categoryInOriginal.name !== 'General') { // Avoid removing 'General' if empty
-                           const categoryIndexInOriginal = this.checklistData[stageKey].indexOf(categoryInOriginal);
-                           if (categoryIndexInOriginal > -1) {
-                               this.checklistData[stageKey].splice(categoryIndexInOriginal, 1);
-                           }
-                      }
-                      this.updateStageProgressAndLabelsFromData(this.checklistData);
-                      this.saveChecklistToCache();
-                      this.applyFiltersAndSearch();
-                      this.changeDetectorRef.detectChanges();
-                      this.showToast('Task removed.', 'medium');
-                  }
-              }
-            }
-          }
-        ]
-      });
-      await alert.present();
-    }
-
-  sortTasks(sortBy: 'priority' | 'dueDate') {
-    if (this.currentSort === sortBy) { // If already sorted by this, toggle or reset
-        this.currentSort = 'none'; // Reset sort
-    } else {
-        this.currentSort = sortBy;
-    }
-
-    const stages: (keyof ChecklistByStageAndCategory)[] = ['predeparture', 'departure', 'arrival'];
-    stages.forEach(stageKey => {
-        if (this.checklistData[stageKey]) {
-            this.checklistData[stageKey].forEach(category => {
-                this.sortCategoryTasks(category, this.currentSort);
+        
+        // Need to also mark all tasks as uncompleted
+        Object.keys(this.checklistData).forEach(stageKey => {
+          const stage = stageKey as keyof ChecklistByStageAndCategory;
+          this.checklistData[stage].forEach(category => {
+            category.tasks.forEach(task => {
+              task.completed = false;
             });
-        }
-    });
-    this.applyFiltersAndSearch(); // Re-apply filters to the sorted data
-    this.changeDetectorRef.detectChanges();
-  }
-
-  private interpretDueDateString(dueDateStr: string): Date | null {
-    if (!dueDateStr || !this.formData || !this.formData.moveDate) {
-      return null;
-    }
-
-    const cleanedStr = dueDateStr.trim().toLowerCase();
-    let baseMoveDate = new Date(this.formData.moveDate); // User's move date from quiz
-
-    if (isNaN(baseMoveDate.getTime())) { // Invalid moveDate in quiz
-      return null;
-    }
-    
-    // Set baseMoveDate to midnight for consistent day-based calculations
-    baseMoveDate = new Date(baseMoveDate.getFullYear(), baseMoveDate.getMonth(), baseMoveDate.getDate());
-
-
-    if (cleanedStr === "day of move" || cleanedStr === "day of arrival") {
-      return baseMoveDate;
-    }
-    if (cleanedStr === "day before move" || cleanedStr === "1 day before move") {
-      const target = new Date(baseMoveDate);
-      target.setDate(baseMoveDate.getDate() - 1);
-      return target;
-    }
-
-    const weeksBeforeMatch = cleanedStr.match(/(\d+)(?:-\d+)?\s*weeks?\s*before\s*move/);
-    if (weeksBeforeMatch && weeksBeforeMatch[1]) {
-      const weeks = parseInt(weeksBeforeMatch[1], 10);
-      const target = new Date(baseMoveDate);
-      target.setDate(baseMoveDate.getDate() - (weeks * 7));
-      return target;
-    }
-
-    const daysBeforeMatch = cleanedStr.match(/(\d+)(?:-\d+)?\s*days?\s*before\s*move/);
-    if (daysBeforeMatch && daysBeforeMatch[1]) {
-      const days = parseInt(daysBeforeMatch[1], 10);
-      const target = new Date(baseMoveDate);
-      target.setDate(baseMoveDate.getDate() - days);
-      return target;
-    }
-    
-    // If the string itself is a parsable ISO date (e.g., from a custom task)
-    const directDate = new Date(dueDateStr); // Try parsing original string directly
-    if (!isNaN(directDate.getTime())) {
-        return directDate;
-    }
-
-    return null; // Could not interpret as a date relative to moveDate or as an absolute date
-  }
-public isAbsoluteDate(dateString: string | undefined | null): boolean {
-    if (!dateString) {
-      return false;
-    }
-    const cleanedDateString = dateString.trim();
-    // First, try to interpret it based on known patterns relative to moveDate
-    const interpretedDate = this.interpretDueDateString(cleanedDateString);
-    if (interpretedDate) { // If successfully interpreted, it's an absolute date
-      return true;
-    }
-    // If not interpretable relative to moveDate, check if it's a standalone parsable date
-    const date = new Date(cleanedDateString);
-    return !isNaN(date.getTime());
-  }
-
-
-  private getOrdinalSuffix(day: number): string {
-    const j = day % 10,
-          k = day % 100;
-    if (j == 1 && k != 11) return "st";
-    if (j == 2 && k != 12) return "nd";
-    if (j == 3 && k != 13) return "rd";
-    return "th";
-  }
-
-  public formatDateWithOrdinal(dateInput: string | undefined | null): string {
-    if (!dateInput) return 'N/A';
-    const cleanedDateInput = dateInput.trim();
-
-    // Attempt to interpret the string first (e.g. "Day of move")
-    let dateToFormat = this.interpretDueDateString(cleanedDateInput);
-
-    if (!dateToFormat) {
-      // If not interpretable, try parsing as a direct date string
-      const directDate = new Date(cleanedDateInput);
-      if (!isNaN(directDate.getTime())) {
-        dateToFormat = directDate;
-      } else {
-        // If still not a date, it must be "2-4 Weeks", "ASAP", etc.
-        // This function should not handle those. The HTML logic will use getRelativeDueDate for them.
-        // However, the *ngIf in HTML calling this should already filter those out.
-        return cleanedDateInput; // Safety return
+          });
+        });
+        
+        // Remove drain animation and refresh UI
+        this.isDraining = false;
+        this.progressResetInProgress = false;
+        this.applyFiltersAndSearch();
+        this.changeDetectorRef.detectChanges();
       }
-    }
-
-    const day = dateToFormat.getDate();
-    const month = dateToFormat.toLocaleDateString(undefined, { month: 'long' });
-    const year = dateToFormat.getFullYear();
-    return `${day}${this.getOrdinalSuffix(day)} ${month} ${year}`;
-  }
-
-
-  public getRelativeDueDate(dueDateInput: string): string {
-    if (!dueDateInput) {
-      return '';
-    }
-    const cleanedDueDateInput = dueDateInput.trim();
-
-    // Attempt to interpret the string into an absolute date first
-    const absoluteDate = this.interpretDueDateString(cleanedDueDateInput);
-
-    if (absoluteDate) { // Successfully interpreted to an absolute date
-      const now = new Date();
-      const dueDateDay = new Date(absoluteDate.getFullYear(), absoluteDate.getMonth(), absoluteDate.getDate());
-      const nowDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const diffTime = dueDateDay.getTime() - nowDay.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      if (diffDays < -1) { /* ... overdue logic ... */ 
-        const diffWeeksOverdue = Math.floor(Math.abs(diffDays) / 7);
-        if (diffWeeksOverdue >= 1) return `Overdue ~${diffWeeksOverdue} week${diffWeeksOverdue !== 1 ? 's' : ''}`;
-        return `Overdue ${Math.abs(diffDays)} days`;
-      }
-      if (diffDays === -1) return `Overdue 1 day`;
-      if (diffDays === 0) return 'Due today';
-      if (diffDays === 1) return 'Due tomorrow';
-      if (diffDays >= 7) {
-        const diffWeeks = Math.floor(diffDays / 7);
-        return `~${diffWeeks} week${diffWeeks !== 1 ? 's' : ''}`;
-      }
-      if (diffDays > 1 && diffDays < 7) {
-        return `~${diffDays} days`;
-      }
-      return ''; // No specific relative string, ordinal date will be primary
-    } else {
-      // If not interpretable as an absolute date (e.g., "2-4 Weeks", "ASAP", or a malformed ISO)
-      const inputLower = cleanedDueDateInput.toLowerCase();
-      const weeksRangeMatch = inputLower.match(/(\d+(?:-\d+)?)\s*weeks?/);
-      if (weeksRangeMatch && weeksRangeMatch[1]) return `${weeksRangeMatch[1]} Weeks`;
-      
-      const daysRangeMatch = inputLower.match(/(\d+(?:-\d+)?)\s*days?/);
-      if (daysRangeMatch && daysRangeMatch[1]) return `${daysRangeMatch[1]} Days`;
-      
-      if (inputLower.includes("asap")) return "ASAP";
-      if (inputLower.includes("ongoing")) return "Ongoing";
-      
-      // If it's an unparsable string that doesn't match known patterns, return it.
-      // This would include the malformed ISO strings if the backend fix wasn't applied/reverted.
-      return cleanedDueDateInput;
-    }
-  }
-
-  // _parseDueDateRange for sorting should also use interpretDueDateString
-  private _parseDueDateRange(dueDateStr: string | undefined): number {
-    if (!dueDateStr) return Infinity;
-    const cleanedStr = dueDateStr.trim();
-
-    const absoluteDate = this.interpretDueDateString(cleanedStr);
-    if (absoluteDate) {
-      return absoluteDate.getTime();
-    }
-
-    // Fallback for strings not interpretable into absolute dates (e.g. "2-4 Weeks", "ASAP")
-    const lowerDueDateStr = cleanedStr.toLowerCase();
-    if (lowerDueDateStr.includes("asap") || lowerDueDateStr.includes("ongoing")) {
-      return Infinity - 1;
-    }
-
-    const weeksMatch = lowerDueDateStr.match(/(\d+)(?:-\d+)?\s*weeks?/);
-    if (weeksMatch && weeksMatch[1]) {
-      return parseInt(weeksMatch[1], 10) * 7; // Convert weeks to a day-equivalent
-    }
-
-    const daysMatch = lowerDueDateStr.match(/(\d+)(?:-\d+)?\s*days?/);
-    if (daysMatch && daysMatch[1]) {
-      return parseInt(daysMatch[1], 10);
-    }
-    
-    return Infinity - 2; // Default for other unparsable strings
-  }
-  
-  sortCategoryTasks(category: TaskCategory, sortBy: 'none' | 'priority' | 'dueDate') {
-    if (sortBy === 'none') {
-      category.tasks.sort((a, b) => { /* ... existing task_id sort ... */ 
-        if (a.task_id && b.task_id) {
-          const aIsNumeric = /^\d+$/.test(a.task_id.replace('custom_', ''));
-          const bIsNumeric = /^\d+$/.test(b.task_id.replace('custom_', ''));
-          if (aIsNumeric && bIsNumeric) {
-            return parseInt(a.task_id.replace('custom_', ''), 10) - parseInt(b.task_id.replace('custom_', ''), 10);
-          }
-          return a.task_id.localeCompare(b.task_id);
-        }
-        return 0;
-      });
-      return;
-    }
-
-    if (sortBy === 'priority') {
-      const priorityOrder: { [key: string]: number } = { 'High': 1, 'Medium': 2, 'Low': 3 };
-      category.tasks.sort((a, b) => {
-        const orderDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
-        if (orderDiff === 0) { // If priorities are the same, sub-sort by our parsed due date value
-          const valA = this._parseDueDateRange(a.due_date);
-          const valB = this._parseDueDateRange(b.due_date);
-          return valA - valB;
-        }
-        return orderDiff;
-      });
-    } else if (sortBy === 'dueDate') {
-      category.tasks.sort((a, b) => {
-        const valA = this._parseDueDateRange(a.due_date);
-        const valB = this._parseDueDateRange(b.due_date);
-
-        if (valA !== valB) {
-            return valA - valB;
-        }
-        // If due dates are equivalent (e.g. both "ASAP" or same numeric value),
-        // then sub-sort by priority as a tie-breaker
-        const priorityOrder: { [key: string]: number } = { 'High': 1, 'Medium': 2, 'Low': 3 };
-        return priorityOrder[a.priority] - priorityOrder[b.priority];
-      });
-    }
-  }
-
-  async saveChecklistToCache() {
-      await this.storage.set(this.CACHED_CHECKLIST_KEY, this.checklistData);
-      await this.storage.set(this.CACHED_FORM_DATA_KEY, this.formData); // Save the form data that generated this checklist
-      this.cachedFormData = JSON.parse(JSON.stringify(this.formData)); // Update in-memory cache of form data
+    );
   }
 
   updateStageLabelsBasedOnOriginalData() {
     const stages: (keyof ChecklistByStageAndCategory)[] = ['predeparture', 'departure', 'arrival'];
     stages.forEach(stageKey => {
-        const { current, total } = this.stageProgress[stageKey];
-        const stageName = stageKey.charAt(0).toUpperCase() + stageKey.slice(1);
-        const labelKey = `${stageKey}Label` as 'predepartureLabel' | 'departureLabel' | 'arrivalLabel';
+      const stageName = stageKey.charAt(0).toUpperCase() + stageKey.slice(1);
+      const labelKey = `${stageKey}Label` as 'predepartureLabel' | 'departureLabel' | 'arrivalLabel';
 
-        if (this.isGeneratingChecklist && this.totalTasksToGenerate > 0) {
-             this[labelKey] = `${stageName} (${this.generatedTasksCount}/${this.totalTasksToGenerate} gen...)`;
-        } else if (this.isGeneratingChecklist) {
-             this[labelKey] = `${stageName} (Generating...)`;
-        } else if (total > 0 && current === total) {
-             this[labelKey] = `${stageName} (${total}) ✓`; // Add checkmark for completed stage
-        } else if (total === 0 && this.isQuestionnaireFilled && !this.isGeneratingChecklist) {
+      if (this.isGeneratingChecklist && this.workingOnStage === 'preparing') {
+        // We're in the preparing phase
+        if (this.initialStructureReceived) {
+          // After receiving initial structure, show expected total counts
+          const expectedTotal = this.getExpectedTaskCountForStage(stageKey);
+          if (expectedTotal > 0) {
+            this[labelKey] = `${stageName} (0/${expectedTotal})`;
+          } else {
             this[labelKey] = `${stageName} (0)`;
-        } else if (!this.isQuestionnaireFilled) {
-            this[labelKey] = stageName;
+          }
         } else {
-             this[labelKey] = `${stageName} (${current}/${total})`;
+          this[labelKey] = `${stageName}`;
         }
+      } 
+      else if (this.isGeneratingChecklist && this.totalTasksToGenerate > 0) {
+        // During active generation phase
+        const expectedTotal = this.getExpectedTaskCountForStage(stageKey);
+        const completedCount = this.getCompletedTasksCountForStage(stageKey); // Always use completed tasks for display
+        const generatedCount = this.getGeneratedTasksCountForStage(stageKey);
+        
+        // For all stages, always display completed/total, even if 0
+        this[labelKey] = `${stageName} (${completedCount}/${expectedTotal})`;
+        
+        // Only add a checkmark for completed stages
+        if (completedCount === expectedTotal && expectedTotal > 0) {
+          this[labelKey] = `${stageName} (${completedCount}/${expectedTotal}) ✓`;
+        }
+      } 
+      else if (!this.isGeneratingChecklist) {
+        // After generation is complete - display completed/total
+        const actualTotal = this.getTotalTasksForStage(stageKey);
+        const completed = this.getCompletedTasksCountForStage(stageKey);
+        
+        if (actualTotal > 0 && completed === actualTotal) {
+          this[labelKey] = `${stageName} (${completed}/${actualTotal}) ✓`; // Add checkmark for completed stage
+        } else if (actualTotal === 0 && this.isQuestionnaireFilled) {
+          this[labelKey] = `${stageName} (0)`;
+        } else if (!this.isQuestionnaireFilled) {
+          this[labelKey] = stageName;
+        } else {
+          this[labelKey] = `${stageName} (${completed}/${actualTotal})`;
+        }
+      }
     });
     this.changeDetectorRef.detectChanges();
   }
 
   updateOverallProgress() {
-      this.totalTasksToGenerate = 0;
-      this.totalCompletedTasks = 0;
-      const stages: (keyof ChecklistByStageAndCategory)[] = ['predeparture', 'departure', 'arrival'];
-      stages.forEach(stageKey => {
-          if (this.checklistData[stageKey]) {
-              this.checklistData[stageKey].forEach(category => {
-                  this.totalTasksToGenerate += category.tasks.length;
-                  this.totalCompletedTasks += category.tasks.filter(t => t.completed).length;
-              });
-          }
+    let completedTasks = 0;
+    let totalTasks = 0;
+    
+    // Count across all stages
+    Object.keys(this.checklistData).forEach(stageKey => {
+      const stage = stageKey as keyof ChecklistByStageAndCategory;
+      
+      this.checklistData[stage].forEach(category => {
+        totalTasks += category.tasks.length;
+        completedTasks += category.tasks.filter(task => task.completed).length;
       });
-      this.updateStageLabelsBasedOnOriginalData();
+    });
+    
+    this.totalCompletedTasks = completedTasks;
+    
+    // Update stage progress counts
+    Object.keys(this.stageProgress).forEach(stageKey => {
+      const completed = this.getCompletedTasksCountForStage(stageKey);
+      // Only update current counts, leave totals as they are
+      this.stageProgress[stageKey].current = completed;
+    });
   }
 
   async openDetailedTaskModal(task: RelocationTask) {
-  if (this.isOpeningDetailedModal) {
-    console.log('Detailed modal opening already in progress. Aborting.');
-    return; // Already trying to open this type of modal, do nothing
-  }
-  this.isOpeningDetailedModal = true; // Set flag
-
-  try { // Add try block
-    const modal = await this.modalController.create({
-      component: TaskDetailModalPage,
-      componentProps: {
-        taskData: JSON.parse(JSON.stringify(task)) // Pass a deep copy
+    await this.checklistUIService.openDetailedTaskModal(
+      task,
+      // Handle task updates
+      (taskId, changes) => {
+        const originalTask = this.findTaskInOriginalData(task.task_id, task.stage as keyof ChecklistByStageAndCategory, task.category);
+        if (originalTask) {
+          if (changes.isImportant !== undefined) {
+            originalTask.isImportant = changes.isImportant;
+          }
+          if (changes.due_date !== undefined) {
+            originalTask.due_date = changes.due_date;
+          }
+          if (changes.notes !== undefined) {
+            originalTask.notes = changes.notes;
+          }
+          this.saveChecklistToCache();
+          this.applyFiltersAndSearch();
+          this.changeDetectorRef.detectChanges();
+        }
       },
-      cssClass: 'task-detail-modal-custom' // Optional: for custom modal styling
-    });
-
-    // Listen for when the modal is fully dismissed to reset the flag
-    modal.onDidDismiss().then(() => {
-      this.isOpeningDetailedModal = false;
-      console.log('Detailed modal dismissed, flag reset.');
-    });
-
-    await modal.present();
-    console.log('Detailed modal presented.');
-
-    // This promise resolves when the modal *starts* to dismiss, not when it's fully gone.
-    // The flag is reset by onDidDismiss() above.
-    const { data, role } = await modal.onWillDismiss();
-    console.log('Detailed modal onWillDismiss - Role:', role, 'Data:', data);
-
-    const originalTask = this.findTaskInOriginalData(task.task_id, task.stage as keyof ChecklistByStageAndCategory, task.category);
-
-    if (originalTask) {
-      if (role === 'confirm' && data) {
-          let changed = false;
-          if (data.isImportant !== undefined && originalTask.isImportant !== data.isImportant) {
-              originalTask.isImportant = data.isImportant;
-              changed = true;
-          }
-          if (data.due_date !== undefined && originalTask.due_date !== data.due_date) {
-               originalTask.due_date = data.due_date; // Expecting ISO string from modal
-              changed = true;
-          }
-          if (data.notes !== undefined && originalTask.notes !== data.notes) {
-              originalTask.notes = data.notes;
-              changed = true;
-          }
-          if (changed) {
-              console.log('Detailed modal changes confirmed, saving and applying filters.');
-              this.saveChecklistToCache();
-              this.applyFiltersAndSearch(); // Re-filter if notes/due date changed, sort might also apply
-              this.changeDetectorRef.detectChanges();
-          }
-      } else if (role === 'askChatbot' && data?.taskDescription) {
-        console.log('Detailed modal asking chatbot for:', data.taskDescription);
-        this.router.navigate(['/tabs/tab_chatbot'], { queryParams: { prefill: data.taskDescription } });
+      // Handle chatbot requests
+      (text) => {
+        this.router.navigate(['/tabs/tab_chatbot'], { queryParams: { prefill: text } });
       }
-    }
-  } catch (error) { // Add catch block
-    console.error("Error in openDetailedTaskModal:", error);
-    this.isOpeningDetailedModal = false; // Ensure flag is reset on error
+    );
   }
-}
 
   findTaskInOriginalData(taskId: string | undefined, stageKey?: keyof ChecklistByStageAndCategory, categoryName?: string): RelocationTask | undefined {
     if (!taskId || !stageKey || !categoryName) return undefined;
@@ -967,22 +664,14 @@ public isAbsoluteDate(dateString: string | undefined | null): boolean {
   }
 
   async presentFilterPopover(ev: any) {
-    const popover = await this.popoverController.create({
-      component: FilterPopoverComponent,
-      componentProps: {
-        currentFilters: this.activeFilters
-      },
-      event: ev,
-      translucent: true,
-      cssClass: 'filter-popover-class' // Add a custom class for styling
-    });
-    await popover.present();
-
-    const { data, role } = await popover.onWillDismiss();
-    if (role === 'apply' && data) {
-      this.activeFilters = data;
-      this.applyFiltersAndSearch();
-    }
+    await this.checklistUIService.presentFilterPopover(
+      ev,
+      this.activeFilters,
+      (filters) => {
+        this.activeFilters = filters;
+        this.applyFiltersAndSearch();
+      }
+    );
   }
   
   updateActiveFiltersCount() {
@@ -997,80 +686,7 @@ public isAbsoluteDate(dateString: string | undefined | null): boolean {
 
 // ... (keep existing interfaces and properties) ...
 
-// --- NEW: Helper Filter Functions ---
-
-private _filterTasksByStatus(tasks: RelocationTask[], statusFilter: ChecklistFilterData['status']): RelocationTask[] {
-  if (statusFilter === 'all') {
-    return tasks;
-  }
-  return tasks.filter(task =>
-    (statusFilter === 'completed' && task.completed) ||
-    (statusFilter === 'incomplete' && !task.completed)
-  );
-}
-
-private _filterTasksByPriority(tasks: RelocationTask[], priorityFilter: ChecklistFilterData['priority']): RelocationTask[] {
-  if (priorityFilter === 'all') {
-    return tasks;
-  }
-  return tasks.filter(task => task.priority === priorityFilter);
-}
-
-private _filterTasksByFavorites(tasks: RelocationTask[], favoritesFilter: ChecklistFilterData['favorites']): RelocationTask[] {
-  if (!favoritesFilter) {
-    return tasks;
-  }
-  return tasks.filter(task => task.isImportant);
-}
-
-private _filterTasksBySearchTerm(tasks: RelocationTask[], searchTerm: string): RelocationTask[] {
-  const term = searchTerm.trim().toLowerCase();
-  if (!term) { // If search term is empty, show all tasks (that passed previous filters)
-    return tasks;
-  }
-
-  // Full word search logic (regex)
-  const searchRegex = new RegExp(`\\b${this._escapeRegExp(term)}\\b`, 'i');
-
-  return tasks.filter(task => {
-    let searchMatch = false;
-    if (task.task_description && searchRegex.test(task.task_description)) {
-      searchMatch = true;
-    }
-    if (!searchMatch && task.importance_explanation && searchRegex.test(task.importance_explanation)) {
-      searchMatch = true;
-    }
-    if (!searchMatch && task.notes && searchRegex.test(task.notes)) {
-      searchMatch = true;
-    }
-    if (!searchMatch && task.priority && searchRegex.test(task.priority)) { // Match whole word for priority in search
-        searchMatch = true;
-    }
-
-    // For due date, use 'includes' for flexibility as full word might be too restrictive
-    const formattedDate = (this.datePipe.transform(task.due_date, 'mediumDate') || '').toLowerCase();
-    const relativeDate = (this.getRelativeDueDate(task.due_date) || '').toLowerCase();
-    const originalDueDateLower = (task.due_date || '').toLowerCase();
-
-    if (!searchMatch && formattedDate.includes(term)) {
-      searchMatch = true;
-    }
-    if (!searchMatch && relativeDate.includes(term)) {
-      searchMatch = true;
-    }
-    // If due_date is a string not parsable by datePipe (e.g., "2-4 Weeks"), search in it
-    if (!searchMatch && isNaN(new Date(task.due_date).getTime()) && originalDueDateLower.includes(term)) {
-      searchMatch = true;
-    }
-    return searchMatch;
-  });
-}
-
-// Helper to escape special characters for regex
-private _escapeRegExp(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
-
+// Filter functions now handled by the FilterUtils service directly
 
 // --- REFACTORED: applyFiltersAndSearch ---
 applyFiltersAndSearch() {
@@ -1080,40 +696,67 @@ applyFiltersAndSearch() {
     return;
   }
 
-  const newDisplayedData: ChecklistByStageAndCategory = {
-    predeparture: [],
-    departure: [],
-    arrival: []
-  };
+  // Run inside NgZone to batch changes for better performance
+  this.ngZone.run(() => {
+    const newDisplayedData: ChecklistByStageAndCategory = {
+      predeparture: [],
+      departure: [],
+      arrival: []
+    };
 
-  for (const stageKey of Object.keys(this.checklistData) as Array<keyof ChecklistByStageAndCategory>) {
-    if (!this.checklistData[stageKey]) {
-      newDisplayedData[stageKey] = [];
-      continue;
+    // Only process the current selected stage for immediate display
+    const currentStage = this.selectedStage as keyof ChecklistByStageAndCategory;
+    if (this.checklistData[currentStage]) {
+      newDisplayedData[currentStage] = this.filterCategories(
+        this.checklistData[currentStage],
+        this.activeFilters,
+        this.searchTerm,
+        this.formData?.moveDate
+      );
     }
 
-    newDisplayedData[stageKey] = this.checklistData[stageKey]
-      .map(categoryFromMaster => {
-        let tasksToDisplay = [...categoryFromMaster.tasks]; // Start with all tasks for the category
-
-        // Apply filters sequentially
-        tasksToDisplay = this._filterTasksByStatus(tasksToDisplay, this.activeFilters.status);
-        tasksToDisplay = this._filterTasksByPriority(tasksToDisplay, this.activeFilters.priority);
-        tasksToDisplay = this._filterTasksByFavorites(tasksToDisplay, this.activeFilters.favorites);
-        tasksToDisplay = this._filterTasksBySearchTerm(tasksToDisplay, this.searchTerm);
-
-        // Return a new category object with the filtered tasks, preserving other category properties
-        // like 'isExpanded' from the master data.
-        return tasksToDisplay.length > 0 ? { ...categoryFromMaster, tasks: tasksToDisplay } : null;
-      })
-      .filter(category => category !== null) as TaskCategory[];
-  }
-
-  this.displayedChecklistData = newDisplayedData;
-
-  this.updateActiveFiltersCount();
-  this.updateStageProgressAndLabelsFromData(this.checklistData); // Progress based on original data
-  this.changeDetectorRef.detectChanges();
+    // Process other stages in the background for count updates
+    const otherStages = Object.keys(this.checklistData)
+      .filter(stage => stage !== currentStage) as Array<keyof ChecklistByStageAndCategory>;
+    
+    // Schedule non-visible stage processing for next event loop to avoid blocking UI
+    setTimeout(() => {
+      otherStages.forEach(stageKey => {
+        if (this.checklistData[stageKey]) {
+          newDisplayedData[stageKey] = this.filterCategories(
+            this.checklistData[stageKey],
+            this.activeFilters,
+            this.searchTerm,
+            this.formData?.moveDate
+          );
+        }
+      });
+      
+      // Update active filters count
+      this.updateActiveFiltersCount();
+      
+      // Update progress indicators for non-visible stages
+      this.updateStageProgressAndLabelsFromData(this.checklistData);
+    }, 10);
+    
+    // Update the displayed data immediately for current stage
+    this.displayedChecklistData = newDisplayedData;
+    this.updateActiveFiltersCount();
+    
+    // Force refresh of progress bars if during generation
+    if (this.isGeneratingChecklist) {
+      // Force immediate refresh of UI elements
+      setTimeout(() => {
+        const progressBar = document.querySelector('.active-stage-progress ion-progress-bar') as HTMLElement;
+        if (progressBar) {
+          // Force a reflow/repaint
+          progressBar.style.display = 'none';
+          void progressBar.offsetHeight; // Triggers reflow
+          progressBar.style.display = '';
+        }
+      }, 0);
+    }
+  });
 }
   
   resetFiltersAndSearch() {
@@ -1142,56 +785,29 @@ applyFiltersAndSearch() {
 
 
   async openAddTaskModal() {
-  if (this.isOpeningAddTaskModal) {
-    console.log('Add task modal opening already in progress. Aborting.');
-    return; // Already trying to open this type of modal
-  }
-  this.isOpeningAddTaskModal = true; // Set flag
+    const existingCategoriesByStage: { [key: string]: string[] } = {
+      predeparture: [...new Set(this.checklistData.predeparture.map(cat => cat.name))].sort(),
+      departure: [...new Set(this.checklistData.departure.map(cat => cat.name))].sort(),
+      arrival: [...new Set(this.checklistData.arrival.map(cat => cat.name))].sort(),
+    };
 
-  try { // Add try block
-      const existingCategoriesByStage: { [key: string]: string[] } = {
-        predeparture: [...new Set(this.checklistData.predeparture.map(cat => cat.name))].sort(),
-        departure: [...new Set(this.checklistData.departure.map(cat => cat.name))].sort(),
-        arrival: [...new Set(this.checklistData.arrival.map(cat => cat.name))].sort(),
-      };
-
-      const modal = await this.modalController.create({
-        component: AddTaskModalPage,
-        componentProps: {
-            existingCategories: existingCategoriesByStage,
-            // Pass current stage to pre-select in modal
-            currentStage: this.selectedStage
-        }
-      });
-
-      // Listen for when the modal is fully dismissed to reset the flag
-      modal.onDidDismiss().then(() => {
-        this.isOpeningAddTaskModal = false;
-        console.log('Add task modal dismissed, flag reset.');
-      });
-
-      await modal.present();
-      console.log('Add task modal presented.');
-
-      // This promise resolves when the modal *starts* to dismiss.
-      const { data, role } = await modal.onWillDismiss();
-      console.log('Add task modal onWillDismiss - Role:', role, 'Data:', data);
-
-      if (role === 'confirm' && data) {
-        const newTaskData = data;
+    await this.checklistUIService.openAddTaskModal(
+      existingCategoriesByStage,
+      this.selectedStage,
+      (newTaskData) => {
         const newTask: RelocationTask = {
           task_id: `custom_${new Date().getTime()}`,
           task_description: newTaskData.task_description,
           priority: newTaskData.priority,
-          due_date: newTaskData.due_date, // Store as ISO string
+          due_date: newTaskData.due_date,
           importance_explanation: 'This is a custom task you added.',
-          importance_explanation_summary: 'Custom task.',
+          importance_explanation_summary: this.checklistUIService.generateSummary('This is a custom task you added.'),
           recommended_services: [],
           isExpanded: false,
           completed: false,
           isImportant: false,
           stage: newTaskData.stage,
-          category: newTaskData.category, // This will be the new or selected category name
+          category: newTaskData.category,
           notes: ''
         };
 
@@ -1219,11 +835,8 @@ applyFiltersAndSearch() {
         this.applyFiltersAndSearch(); // Refresh displayed data
         this.showToast('Custom task added!', 'success');
       }
-  } catch (error) { // Add catch block
-    console.error("Error in openAddTaskModal:", error);
-    this.isOpeningAddTaskModal = false; // Ensure flag is reset on error
+    );
   }
-}
 
   areAllTasksComplete(category: TaskCategory): boolean {
       if (!category.tasks || category.tasks.length === 0) return false; // An empty category isn't "complete"
@@ -1231,11 +844,570 @@ applyFiltersAndSearch() {
   }
 
   getPriorityIcon(priority: 'High' | 'Medium' | 'Low'): string {
-    switch (priority) {
-      case 'High': return 'alert-circle-outline'; // Or chevron-up-outline, trending-up-outline
-      case 'Medium': return 'remove-outline'; // Or chevron-forward-outline (less intuitive for priority)
-      case 'Low': return 'chevron-down-outline'; // Or trending-down-outline
-      default: return 'ellipse-outline';
+    return this.checklistUIService.getPriorityIcon(priority);
+  }
+
+  // Clear all caches when form data changes
+  clearCaches() {
+    this.dateUtils.clearCaches();
+  }
+
+  // Optimize search by using the debounced subject
+  onSearchInput(event: any) {
+    this.searchTerms.next(this.searchTerm);
+  }
+
+  // Add the missing getOrdinalSuffix method
+  private getOrdinalSuffix(day: number): string {
+    const j = day % 10,
+          k = day % 100;
+    if (j == 1 && k != 11) return "st";
+    if (j == 2 && k != 12) return "nd";
+    if (j == 3 && k != 13) return "rd";
+    return "th";
+  }
+
+  async regenerateChecklist() {
+    if (this.isGeneratingChecklist || !this.isQuestionnaireFilled) return;
+    
+    await this.checklistUIService.confirmRegenerateChecklist(
+      async () => {
+        const latestFormData = await this.formDataService.getForm();
+        if (latestFormData) {
+          this.generateChecklist(latestFormData);
+        } else {
+          this.showToast('Could not retrieve questionnaire data.', 'danger');
+        }
+      }
+    );
+  }
+
+  handleTaskItemClick(item: RelocationTask, event: MouseEvent) {
+    this.checklistUIService.handleTaskItemClick(
+      item,
+      event,
+      () => {
+        this.openDetailedTaskModal(item);
+      }
+    );
+  }
+
+  handleTaskItemDoubleClick(item: RelocationTask, stageKeyStr: string, categoryName: string, event: MouseEvent) {
+    this.checklistUIService.handleTaskItemDoubleClick(
+      event,
+      () => {
+        const originalTask = this.findTaskInOriginalData(item.task_id, stageKeyStr as keyof ChecklistByStageAndCategory, categoryName);
+
+        if (originalTask) {
+          originalTask.isImportant = !originalTask.isImportant;
+          item.isImportant = originalTask.isImportant; // Sync displayed item
+
+          this.saveChecklistToCache();
+          this.applyFiltersAndSearch(); // Re-apply filters if "Show Only Favorites" is active
+          this.changeDetectorRef.detectChanges();
+
+          const toastMessage = originalTask.isImportant ? 'Task marked as important!' : 'Task unmarked as important.';
+          this.showToast(toastMessage, originalTask.isImportant ? 'success' : 'secondary', 1500);
+        }
+      }
+    );
+  }
+
+  toggleCategory(categoryFromDisplay: TaskCategory) {
+    // Find the original category
+    let originalCategoryInMasterList: TaskCategory | undefined;
+    const stageKeys: (keyof ChecklistByStageAndCategory)[] = ['predeparture', 'departure', 'arrival'];
+
+    for (const stageKey of stageKeys) {
+      if (this.checklistData[stageKey]) {
+        originalCategoryInMasterList = this.checklistData[stageKey].find(
+          cat => cat.name === categoryFromDisplay.name
+        );
+        if (originalCategoryInMasterList) {
+          break; // Found it
+        }
+      }
     }
+
+    if (originalCategoryInMasterList) {
+      // Toggle the state on the master list's category
+      originalCategoryInMasterList.isExpanded = !originalCategoryInMasterList.isExpanded;
+      // Also update the displayed category for immediate UI reflection
+      categoryFromDisplay.isExpanded = originalCategoryInMasterList.isExpanded;
+      
+      // Only save to cache if necessary - no need for every toggle
+      if (originalCategoryInMasterList.tasks.length > 5) {
+        // For categories with many tasks, save cache asynchronously to avoid blocking UI
+        setTimeout(() => this.saveChecklistToCache(), 100);
+      }
+    } else {
+      // Fallback for unexpected cases
+      categoryFromDisplay.isExpanded = !categoryFromDisplay.isExpanded;
+    }
+    
+    // Don't call change detection here - Angular will handle it automatically
+  }
+
+  markCheck(item: RelocationTask, stageKeyStr: string, categoryName: string) {
+    // First find the original item in the source data
+    const stageKey = stageKeyStr as keyof ChecklistByStageAndCategory;
+    const category = this.checklistData[stageKey]?.find(c => c.name === categoryName);
+    
+    if (category) {
+      const originalItem = category.tasks.find(t => t.task_id === item.task_id);
+      
+      if (originalItem) {
+        // Update the original item's completed status (the item passed in is already updated)
+        originalItem.completed = item.completed;
+        
+        // Update overall progress counter
+        this.updateOverallProgress();
+        
+        // Also need to update the stage's current completion count in stageProgress
+        if (this.stageProgress[stageKeyStr]) {
+          const completedCount = this.getCompletedTasksCountForStage(stageKeyStr);
+          this.stageProgress[stageKeyStr].current = completedCount;
+        }
+        
+        // Save the updated state to cache
+        this.saveChecklistToCache();
+        
+        // For better UX, force update the UI to reflect changes immediately
+        this.changeDetectorRef.detectChanges();
+      }
+    }
+  }
+
+  getCheckStatus(item : RelocationTask): boolean{
+    const taskInOriginalData = this.findTaskInOriginalData(item.task_id, item.stage as keyof ChecklistByStageAndCategory, item.category);
+    return taskInOriginalData?.completed || false;
+  }
+
+  async removeItem(item: RelocationTask, stageKeyStr: string, categoryName: string) {
+    await this.checklistUIService.confirmTaskRemoval(
+      item,
+      () => {
+        const stageKey = stageKeyStr as keyof ChecklistByStageAndCategory;
+        const categoryInOriginal = this.checklistData[stageKey].find(cat => cat.name === categoryName);
+        if (categoryInOriginal) {
+          const index = categoryInOriginal.tasks.findIndex(t => t.task_id === item.task_id);
+          if (index > -1) {
+            categoryInOriginal.tasks.splice(index, 1);
+            
+            if (categoryInOriginal.tasks.length === 0 && categoryInOriginal.name !== 'General') { // Avoid removing 'General' if empty
+              const categoryIndexInOriginal = this.checklistData[stageKey].indexOf(categoryInOriginal);
+              if (categoryIndexInOriginal > -1) {
+                this.checklistData[stageKey].splice(categoryIndexInOriginal, 1);
+              }
+            }
+            this.updateStageProgressAndLabelsFromData(this.checklistData);
+            this.saveChecklistToCache();
+            this.applyFiltersAndSearch();
+            this.changeDetectorRef.detectChanges();
+            this.showToast('Task removed.', 'medium');
+          }
+        }
+      }
+    );
+  }
+
+  sortTasks(sortBy: 'priority' | 'dueDate') {
+    if (this.currentSort === sortBy) { // If already sorted by this, toggle or reset
+      this.currentSort = 'none'; // Reset sort
+    } else {
+      this.currentSort = sortBy;
+    }
+
+    const stages: (keyof ChecklistByStageAndCategory)[] = ['predeparture', 'departure', 'arrival'];
+    stages.forEach(stageKey => {
+      if (this.checklistData[stageKey]) {
+        this.checklistData[stageKey].forEach(category => {
+          this.sortCategoryTasks(category, this.currentSort);
+        });
+      }
+    });
+    this.applyFiltersAndSearch(); // Re-apply filters to the sorted data
+    this.changeDetectorRef.detectChanges();
+  }
+
+  private interpretDueDateString(dueDateStr: string): Date | null {
+    return this.dateUtils.interpretDueDateString(dueDateStr, this.formData?.moveDate);
+  }
+
+  public isAbsoluteDate(dateString: string | undefined | null): boolean {
+    return this.dateUtils.isAbsoluteDate(dateString, this.formData?.moveDate);
+  }
+
+  public formatDateWithOrdinal(dateInput: string | undefined | null): string {
+    return this.dateUtils.formatDateWithOrdinal(dateInput, this.formData?.moveDate);
+  }
+
+  public getRelativeDueDate(dueDateInput: string): string {
+    return this.dateUtils.getRelativeDueDate(dueDateInput, this.formData?.moveDate);
+  }
+
+  sortCategoryTasks(category: TaskCategory, sortBy: 'none' | 'priority' | 'dueDate') {
+    this.filterUtils.sortCategoryTasks(category, sortBy, this.formData?.moveDate);
+  }
+
+  async saveChecklistToCache() {
+    await this.cacheUtils.saveChecklistToCache(
+      this.CACHED_CHECKLIST_KEY,
+      this.CACHED_FORM_DATA_KEY,
+      this.checklistData,
+      this.stageProgress,
+      this.formData
+    );
+    
+    this.cachedFormData = JSON.parse(JSON.stringify(this.formData)); // Update in-memory cache
+  }
+
+  // Helper methods for template to avoid complex expressions in HTML
+  
+  // Get tasks count for a stage
+  public getGeneratedTasksCountForStage(stageKey: string): number {
+    // During the preparing phase, always return 0 for all stages to show 0/X in the UI
+    if (this.isGeneratingChecklist && this.workingOnStage === 'preparing' && this.initialStructureReceived) {
+      return 0;
+    }
+    
+    if (this.checklistData[stageKey as keyof ChecklistByStageAndCategory]) {
+      // Count the actual tasks generated and rendered in this stage
+      const count = this.checklistData[stageKey as keyof ChecklistByStageAndCategory].reduce(
+        (total, category) => total + category.tasks.length, 0);
+      
+      // Always update the current count in stageProgress to match the actual count of tasks
+      // This is critical for the progress bar to accurately reflect current generation progress
+      this.stageProgress[stageKey].current = count;
+      
+      return count;
+    }
+    return 0;
+  }
+  
+  // Get the expected total tasks for a stage from backend
+  public getExpectedTaskCountForStage(stageKey: string): number {
+    return this.stageManagementService.getExpectedTaskCountForStage(stageKey);
+  }
+  
+  // Total tasks to generate
+  public getTotalTasksForStage(stageKey: string): number {
+    return this.stageManagementService.getTotalTasksForStage(stageKey);
+  }
+
+  // Get progress bar color for a stage
+  public getStageProgressColor(stageKey: string): string {
+    return this.stageManagementService.getStageProgressColor(stageKey);
+  }
+  
+  // Updated to provide smoother progress visualization
+  public getStageProgressValue(stageKey: string): number {
+    return this.stageManagementService.getStageProgressValue(stageKey);
+  }
+  
+  // Update isStageCompleted to work for both generation and completion phases
+  public isStageCompleted(stageKey: string): boolean {
+    return this.stageManagementService.isStageComplete(stageKey);
+  }
+
+  // Add a method to get completed tasks count
+  public getCompletedTasksCountForStage(stageKey: string): number {
+    return this.stageManagementService.getCompletedTasksCountForStage(
+      stageKey, 
+      true, // count from checklist data
+      this.checklistData
+    );
+  }
+
+  // Start the preparing progress animation with fixed duration (4.2 seconds)
+  private startPreparingAnimation() {
+    this.progressUtils.startPreparingAnimation((progress: number) => {
+      this.preparingProgress = progress;
+      this.changeDetectorRef.detectChanges();
+    });
+  }
+  
+  // Complete the preparing animation quickly
+  private completePreparingAnimation() {
+    this.progressUtils.completePreparingAnimation(
+      this.preparingProgress,
+      (progress: number) => {
+        this.preparingProgress = progress;
+        this.changeDetectorRef.detectChanges();
+      },
+      () => {
+        // After animation completes, ensure preparingAnimationComplete is set
+        this.preparingAnimationComplete = true;
+        
+        // Start processing generated tasks with improved handling
+        this.startProcessingGenTasks();
+      }
+    );
+  }
+  
+  // Stop the preparing animation
+  private stopPreparingAnimation() {
+    this.progressUtils.stopPreparingAnimation();
+  }
+  
+  // Start the minimum duration timer for preparing phase (now 4.2 seconds)
+  private startPreparingMinDurationTimer() {
+    this.preparingMinDurationPromise = this.progressUtils.startPreparingMinDurationTimer();
+    return this.preparingMinDurationPromise;
+  }
+  
+  // Start processing the init_queue (stage totals & categories)
+  private startProcessingInitQueue() {
+    if (this.initQueueProcessing || this.init_queue.length === 0) return;
+    
+    this.taskGenerationService.startProcessingInitQueue({
+      onStageTotal: (stage, total) => {
+        console.log(`Rendering stage totals for ${stage}: 0/${total}`);
+        
+        // Mark this stage as having its totals rendered
+        this.stagesWithTotalsRendered.add(stage);
+        
+        // Add a slight delay before updating the UI to make the change more noticeable
+        setTimeout(() => {
+          // Update stage labels to reflect the new totals
+          if (stage === 'predeparture') {
+            this.predepartureLabel = `Predeparture (0/${total})`;
+          } else if (stage === 'departure') {
+            this.departureLabel = `Departure (0/${total})`;
+          } else if (stage === 'arrival') {
+            this.arrivalLabel = `Arrival (0/${total})`;
+          }
+          
+          // Force change detection to update the UI with the new label
+          this.changeDetectorRef.detectChanges();
+        }, 50); // Small delay for UI update
+      },
+      onCategory: (stage, categoryName) => {
+        console.log(`Rendering category for ${stage}: ${categoryName}`);
+        
+        // Find existing categories for this stage
+        const stageKey = stage as keyof ChecklistByStageAndCategory;
+        
+        // Ensure the category exists but is empty
+        if (!this.checklistData[stageKey].some(cat => cat.name === categoryName)) {
+          // Create the new category with collapsed state (closed by default)
+          const newCategory = {
+            name: categoryName,
+            tasks: [],
+            isExpanded: false // Keep categories closed by default
+          };
+          
+          this.checklistData[stageKey].push(newCategory);
+          
+          // Sort categories alphabetically
+          this.checklistData[stageKey].sort((a, b) => a.name.localeCompare(b.name));
+          
+          // Update UI to show the new category
+          this.applyFiltersAndSearch();
+          this.changeDetectorRef.detectChanges();
+        } else {
+          // Apply filters to refresh the UI
+          this.applyFiltersAndSearch();
+        }
+      },
+      onQueueComplete: () => {
+        this.initQueueProcessing = false;
+        console.log('Finished processing init_queue');
+        // Show stage progress bars when init_queue is empty
+        this.showStageProgressBars();
+      }
+    });
+    
+    this.initQueueProcessing = true;
+  }
+  
+  // Show stage progress bars after init_queue is processed
+  private showStageProgressBars() {
+    console.log('Showing stage progress bars');
+    
+    // Force progress bars to be visible with a more noticeable visual effect
+    setTimeout(() => {
+      // Reset all stage progress tracking to 0/total to prepare for loading animation
+      Object.keys(this.stageProgress).forEach(stageKey => {
+        if (this.stageProgress[stageKey].total > 0) {
+          // Set current to 0 while keeping total
+          this.stageProgress[stageKey].current = 0;
+          
+          // Update stage labels to show 0/total
+          const stageName = stageKey.charAt(0).toUpperCase() + stageKey.slice(1);
+          const total = this.stageProgress[stageKey].total;
+          const labelKey = `${stageKey}Label` as 'predepartureLabel' | 'departureLabel' | 'arrivalLabel';
+          this[labelKey] = `${stageName} (0/${total})`;
+        }
+      });
+      
+      // Force progress bars to be visible
+      const stageProgressElements = document.querySelectorAll('.active-stage-progress');
+      stageProgressElements.forEach(el => {
+        el.classList.add('force-visible');
+      });
+      
+      this.changeDetectorRef.detectChanges();
+      
+      // After a short delay, update the UI to prepare for task generation
+      setTimeout(() => {
+        // Set the first stage with tasks as the active working stage
+        if (this.stageProgress['predeparture'].total > 0) {
+          this.workingOnStage = 'predeparture';
+          this.predepartureLabel = `Predeparture (0/${this.stageProgress['predeparture'].total})`;
+        } else if (this.stageProgress['departure'].total > 0) {
+          this.workingOnStage = 'departure';
+          this.departureLabel = `Departure (0/${this.stageProgress['departure'].total})`;
+        } else if (this.stageProgress['arrival'].total > 0) {
+          this.workingOnStage = 'arrival';
+          this.arrivalLabel = `Arrival (0/${this.stageProgress['arrival'].total})`;
+        }
+        
+        this.changeDetectorRef.detectChanges();
+      }, 300);
+    }, 500); // Increased delay for more visible effect
+  }
+  
+  // Start processing generated tasks queue
+  private startProcessingGenTasks() {
+    this.taskGenerationService.startProcessingGenTasks({
+      onTaskProcessed: (taskData) => {
+        this.renderGeneratedTask(taskData);
+      },
+      onBatchComplete: () => {
+        // No additional action needed between batches
+      },
+      onQueueComplete: () => {
+        this.genTasksProcessing = false;
+        console.log('Finished processing gen_tasks - total tasks rendered:', this.generatedTasksCount);
+      },
+      getTotalTasksToGenerate: () => this.totalTasksToGenerate,
+      getCurrentTaskCount: () => this.generatedTasksCount
+    });
+    
+    this.genTasksProcessing = true;
+  }
+  
+  // Render a generated task to UI with enhanced visual feedback
+  private renderGeneratedTask(taskData: any) {
+    const stageKey = taskData.stage as keyof ChecklistByStageAndCategory;
+    const categoryName = taskData.category || 'General';
+    
+    if (stageKey && this.checklistData[stageKey]) {
+      // Find the category or create it if needed
+      let category = this.checklistData[stageKey].find(cat => cat.name === categoryName);
+      if (!category) {
+        // Create a new category (closed by default)
+        category = { name: categoryName, tasks: [], isExpanded: false };
+        this.checklistData[stageKey].push(category);
+        this.checklistData[stageKey].sort((a, b) => a.name.localeCompare(b.name));
+      }
+      
+      // Create the new task using the TaskGenerationService
+      const newTask = this.taskGenerationService.createTaskFromData(
+        taskData, 
+        (explanation) => this.generateSummary(explanation)
+      );
+      
+      // Add the task to the category
+      category.tasks.push(newTask);
+      
+      // Increment the task count but don't change workingOnStage
+      this.stageProgress[stageKey].current = this.getGeneratedTasksCountForStage(stageKey);
+      this.generatedTasksCount++;
+      
+      // Only update labels and UI intermittently to improve performance
+      // Update once every 5 tasks or if we've reached a target number
+      if (this.generatedTasksCount % 5 === 0 || 
+          this.generatedTasksCount === this.totalTasksToGenerate ||
+          this.generatedTasksCount === this.stageProgress[stageKey].total) {
+        
+        this.updateStageLabels();
+        
+        // For better performance, only apply filters for the current stage
+        if (this.selectedStage === stageKey) {
+          this.applyFiltersAndSearch();
+        }
+        
+        this.changeDetectorRef.detectChanges();
+      }
+    }
+  }
+
+  // Update handleChange to handleStageChange with proper handling
+  public handleStageChange() {
+    // Update the progress display when stage changes
+    this.applyFiltersAndSearch();
+
+    // Ensure progress bars are properly visible on stage change
+    if (this.isGeneratingChecklist) {
+      // Short delay to ensure DOM elements are updated
+      setTimeout(() => {
+        const stageProgressElement = document.querySelector('.active-stage-progress');
+        if (stageProgressElement) {
+          // Force progress bars to be visible after stage change
+          const progressBar = stageProgressElement.querySelector('ion-progress-bar');
+          if (progressBar) {
+            // Force a reflow/repaint to ensure proper animation
+            progressBar.style.display = 'none';
+            void progressBar.offsetHeight; // Trigger reflow
+            progressBar.style.display = '';
+          }
+        }
+      }, 50);
+    }
+  }
+
+  // Add a helper method to show the current stage being generated
+  private applyCurrentStageFilter() {
+    // Only filter the currently visible stage for better performance during generation
+    const stageKey = this.selectedStage as keyof ChecklistByStageAndCategory;
+    
+    // Create a shallow copy of the current stage's data
+    if (this.checklistData[stageKey]) {
+      this.displayedChecklistData[stageKey] = this.checklistData[stageKey].map(category => {
+        return { ...category, tasks: [...category.tasks] };
+      });
+    }
+  }
+
+  // Add the showToast method to fix linter errors
+  async showToast(message: string, color: string = 'success', duration: number = 2000) {
+    await this.checklistUIService.showToast(message, color, duration);
+  }
+
+  // Implement our own filterCategories function since it doesn't exist on FilterUtils
+  private filterCategories(
+    categories: TaskCategory[],
+    filters: ChecklistFilterData,
+    searchTerm: string,
+    moveDate: string | null
+  ): TaskCategory[] {
+    return categories
+      .map(categoryFromMaster => {
+        let tasksToDisplay = [...categoryFromMaster.tasks];
+        
+        // Apply all filters using FilterUtils
+        tasksToDisplay = this.filterUtils.applyAllFilters(
+          tasksToDisplay,
+          filters,
+          searchTerm,
+          moveDate
+        );
+        
+        // Return a new category object with the filtered tasks or null if empty
+        return tasksToDisplay.length > 0 ? { ...categoryFromMaster, tasks: tasksToDisplay } : null;
+      })
+      .filter((category): category is TaskCategory => category !== null);
+  }
+
+  /**
+   * Track by function for task lists
+   * @param index Index in the array
+   * @param task Task item
+   * @returns A unique identifier for the task
+   */
+  trackByTaskId(index: number, task: any): string {
+    return task.task_id || `task-${index}`;
   }
 }

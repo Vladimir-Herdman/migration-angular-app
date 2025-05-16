@@ -1,101 +1,412 @@
-ion-list-header h1 {
-    font-size: 1.1rem; // Slightly smaller for better hierarchy if needed
-    font-weight: 500; // Medium weight
-    margin: 0;
-    color: var(--ion-color-medium-shade);
-
-    @media (prefers-color-scheme: dark) {
-        color: var(--ion-color-step-850);
-    }
+// Base styling improvements
+:host {
+  --section-margin: 24px;
+  --card-border-radius: 12px;
+  --card-box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  --header-background: var(--ion-color-primary-shade);
+  --header-text-color: var(--ion-color-primary-contrast);
+  --item-background-dark: rgba(45, 45, 45, 0.6);
+  --item-border-dark: rgba(70, 70, 70, 0.5);
 }
 
-ion-list {
-  width: 90%;
-  max-width: 600px;
-  margin-bottom: 24px; // Increased margin for separation
-  background: transparent; // Ensure list itself is transparent if items have backgrounds
+.content-wrapper {
+  padding: 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  margin-bottom: 70px; // Space for the footer
   
-  &.actions-list { // Specific styling for the actions list
-    margin-top: 20px;
+  @media (max-width: 576px) {
+    padding: 12px 20px;
+    margin-bottom: 80px; // More space on smaller devices
   }
 }
 
-ion-item {
-    --border-color: var(--ion-color-medium-tint); // Softer border for items
-    --background: var(--ion-item-background);
-
-    @media (prefers-color-scheme: dark) {
-        --border-color: var(--ion-border-color);
-        --background: var(--ion-item-background);
-    }
-}
-
-ion-item-divider {
-    --background: var(--ion-background-color); // Match page background
-    --color: var(--ion-color-medium-shade);
-    font-size: 0.9rem;
+// Header styling
+ion-header ion-toolbar {
+  --background: var(--ion-background-color);
+  
+  .centered-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+  
+  .header-button {
     font-weight: 500;
-    padding-top: 16px; // More space above dividers
-    padding-bottom: 8px;
-
-     @media (prefers-color-scheme: dark) {
-        --background: var(--ion-background-color);
-        --color: var(--ion-color-step-850);
-    }
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    --background: #121212;
+  }
 }
 
-ion-label[position="stacked"] {
-    font-size: 0.9rem;
-    color: var(--ion-color-medium-shade);
-     @media (prefers-color-scheme: dark) {
-        color: var(--ion-color-step-850);
-    }
+// Card-based list styling
+ion-list {
+  width: 100%;
+  margin-bottom: var(--section-margin);
+  background: transparent;
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+  box-shadow: var(--card-box-shadow);
+  
+  &.actions-list {
+    margin-top: var(--section-margin);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    box-shadow: none;
+    border: 1px solid var(--item-border-dark);
+  }
 }
 
-// Wrapper for button groups to control spacing and layout
+// List header styling
+ion-list-header {
+  --background: var(--ion-color-primary-tint);
+  --color: var(--ion-color-primary-contrast);
+  min-height: 56px;
+  border-radius: var(--card-border-radius) var(--card-border-radius) 0 0;
+  --padding-start: 20px;
+  
+  h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: inherit;
+    padding-left: 4px;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    --background: var(--header-background);
+    --color: var(--header-text-color);
+  }
+}
+
+// Item styling
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --border-color: var(--ion-color-light-shade);
+  --background: var(--ion-item-background);
+  
+  ion-label {
+    font-weight: 500;
+  }
+  
+  ion-label[position="stacked"] {
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+  
+  ion-input {
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+    font-size: 1rem;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    --border-color: var(--item-border-dark);
+    --background: var(--item-background-dark);
+  }
+}
+
+// Item divider styling
+ion-item-divider {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-dark);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  margin-top: 12px;
+  letter-spacing: 0.01em;
+  border-radius: 8px;
+  --padding-start: 20px;
+  
+  .divider-label {
+    padding-left: 4px;
+  }
+  
+  &[color="danger"] {
+    --background: rgba(var(--ion-color-danger-rgb), 0.15);
+    --color: var(--ion-color-danger-shade);
+    margin-top: 20px;
+    
+    @media (prefers-color-scheme: dark) {
+      --background: rgba(var(--ion-color-danger-rgb), 0.25);
+      --color: var(--ion-color-danger);
+    }
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    --background: rgba(60, 60, 60, 0.8);
+    --color: var(--ion-color-light);
+  }
+}
+
+// Toggle styling
+ion-toggle {
+  --background: var(--ion-color-medium-shade);
+  --background-checked: var(--ion-color-primary);
+  --handle-background: white;
+  --handle-background-checked: white;
+  padding-right: 6px;
+}
+
+// Button styling
+ion-button {
+  --border-radius: 8px;
+  --box-shadow: none;
+  height: 46px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  
+  &[color="primary"] {
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
+  }
+  
+  &[color="secondary"] {
+    --background: #4a96f5;
+    --color: white;
+  }
+  
+  &[color="danger"] {
+    --background: var(--ion-color-danger);
+    --color: var(--ion-color-danger-contrast);
+  }
+  
+  &[color="warning"] {
+    --color-activated: var(--ion-color-warning-contrast);
+    --color-focused: var(--ion-color-warning-contrast);
+    
+    @media (prefers-color-scheme: dark) {
+      --color: #ffb100;
+      --border-color: #b36800;
+    }
+  }
+  
+  &[fill="outline"] {
+    --border-width: 1px;
+    --background: transparent;
+    
+    @media (prefers-color-scheme: dark) {
+      --border-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+  
+  ion-icon {
+    margin-right: 8px;
+  }
+}
+
+// Wrapper for button groups
 .button-group-wrapper {
-    padding: 8px 16px; // Padding inside the group if it were an item, or use margins on buttons
-
-    ion-button {
-        margin-top: 8px;
-        margin-bottom: 8px;
-    }
+  padding: 14px 16px;
+  
+  ion-button {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    width: 100%;
+  }
 }
 
+// Horizontal button group
 .button-group-horizontal {
-    display: flex;
-    gap: 10px; // Space between horizontal buttons
-    padding: 8px 16px;
-
-    ion-button {
-        flex: 1; // Make buttons take equal width if desired
-        margin: 0; // Reset individual button margins
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  
+  ion-button {
+    flex: 1;
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    
+    ion-icon {
+      font-size: 1.2rem;
     }
+  }
+  
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 10px;
+    
+    ion-button {
+      height: 52px;
+    }
+  }
+}
+
+// Footer styling - Make it sticky
+ion-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
 }
 
 .submit-button-container {
-  width: 90%;
-  max-width: 600px;
+  width: 100%;
+  max-width: 700px;
   margin: 0 auto;
-  padding: 8px 0; // Add padding around the button in the footer
+  padding: 12px 16px;
 }
 
 ion-footer ion-toolbar {
-    --background: var(--ion-background-color); // Match page background for footer
-    --border-width: 0; // Remove top border of footer toolbar if not desired
-    padding-bottom: env(safe-area-inset-bottom); // Handle iPhone X notch
-
-    @media (prefers-color-scheme: dark) {
-      --background: var(--ion-toolbar-background); // Or a slightly different dark shade for footer
+  --background: var(--ion-background-color);
+  --border-width: 1px 0 0 0;
+  --border-color: var(--ion-color-light-shade);
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  
+  @media (prefers-color-scheme: dark) {
+    --background: #121212;
+    --border-color: rgba(80, 80, 80, 0.5);
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  ion-button {
+    margin: 0;
+    height: 50px;
+    --border-radius: 10px;
+    font-weight: 600;
+    
+    @media (max-width: 576px) {
+      height: 56px;
     }
+  }
 }
 
-// Styling for app-quiz when embedded here
+// Quiz component styling
 app-quiz {
-  width: 100%; // Ensure it takes full width within its container
-  margin-bottom: 20px; // Add some space after the quiz component
+  width: 100%;
+  margin-bottom: var(--section-margin);
+  display: block;
   
-  &.hidden { // Ensure hidden class works as expected
+  &.hidden {
     display: none !important;
+  }
+}
+
+// Quiz container specific styling
+.quiz-container {
+  margin-bottom: var(--section-margin);
+  
+  .quiz-wrapper-item {
+    --padding-start: 0;
+    --padding-end: 0;
+    --inner-padding-start: 0;
+    --inner-padding-end: 0;
+    --background: transparent;
+    
+    &::part(native) {
+      padding: 0;
+    }
+  }
+  
+  ion-list-header {
+    margin-bottom: 0;
+  }
+}
+
+// Improve quiz appearance on larger screens
+@media (min-width: 768px) {
+  ion-accordion-group {
+    margin: 0 auto;
+  }
+  
+  .content-wrapper {
+    padding: 24px;
+  }
+  
+  ion-list-header h1 {
+    font-size: 1.2rem;
+  }
+}
+
+// Mobile-specific enhancements
+@media (max-width: 480px) {
+  ion-list {
+    margin-bottom: 16px;
+    border-radius: 10px;
+  }
+  
+  ion-item {
+    --min-height: 56px;
+  }
+  
+  .button-group-wrapper {
+    padding: 16px;
+  }
+  
+  ion-list-header {
+    min-height: 60px;
+  }
+  
+  ion-toggle {
+    transform: scale(1.1);
+  }
+  
+  .button-group-horizontal ion-button {
+    --color: #ffc409;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    
+    &[color="warning"] {
+      font-weight: 700;
+    }
+  }
+}
+
+// Custom color for dark theme
+@media (prefers-color-scheme: dark) {
+  ion-content {
+    --background: #121212;
+  }
+  
+  ion-radio, ion-checkbox {
+    --color-checked: var(--ion-color-primary);
+  }
+  
+  .question-label {
+    color: #4a96f5 !important;
+  }
+}
+
+// Cache management specific styles
+.divider-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  
+  @media (prefers-color-scheme: dark) {
+    color: var(--ion-color-light);
+  }
+}
+
+.cache-buttons {
+  ion-button {
+    height: 54px;
+    
+    .button-text {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: normal; // Allow text to wrap
+      line-height: 1.3;
+    }
+    
+    &[color="warning"] {
+      --border-color: #e6b400;
+      
+      @media (prefers-color-scheme: dark) {
+        --border-color: #ffb700;
+        --color: #ffb700;
+      }
+    }
   }
 }

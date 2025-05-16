@@ -12,25 +12,28 @@
 
 <ion-content [fullscreen]="false">
   <div class="content-wrapper">
-    <!-- Account Info -->
+    <!-- Account Info Card -->
     <ion-list lines="full">
-      <ion-list-header color="light">
+      <ion-list-header>
         <ion-label><h1>Account Info</h1></ion-label>
       </ion-list-header>
 
-      <ion-item>
+      <ion-item lines="full">
         <ion-label position="stacked">Email</ion-label>
-        <ion-input [(ngModel)]="account.info.email" name="email" type="email" placeholder="Email"></ion-input>
+        <ion-input [(ngModel)]="account.info.email" name="email" type="email" placeholder="Enter your email" readonly></ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-button expand="block" fill="outline" (click)="changePassword()">Change Password</ion-button>
+      <ion-item lines="none">
+        <ion-button expand="block" fill="outline" (click)="changePassword()">
+          <ion-icon name="key-outline" slot="start"></ion-icon>
+          Change Password
+        </ion-button>
       </ion-item>
     </ion-list>
 
-    <!-- Settings -->
+    <!-- Settings Card -->
     <ion-list lines="full">
-      <ion-list-header color="light">
+      <ion-list-header>
         <ion-label><h1>Settings</h1></ion-label>
       </ion-list-header>
 
@@ -38,45 +41,57 @@
         <ion-label>Enable Notifications</ion-label>
         <ion-toggle [(ngModel)]="account.settings.notifications" name="notifications" slot="end"></ion-toggle>
       </ion-item>
-      <!-- Add more settings items here as needed -->
     </ion-list>
 
-    <!-- Questionnaire -->
-    <app-quiz [form]="account.quiz" [class.hidden]="!canShowQuiz"></app-quiz>
-    <!-- The h1 for Questionnaire is removed as app-quiz itself implies what it is,
-         or the accordion header within app-quiz serves this purpose -->
+    <!-- Questionnaire Accordion -->
+    <ion-list lines="full" class="quiz-container">
+      <ion-list-header>
+        <ion-label>
+          <h1>Moving Information</h1>
+        </ion-label>
+      </ion-list-header>
+      <ion-item class="quiz-wrapper-item" lines="none">
+        <app-quiz [form]="account.quiz" [class.hidden]="!canShowQuiz"></app-quiz>
+      </ion-item>
+    </ion-list>
 
-    <!-- Actions & Data Management -->
+    <!-- Actions & Data Management Card -->
     <ion-list lines="none" class="actions-list">
-      <ion-list-header color="light">
+      <ion-list-header>
         <ion-label><h1>Actions & Data</h1></ion-label>
       </ion-list-header>
+      
+      <!-- Logout Action -->
       <div class="button-group-wrapper">
-        <ion-button expand="block" color="secondary" fill="outline" (click)="handleLogout()">
+        <ion-button expand="block" color="secondary" (click)="handleLogout()">
           <ion-icon name="log-out-outline" slot="start"></ion-icon>
           Logout
         </ion-button>
       </div>
 
+      <!-- Cache Management -->
       <ion-item-divider>
-        <ion-label>Cache Management</ion-label>
+        <ion-label class="divider-label">Cache Management</ion-label>
       </ion-item-divider>
-      <div class="button-group-wrapper button-group-horizontal">
+      
+      <div class="button-group-horizontal cache-buttons">
         <ion-button expand="block" color="warning" fill="outline" (click)="clear_cache()">
           <ion-icon name="trash-bin-outline" slot="start"></ion-icon>
-          Clear My Cache
+          <span class="button-text">Clear My Cache</span>
         </ion-button>
         <ion-button expand="block" color="warning" fill="outline" (click)="clear_cache(true)">
           <ion-icon name="nuclear-outline" slot="start"></ion-icon>
-          Clear All Device Cache
+          <span class="button-text">Clear All Device Cache</span>
         </ion-button>
       </div>
       
-      <ion-item-divider>
-         <ion-label color="danger">Danger Zone</ion-label>
+      <!-- Danger Zone -->
+      <ion-item-divider color="danger">
+        <ion-label>Danger Zone</ion-label>
       </ion-item-divider>
+      
       <div class="button-group-wrapper">
-        <ion-button expand="block" color="danger" fill="outline" (click)="handleDelete()">
+        <ion-button expand="block" color="danger" (click)="handleDelete()">
           <ion-icon name="trash-outline" slot="start"></ion-icon>
           Delete Account
         </ion-button>

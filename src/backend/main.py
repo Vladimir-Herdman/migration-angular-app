@@ -203,7 +203,7 @@ async def personalize_explanation_with_llm(base_explanation: str, task_desc: str
     Be concise.
     """
     try:
-        print(f"DEBUG: Sending to LLM for task '{task_desc}'. Prompt (simplified): {prompt[:200]}...")
+        # print(f"DEBUG: Sending to LLM for task '{task_desc}'. Prompt (simplified): {prompt[:200]}...")
         response = await asyncio.to_thread(
             ollama.chat,
             model=LLM_MODEL_NAME,
@@ -258,9 +258,9 @@ async def personalize_explanation_with_llm(base_explanation: str, task_desc: str
         # final_personalized_text = re.sub(r'\s{2,}', ' ', final_personalized_text) 
         # --- END OF AGGRESSIVE STRIPPING ---
 
-        print(f"DEBUG: LLM raw explanation for '{task_desc}': {raw_personalized_text}")
-        print(f"DEBUG: LLM text after <think> strip for '{task_desc}': {text_after_think_strip}")
-        print(f"DEBUG: LLM final personalized explanation for '{task_desc}': {final_personalized_text}")
+        # print(f"DEBUG: LLM raw explanation for '{task_desc}': {raw_personalized_text}")
+        #print(f"DEBUG: LLM text after <think> strip for '{task_desc}': {text_after_think_strip}")
+        #print(f"DEBUG: LLM final personalized explanation for '{task_desc}': {final_personalized_text}")
         return final_personalized_text if final_personalized_text else explanation
     except Exception as e:
         print(f"ERROR personalizing explanation with LLM for task '{task_desc}': {e}. Falling back.")
