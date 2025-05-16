@@ -24,12 +24,14 @@ export interface RelocationTask {
   stage?: string;
   category?: string;
   notes?: string;
+  isNewlyGenerated?: boolean; // Animation flag for newly generated tasks
 }
 
 export interface TaskCategory {
   name: string;
   tasks: RelocationTask[];
   isExpanded?: boolean;
+  isNewlyCreated?: boolean; // Animation flag for newly created categories
 }
 
 export interface ChecklistByStageAndCategory {

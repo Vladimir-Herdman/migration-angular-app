@@ -49,6 +49,11 @@ export class TaskGenerationService {
     let partialData = '';
     let generatedTasksCount = 0;
     let totalTasksToGenerate = 0;
+    
+    // Flag to track if we're still processing metadata
+    let initialMetadataComplete = false;
+    // Buffer to collect task items during metadata processing
+    const taskBuffer: any[] = [];
 
     try {
       // Process the stream data
@@ -86,6 +91,7 @@ export class TaskGenerationService {
                 // Reset queues
                 this.init_queue = [];
                 this.gen_tasks = [];
+                taskBuffer.length = 0;
                 
                 // Add stage totals to init_queue first (they'll be processed first)
                 const stages = ['predeparture', 'departure', 'arrival'] as const;
@@ -112,15 +118,32 @@ export class TaskGenerationService {
                   }
                 }
               } else if (data.event_type === 'task_item') {
-                // Add task to queue for processing
-                this.gen_tasks.push(data);
-                
-                // Notify caller about task item
-                callbacks.onTaskItemAdded(data);
-                
+                // If still processing metadata, buffer the task
+                if (!initialMetadataComplete && this.initQueueProcessing) {
+                  taskBuffer.push(data);
+                } else {
+                  // Metadata complete, process normally
+                  // Add task to queue for processing
+                  this.gen_tasks.push(data);
+                  
+                  // Notify caller about task item
+                  callbacks.onTaskItemAdded(data);
+                }
               } else if (data.event_type === 'stream_end') {
                 console.log(`Stream ended. Total tasks streamed by backend: ${data.total_streamed}`);
                 callbacks.onStreamEnd(data);
+              } else if (data.event_type === 'metadata_complete') {
+                // Signal that initial metadata is complete
+                initialMetadataComplete = true;
+                
+                // Now add the buffered tasks to the processing queue
+                for (const task of taskBuffer) {
+                  this.gen_tasks.push(task);
+                  callbacks.onTaskItemAdded(task);
+                }
+                
+                // Clear the buffer
+                taskBuffer.length = 0;
               }
             } catch (e) {
               console.error('Error parsing streamed JSON:', e, 'Line:', line);
@@ -161,27 +184,46 @@ export class TaskGenerationService {
     this.initQueueProcessing = true;
     console.log('Starting to process init_queue with', this.init_queue.length, 'items');
     
-    // Process one item every 250ms for a more noticeable sequential rendering
+    // Create a copy of the init_queue to process
+    const queueCopy = [...this.init_queue];
+    const totalItems = queueCopy.length;
+    let processedItems = 0;
+    
+    // Process one item every 450ms for a more noticeable sequential rendering
     const processItem = () => {
-      if (this.init_queue.length === 0) {
+      if (queueCopy.length === 0) {
         this.initQueueProcessing = false;
         console.log('Finished processing init_queue');
+        
+        // Signal metadata is complete - special event
+        const metadataCompleteEvent = {
+          event_type: 'metadata_complete',
+          timestamp: new Date().toISOString()
+        };
+        // Process any buffered tasks
         callbacks.onQueueComplete();
         return;
       }
       
-      const item = this.init_queue.shift();
+      const item = queueCopy.shift();
       
       if (item && item.type === 'stageTotals') {
         // Process stage totals
+        this.init_queue = this.init_queue.filter(i => 
+          !(i.type === item.type && i.stage === item.stage));
         callbacks.onStageTotal(item.stage, item.data);
       } else if (item && item.type === 'category') {
         // Process category
+        this.init_queue = this.init_queue.filter(i => 
+          !(i.type === item.type && i.stage === item.stage && i.data === item.data));
         callbacks.onCategory(item.stage, item.data);
       }
       
-      // Process next item after 250ms for more noticeable animation
-      setTimeout(processItem, 250);
+      // Update progress
+      processedItems++;
+      
+      // Process next item after 450ms for more noticeable animation
+      setTimeout(processItem, 450);
     };
     
     // Start processing
@@ -302,20 +344,75 @@ export class TaskGenerationService {
   }
   
   /**
-   * Resets task completion status without altering structure
-   * @param checklistData The checklist data to reset
-   * @returns Updated checklist data with all tasks marked as not completed
+   * Get estimated category count for initialization phase
+   * @returns Estimated number of categories across all stages
+   */
+  getEstimatedCategoryCount(): number {
+    // Count categories from init_queue
+    let categoryCount = this.init_queue.filter(item => item.type === 'category').length;
+    
+    // If no categories in queue yet, provide a reasonable estimate
+    if (categoryCount === 0) {
+      // For relocation tasks, a reasonable default is 12-15 categories total across stages
+      return 15;
+    }
+    
+    return categoryCount;
+  }
+  
+  /**
+   * Get current size of task queue
+   * @returns Number of tasks in queue
+   */
+  getTaskQueueSize(): number {
+    return this.gen_tasks.length;
+  }
+  
+  /**
+   * Check if tasks queue has items
+   * @returns True if queue has tasks
+   */
+  hasTasksInQueue(): boolean {
+    return this.gen_tasks.length > 0;
+  }
+  
+  /**
+   * Get the next task from the queue without removing it
+   * @returns The next task or undefined if queue is empty
+   */
+  getNextTask(): any {
+    return this.gen_tasks.length > 0 ? this.gen_tasks.shift() : undefined;
+  }
+  
+  /**
+   * Reset all task completion status in the checklist data
+   * @param checklistData The original checklist data
+   * @returns The same structure with all tasks marked as not completed
    */
   resetTaskCompletionStatus(checklistData: ChecklistByStageAndCategory): ChecklistByStageAndCategory {
-    Object.keys(checklistData).forEach(stageKey => {
+    // Create a deep copy to avoid modifying the original directly
+    const result = { ...checklistData };
+    
+    // Process each stage
+    Object.keys(result).forEach(stageKey => {
       const stage = stageKey as keyof ChecklistByStageAndCategory;
-      checklistData[stage].forEach(category => {
-        category.tasks.forEach(task => {
-          task.completed = false;
+      
+      // Process each category in the stage
+      if (result[stage]) {
+        result[stage] = result[stage].map(category => {
+          // Clone the category
+          const newCategory = { ...category };
+          
+          // Clone tasks and reset completion status
+          newCategory.tasks = category.tasks.map(task => {
+            return { ...task, completed: false };
+          });
+          
+          return newCategory;
         });
-      });
+      }
     });
     
-    return checklistData;
+    return result;
   }
 } 

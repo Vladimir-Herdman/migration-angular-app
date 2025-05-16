@@ -380,6 +380,9 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
       this.generatedTasksCount = 0;
       this.taskGenerationService.clearQueues();
       
+      // Create a completion flag to track when stream processing is done
+      let streamProcessingComplete = false;
+      
       // Process the task stream using TaskGenerationService
       await this.taskGenerationService.processTaskStream(
         response,
@@ -421,12 +424,15 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
           },
           onStreamEnd: (data) => {
             console.log(`Stream ended. Total tasks streamed by backend: ${data.total_streamed}`);
+            streamProcessingComplete = true;
           },
           onError: (error) => {
             console.error('Error processing task stream:', error);
+            // Don't show error toast here - it might be premature
           },
           onComplete: () => {
             // Processing is complete
+            console.log('Stream processing complete');
           }
         }
       );
@@ -446,6 +452,21 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
           console.error('Error waiting for preparing animation:', e);
         }
       }
+      
+      // Wait for task generation to finish
+      const waitForTaskGeneration = async () => {
+        // If all tasks generated or no tasks were expected, continue
+        if (this.generatedTasksCount >= this.totalTasksToGenerate || this.totalTasksToGenerate === 0) {
+          return;
+        }
+        
+        // Otherwise wait and check again
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return waitForTaskGeneration();
+      };
+      
+      // Wait for task generation to complete
+      await waitForTaskGeneration();
       
     } catch (error) {
       console.error('Error generating checklist:', error);
@@ -475,11 +496,14 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
       // Calculate if all expected tasks have been generated
       const expectedTotal = this.totalTasksToGenerate;
       const actualGenerated = this.generatedTasksCount;
+      
+      // Check if all stages received their expected number of tasks
       const allStagesComplete = Object.keys(this.stageProgress).every(stageKey => {
         const { current, total } = this.stageProgress[stageKey];
         return total === 0 || current >= total;
       });
 
+      // Show appropriate message based on the outcome of generation
       if (expectedTotal > 0 && actualGenerated === expectedTotal && allStagesComplete) {
         this.showToast('Checklist generation complete!', 'success');
       } else if (expectedTotal > 0 && actualGenerated < expectedTotal) {
@@ -1121,12 +1145,73 @@ applyFiltersAndSearch() {
 
   // Start the preparing progress animation with fixed duration (4.2 seconds)
   private startPreparingAnimation() {
-    this.progressUtils.startPreparingAnimation((progress: number) => {
-      this.preparingProgress = progress;
-      this.changeDetectorRef.detectChanges();
-    });
+    // Start with initial fast animation up to 50%
+    this.preparingProgress = 0;
+    let initialAnimationComplete = false;
+    
+    // First phase: Quick animation to 50%
+    const initialAnimation = setInterval(() => {
+      if (this.preparingProgress >= 0.5) {
+        clearInterval(initialAnimation);
+        initialAnimationComplete = true;
+      } else {
+        this.preparingProgress += 0.02; // Move 2% per frame to reach 50% quickly
+        this.changeDetectorRef.detectChanges();
+      }
+    }, 40); // ~25fps
+    
+    // Second phase: Content-aware progress
+    // This interval continues after initial animation completes
+    this.preparingAnimationInterval = setInterval(() => {
+      if (initialAnimationComplete) {
+        // Calculate total metadata items (categories + stage counts)
+        const totalMetadataItems = this.getTotalExpectedCategories() + 3; // 3 stage counts
+        const loadedMetadataItems = this.getLoadedMetadataItemsCount();
+        
+        // Progress is controlled by actual content loading
+        const targetProgress = this.progressUtils.controlPreparingAnimation(
+          this.preparingProgress,
+          totalMetadataItems,
+          loadedMetadataItems
+        );
+        
+        // Smoothly move toward target
+        if (this.preparingProgress < targetProgress) {
+          this.preparingProgress += 0.01; // Small increments for smooth animation
+        } else if (this.preparingProgress >= 0.98) {
+          // When nearly complete, check if the 4.2 seconds have passed
+          if (this.preparingMinDurationPromise) {
+            // If time has passed and all metadata is loaded, complete animation
+            if (loadedMetadataItems >= totalMetadataItems) {
+              this.completePreparingAnimation();
+            }
+          }
+        }
+        this.changeDetectorRef.detectChanges();
+      }
+    }, 80); // Slower for the content-aware phase
   }
   
+  // Helper methods for metadata tracking
+  private getTotalExpectedCategories(): number {
+    // Count categories from backend data or estimate based on form data
+    // This could be set when you receive initial structure from backend
+    return this.taskGenerationService.getEstimatedCategoryCount() || 10; // Default to 10 if not available
+  }
+
+  private getLoadedMetadataItemsCount(): number {
+    // Count stage counts and categories that have been rendered
+    let count = this.stagesWithTotalsRendered.size; // Count stages with totals
+    
+    // Count categories that have been created
+    Object.keys(this.checklistData).forEach(stageKey => {
+      const stage = stageKey as keyof ChecklistByStageAndCategory;
+      count += this.checklistData[stage].length;
+    });
+    
+    return count;
+  }
+
   // Complete the preparing animation quickly
   private completePreparingAnimation() {
     this.progressUtils.completePreparingAnimation(
@@ -1160,41 +1245,56 @@ applyFiltersAndSearch() {
   private startProcessingInitQueue() {
     if (this.initQueueProcessing || this.init_queue.length === 0) return;
     
-    this.taskGenerationService.startProcessingInitQueue({
-      onStageTotal: (stage, total) => {
-        console.log(`Rendering stage totals for ${stage}: 0/${total}`);
+    this.initQueueProcessing = true;
+    console.log('Starting to process init_queue with', this.init_queue.length, 'items');
+    
+    // Process initQueue items with longer delays for more noticeable staggered appearance
+    const processItem = () => {
+      if (this.init_queue.length === 0) {
+        this.initQueueProcessing = false;
+        console.log('Finished processing init_queue');
+        // Show stage progress bars when init_queue is empty
+        this.showStageProgressBars();
+        return;
+      }
+      
+      const item = this.init_queue.shift();
+      
+      if (item && item.type === 'stageTotals') {
+        // Process stage totals
+        console.log(`Rendering stage totals for ${item.stage}: 0/${item.data}`);
         
         // Mark this stage as having its totals rendered
-        this.stagesWithTotalsRendered.add(stage);
+        this.stagesWithTotalsRendered.add(item.stage);
         
-        // Add a slight delay before updating the UI to make the change more noticeable
+        // Add a delay before updating the UI to make the change more noticeable
         setTimeout(() => {
           // Update stage labels to reflect the new totals
-          if (stage === 'predeparture') {
-            this.predepartureLabel = `Predeparture (0/${total})`;
-          } else if (stage === 'departure') {
-            this.departureLabel = `Departure (0/${total})`;
-          } else if (stage === 'arrival') {
-            this.arrivalLabel = `Arrival (0/${total})`;
+          if (item.stage === 'predeparture') {
+            this.predepartureLabel = `Predeparture (0/${item.data})`;
+          } else if (item.stage === 'departure') {
+            this.departureLabel = `Departure (0/${item.data})`;
+          } else if (item.stage === 'arrival') {
+            this.arrivalLabel = `Arrival (0/${item.data})`;
           }
           
           // Force change detection to update the UI with the new label
           this.changeDetectorRef.detectChanges();
-        }, 50); // Small delay for UI update
-      },
-      onCategory: (stage, categoryName) => {
-        console.log(`Rendering category for ${stage}: ${categoryName}`);
+        }, 100); // Small delay for UI update
+      } else if (item && item.type === 'category') {
+        console.log(`Rendering category for ${item.stage}: ${item.data}`);
         
         // Find existing categories for this stage
-        const stageKey = stage as keyof ChecklistByStageAndCategory;
+        const stageKey = item.stage as keyof ChecklistByStageAndCategory;
         
         // Ensure the category exists but is empty
-        if (!this.checklistData[stageKey].some(cat => cat.name === categoryName)) {
+        if (!this.checklistData[stageKey].some(cat => cat.name === item.data)) {
           // Create the new category with collapsed state (closed by default)
           const newCategory = {
-            name: categoryName,
+            name: item.data,
             tasks: [],
-            isExpanded: false // Keep categories closed by default
+            isExpanded: false, // Always keep categories closed by default during generation
+            isNewlyCreated: true
           };
           
           this.checklistData[stageKey].push(newCategory);
@@ -1205,18 +1305,26 @@ applyFiltersAndSearch() {
           // Update UI to show the new category
           this.applyFiltersAndSearch();
           this.changeDetectorRef.detectChanges();
+          
+          // Remove the newly created flag after animation completes
+          setTimeout(() => {
+            if (newCategory) {
+              newCategory.isNewlyCreated = false;
+              this.changeDetectorRef.detectChanges();
+            }
+          }, 1500);
         } else {
           // Apply filters to refresh the UI
           this.applyFiltersAndSearch();
         }
-      },
-      onQueueComplete: () => {
-        this.initQueueProcessing = false;
-        console.log('Finished processing init_queue');
-        // Show stage progress bars when init_queue is empty
-        this.showStageProgressBars();
       }
-    });
+      
+      // Longer delay between metadata items (450ms instead of 250ms) for more visible staggering
+      setTimeout(processItem, 450);
+    };
+    
+    // Start processing
+    processItem();
     
     this.initQueueProcessing = true;
   }
@@ -1268,28 +1376,79 @@ applyFiltersAndSearch() {
     }, 500); // Increased delay for more visible effect
   }
   
-  // Start processing generated tasks queue
+  // Start processing generated tasks queue with adaptive pacing
   private startProcessingGenTasks() {
-    this.taskGenerationService.startProcessingGenTasks({
-      onTaskProcessed: (taskData) => {
-        this.renderGeneratedTask(taskData);
-      },
-      onBatchComplete: () => {
-        // No additional action needed between batches
-      },
-      onQueueComplete: () => {
-        this.genTasksProcessing = false;
-        console.log('Finished processing gen_tasks - total tasks rendered:', this.generatedTasksCount);
-      },
-      getTotalTasksToGenerate: () => this.totalTasksToGenerate,
-      getCurrentTaskCount: () => this.generatedTasksCount
-    });
+    if (this.genTasksProcessing) return;
     
+    let processingBatch = false;
+    
+    const processNextBatch = () => {
+      if (processingBatch || !this.taskGenerationService.hasTasksInQueue()) {
+        if (!processingBatch && this.generatedTasksCount < this.totalTasksToGenerate) {
+          // If we're waiting for more tasks, check again after a delay
+          setTimeout(processNextBatch, 500);
+        } else if (this.generatedTasksCount >= this.totalTasksToGenerate) {
+          // All tasks have been processed
+          this.genTasksProcessing = false;
+          console.log('Finished processing all tasks:', this.generatedTasksCount);
+        }
+        return;
+      }
+      
+      processingBatch = true;
+      const queueSize = this.taskGenerationService.getTaskQueueSize();
+      const batchSize = Math.min(5, queueSize); // Process up to 5 tasks at once
+      
+      // Calculate delay based on queue size - adaptive pacing
+      const renderDelay = this.progressUtils.calculateTaskRenderDelay(queueSize);
+      
+      // Process a small batch with staggered rendering
+      let tasksProcessed = 0;
+      
+      const processSingleTask = () => {
+        const task = this.taskGenerationService.getNextTask();
+        if (task) {
+          // Render the task with visual emphasis
+          this.renderGeneratedTaskWithEmphasis(task);
+          tasksProcessed++;
+          
+          // Update stage labels after each task
+          this.updateStageLabels();
+          
+          // Continue processing batch with delays between tasks
+          if (tasksProcessed < batchSize) {
+            setTimeout(processSingleTask, renderDelay);
+          } else {
+            // Batch complete
+            processingBatch = false;
+            
+            // Schedule next batch with a longer delay for visual distinction
+            setTimeout(processNextBatch, renderDelay * 2);
+          }
+        } else {
+          // No more tasks in queue
+          processingBatch = false;
+          if (this.generatedTasksCount < this.totalTasksToGenerate) {
+            // If we're waiting for more tasks, check again after a delay
+            setTimeout(processNextBatch, 500);
+          } else {
+            // All tasks have been processed
+            this.genTasksProcessing = false;
+          }
+        }
+      };
+      
+      // Start processing the first task in this batch
+      processSingleTask();
+    };
+    
+    // Start the initial batch processing
     this.genTasksProcessing = true;
+    processNextBatch();
   }
   
   // Render a generated task to UI with enhanced visual feedback
-  private renderGeneratedTask(taskData: any) {
+  private renderGeneratedTaskWithEmphasis(taskData: any) {
     const stageKey = taskData.stage as keyof ChecklistByStageAndCategory;
     const categoryName = taskData.category || 'General';
     
@@ -1297,10 +1456,18 @@ applyFiltersAndSearch() {
       // Find the category or create it if needed
       let category = this.checklistData[stageKey].find(cat => cat.name === categoryName);
       if (!category) {
-        // Create a new category (closed by default)
-        category = { name: categoryName, tasks: [], isExpanded: false };
+        // Create a new category (always collapsed during initial generation)
+        category = { name: categoryName, tasks: [], isExpanded: false, isNewlyCreated: true };
         this.checklistData[stageKey].push(category);
         this.checklistData[stageKey].sort((a, b) => a.name.localeCompare(b.name));
+        
+        // Remove the "newly created" flag after animation completes
+        setTimeout(() => {
+          if (category) {
+            category.isNewlyCreated = false;
+            this.changeDetectorRef.detectChanges();
+          }
+        }, 1500);
       }
       
       // Create the new task using the TaskGenerationService
@@ -1309,6 +1476,9 @@ applyFiltersAndSearch() {
         (explanation) => this.generateSummary(explanation)
       );
       
+      // Add animation class flag
+      newTask.isNewlyGenerated = true;
+      
       // Add the task to the category
       category.tasks.push(newTask);
       
@@ -1316,21 +1486,15 @@ applyFiltersAndSearch() {
       this.stageProgress[stageKey].current = this.getGeneratedTasksCountForStage(stageKey);
       this.generatedTasksCount++;
       
-      // Only update labels and UI intermittently to improve performance
-      // Update once every 5 tasks or if we've reached a target number
-      if (this.generatedTasksCount % 5 === 0 || 
-          this.generatedTasksCount === this.totalTasksToGenerate ||
-          this.generatedTasksCount === this.stageProgress[stageKey].total) {
-        
-        this.updateStageLabels();
-        
-        // For better performance, only apply filters for the current stage
-        if (this.selectedStage === stageKey) {
-          this.applyFiltersAndSearch();
-        }
-        
+      // Update UI immediately for this task to show animation
+      this.applyFiltersAndSearch();
+      this.changeDetectorRef.detectChanges();
+      
+      // Remove the animation class after animation completes
+      setTimeout(() => {
+        newTask.isNewlyGenerated = false;
         this.changeDetectorRef.detectChanges();
-      }
+      }, 1000);
     }
   }
 

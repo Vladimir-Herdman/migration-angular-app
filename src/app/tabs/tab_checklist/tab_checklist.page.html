@@ -30,7 +30,7 @@
         <ion-label>
           Predeparture
           <span class="task-badge" 
-                [class.generating-badge]="isGeneratingChecklist && (workingOnStage === 'predeparture' || (workingOnStage === 'preparing' && initialStructureReceived))"
+                [class.generating-badge]="isGeneratingChecklist && (workingOnStage === 'predeparture' || workingOnStage === 'preparing')"
                 [class.completed-badge]="!isGeneratingChecklist && isStageCompleted('predeparture')">
                 {{ !isGeneratingChecklist ? getCompletedTasksCountForStage('predeparture') : 
                    (workingOnStage === 'preparing' || !stagesWithTotalsRendered.has('predeparture')) ? '0' :
@@ -43,7 +43,7 @@
         <ion-label>
           Departure
           <span class="task-badge" 
-                [class.generating-badge]="isGeneratingChecklist && (workingOnStage === 'departure' || (workingOnStage === 'preparing' && initialStructureReceived))"
+                [class.generating-badge]="isGeneratingChecklist && (workingOnStage === 'departure' || workingOnStage === 'preparing')"
                 [class.completed-badge]="!isGeneratingChecklist && isStageCompleted('departure')">
             {{ !isGeneratingChecklist ? getCompletedTasksCountForStage('departure') : 
                (workingOnStage === 'preparing' || !stagesWithTotalsRendered.has('departure')) ? '0' :
@@ -56,7 +56,7 @@
         <ion-label>
           Arrival
           <span class="task-badge" 
-                [class.generating-badge]="isGeneratingChecklist && (workingOnStage === 'arrival' || (workingOnStage === 'preparing' && initialStructureReceived))"
+                [class.generating-badge]="isGeneratingChecklist && (workingOnStage === 'arrival' || workingOnStage === 'preparing')"
                 [class.completed-badge]="!isGeneratingChecklist && isStageCompleted('arrival')">
             {{ !isGeneratingChecklist ? getCompletedTasksCountForStage('arrival') : 
                (workingOnStage === 'preparing' || !stagesWithTotalsRendered.has('arrival')) ? '0' :
@@ -93,7 +93,7 @@
       
       <!-- Structure preparation progress bar with improved styling -->
       <ion-progress-bar *ngIf="isGeneratingChecklist && workingOnStage === 'preparing'"
-        class="stage-progress-bar preparing-progress-bar"
+        class="stage-progress-bar preparing-progress-bar preparing-progress"
         [value]="preparingProgress"
         color="tertiary">
       </ion-progress-bar>
@@ -199,7 +199,8 @@
 
         <ng-container *ngFor="let category of getDisplayedCategoriesForStage(stageKey)">
           <ion-item button detail="false" (click)="toggleCategory(category)" class="category-item"
-            [class.expanded]="category.isExpanded" [class.category-complete]="areAllTasksComplete(category)">
+            [class.expanded]="category.isExpanded" [class.category-complete]="areAllTasksComplete(category)"
+            [class.newly-created]="category.isNewlyCreated">
             <ion-label>
               <h2>
                 {{ category.name | titlecase }}
@@ -219,7 +220,8 @@
                 (dblclick)="handleTaskItemDoubleClick(item, stageKey, category.name, $event)"
                 class="task-item"
                 [class.is-favorite]="item.isImportant"
-                [class.high-priority-incomplete]="item.priority === 'High' && !item.completed">
+                [class.high-priority-incomplete]="item.priority === 'High' && !item.completed"
+                [class.newly-generated]="item.isNewlyGenerated">
 
               <ion-checkbox slot="start" class="task-checkbox" [(ngModel)]="item.completed" 
                 (ionChange)="markCheck(item, stageKey, category.name); $event.stopPropagation()">

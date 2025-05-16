@@ -49,6 +49,28 @@ export class ProgressUtils {
     }, updateInterval);
   }
   
+  // NEW METHOD: Control preparing animation with variable speed based on content loading
+  controlPreparingAnimation(progress: number, totalItems: number, loadedItems: number): number {
+    // Slow down at 50% if we have many items left to render
+    if (progress >= 0.5 && totalItems > 0) {
+      const remainingPercentage = 0.5;
+      const itemProgress = loadedItems / totalItems;
+      // Calculate how much of the remaining 50% we should show
+      return 0.5 + (remainingPercentage * itemProgress);
+    }
+    return progress;
+  }
+  
+  // NEW METHOD: Determines optimal task rendering delay based on queue size
+  calculateTaskRenderDelay(queueSize: number): number {
+    // Faster rendering for larger queues, slower for smaller queues
+    if (queueSize > 50) return 20;  // Very fast for large queues
+    if (queueSize > 20) return 50;  // Medium pace
+    if (queueSize > 10) return 100; // Slower
+    if (queueSize > 5) return 150;  // Even slower
+    return 200; // Slowest for 1-5 tasks
+  }
+  
   // Complete the preparing animation quickly
   completePreparingAnimation(startValue: number, onProgressUpdated: (progress: number) => void, onComplete: () => void): void {
     this.stopPreparingAnimation();
