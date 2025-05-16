@@ -9,6 +9,7 @@ import { IonContent, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AccountButtonComponent } from 'src/app/components/account-button/account-button.component';
+import { marked } from 'marked';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -111,33 +112,49 @@ export class TabChatBotPage implements OnInit, OnDestroy {
   displayMessage(text: string, sender: 'user' | 'bot') {
     if (!this.messages_area?.nativeElement) {
         console.warn('Message area not ready, queuing message display');
-        // Avoid infinite loop if element never appears
         setTimeout(() => this.displayMessage(text, sender), 100);
         return;
     }
-    const escapedText = this.escapeHTML(text);
-    const senderClass = sender === 'user' ? 'user-side' : 'bot-side';
-    const html = `<p class="message ${senderClass}">${escapedText}</p>`;
-    this.messages_area.nativeElement.insertAdjacentHTML('beforeend', html);
-    this.scrollToBottom(); // Scroll after adding message
 
-    // Apply animations to the newly added message
+   let htmlContent: string;
+    let messageContainerTag: string; // To hold 'p' or 'div'
+
+    if (sender === 'bot') {
+      try {
+        htmlContent = marked.parse(text) as string;
+      } catch (e) {
+        console.error("Error parsing markdown:", e);
+        htmlContent = this.escapeHTML(text);
+      }
+      messageContainerTag = 'div'; // Use <div> for bot's potentially complex HTML
+    } else {
+      htmlContent = this.escapeHTML(text);
+      messageContainerTag = 'p';   // User's simple text can stay in a <p>
+    }
+    const senderClass = sender === 'user' ? 'user-side' : 'bot-side';
+    // Use [innerHTML] binding on the <p> element in the template,
+    // or construct the full HTML string here to be inserted.
+    // Since we are manually inserting, constructing the full string is fine.
+    const messageElementHtml = `<${messageContainerTag} class="message ${senderClass}">${htmlContent}</${messageContainerTag}>`;
+
+    this.messages_area.nativeElement.insertAdjacentHTML('beforeend', messageElementHtml);
+    this.scrollToBottom();
+
     const lastMessage = this.messages_area.nativeElement.lastElementChild as HTMLElement | null;
     if (lastMessage) {
-      // Use requestAnimationFrame for smoother rendering updates
       requestAnimationFrame(() => {
-          lastMessage.classList.add("appear"); // Fade in
-          // Slight delay before shake for better visual effect
-          setTimeout(() => { lastMessage.classList.add("shake"); }, 50);
-          // Remove shake class after animation duration
-          setTimeout(() => { lastMessage.classList.remove("shake"); }, 550);
+          lastMessage.classList.add("appear");
+          // setTimeout(() => { lastMessage.classList.add("shake"); }, 50); // Shake can be distracting
+          // setTimeout(() => { lastMessage.classList.remove("shake"); }, 550);
       });
     }
   }
 
   escapeHTML(text: string): string {
       const div = document.createElement("div");
-      div.innerText = text; // Using innerText handles basic escaping
+      // Using textContent is safer for escaping than innerText for broader compatibility
+      // and more accurately reflects how browsers handle text nodes.
+      div.textContent = text;
       return div.innerHTML;
   }
 

@@ -1,17 +1,101 @@
 ion-list-header h1 {
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.1rem; // Slightly smaller for better hierarchy if needed
+    font-weight: 500; // Medium weight
     margin: 0;
+    color: var(--ion-color-medium-shade);
+
+    @media (prefers-color-scheme: dark) {
+        color: var(--ion-color-step-850);
+    }
 }
 
 ion-list {
   width: 90%;
   max-width: 600px;
-  margin-bottom: 20px;
+  margin-bottom: 24px; // Increased margin for separation
+  background: transparent; // Ensure list itself is transparent if items have backgrounds
+  
+  &.actions-list { // Specific styling for the actions list
+    margin-top: 20px;
+  }
 }
 
-.submit-button {
+ion-item {
+    --border-color: var(--ion-color-medium-tint); // Softer border for items
+    --background: var(--ion-item-background);
+
+    @media (prefers-color-scheme: dark) {
+        --border-color: var(--ion-border-color);
+        --background: var(--ion-item-background);
+    }
+}
+
+ion-item-divider {
+    --background: var(--ion-background-color); // Match page background
+    --color: var(--ion-color-medium-shade);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding-top: 16px; // More space above dividers
+    padding-bottom: 8px;
+
+     @media (prefers-color-scheme: dark) {
+        --background: var(--ion-background-color);
+        --color: var(--ion-color-step-850);
+    }
+}
+
+ion-label[position="stacked"] {
+    font-size: 0.9rem;
+    color: var(--ion-color-medium-shade);
+     @media (prefers-color-scheme: dark) {
+        color: var(--ion-color-step-850);
+    }
+}
+
+// Wrapper for button groups to control spacing and layout
+.button-group-wrapper {
+    padding: 8px 16px; // Padding inside the group if it were an item, or use margins on buttons
+
+    ion-button {
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+}
+
+.button-group-horizontal {
+    display: flex;
+    gap: 10px; // Space between horizontal buttons
+    padding: 8px 16px;
+
+    ion-button {
+        flex: 1; // Make buttons take equal width if desired
+        margin: 0; // Reset individual button margins
+    }
+}
+
+.submit-button-container {
   width: 90%;
   max-width: 600px;
   margin: 0 auto;
+  padding: 8px 0; // Add padding around the button in the footer
+}
+
+ion-footer ion-toolbar {
+    --background: var(--ion-background-color); // Match page background for footer
+    --border-width: 0; // Remove top border of footer toolbar if not desired
+    padding-bottom: env(safe-area-inset-bottom); // Handle iPhone X notch
+
+    @media (prefers-color-scheme: dark) {
+      --background: var(--ion-toolbar-background); // Or a slightly different dark shade for footer
+    }
+}
+
+// Styling for app-quiz when embedded here
+app-quiz {
+  width: 100%; // Ensure it takes full width within its container
+  margin-bottom: 20px; // Add some space after the quiz component
+  
+  &.hidden { // Ensure hidden class works as expected
+    display: none !important;
+  }
 }

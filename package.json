@@ -19,6 +19,7 @@
     "@angular/core": "^19.2.6",
     "@angular/fire": "^19.1.0",
     "@angular/forms": "^19.2.6",
+    "@angular/material": "^19.2.6",
     "@angular/platform-browser": "^19.2.6",
     "@angular/platform-browser-dynamic": "^19.2.6",
     "@angular/router": "^19.2.6",
@@ -31,14 +32,15 @@
     "@capacitor/keyboard": "7.0.1",
     "@ionic/angular": "^8.5.2",
     "@ionic/storage-angular": "^4.0.0",
+    "@types/marked": "^5.0.2",
     "@wlucha/ng-country-select": "^2.2.0",
     "firebase": "^11.6.1",
+    "flag-icons": "^7.3.2",
     "ionicons": "^7.0.0",
+    "marked": "^15.0.11",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0",
-    "@angular/material": "^19.2.6",
-    "flag-icons": "^7.3.2"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.0.0",

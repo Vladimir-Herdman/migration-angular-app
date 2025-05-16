@@ -8,8 +8,8 @@
     </ion-buttons>
     <ion-title class="centered-title">Relocation Plan</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="presentFilterPopover()" [disabled]="isGeneratingChecklist || !isQuestionnaireFilled">
-        <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
+      <ion-button (click)="presentFilterPopover($event)" [disabled]="isGeneratingChecklist || !isQuestionnaireFilled">
+        <ion-icon slot="icon-only" name="filter-outline" [color]="activeFiltersCount > 0 ? 'warning' : ''"></ion-icon>
       </ion-button>
       <ion-button (click)="regenerateChecklist()" [disabled]="isGeneratingChecklist || !isQuestionnaireFilled">
         <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
@@ -19,7 +19,7 @@
   </ion-toolbar>
 
   <ion-toolbar>
-    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="applyFiltersAndSearch()" placeholder="Search tasks..."
+    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="applyFiltersAndSearch()" placeholder="Search tasks or notes..."
       [disabled]="isGeneratingChecklist || !isQuestionnaireFilled" debounce="300"></ion-searchbar>
   </ion-toolbar>
 
@@ -44,7 +44,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="false">
+<ion-content [fullscreen]="false" class="checklist-content">
   <div *ngIf="!isQuestionnaireFilled && !isGeneratingChecklist" class="ion-padding ion-text-center empty-list-message">
     <ion-icon name="document-text-outline" size="large" color="medium"></ion-icon>
     <p>Your personalized relocation checklist will appear here.</p>
@@ -56,24 +56,29 @@
   <div [hidden]="!isQuestionnaireFilled">
     <div *ngFor="let stageKey of ['predeparture', 'departure', 'arrival']" [id]="stageKey"
       [hidden]="selectedStage !== stageKey">
-      <ion-list *ngIf="getDisplayedCategoriesForStage(stageKey).length > 0">
-        <ion-list-header>
+      <ion-list *ngIf="getDisplayedCategoriesForStage(stageKey).length > 0" lines="none">
+        <ion-list-header class="stage-list-header">
           <ion-label>
             {{ getTotalDisplayedTasksForStage(stageKey) }}
             {{ stageKey | titlecase }} Tasks
           </ion-label>
-          <ion-buttons slot="end">
-            <ion-button fill="clear" size="small" (click)="sortTasks('priority')">Sort by Priority</ion-button>
-            <ion-button fill="clear" size="small" (click)="sortTasks('dueDate')">Sort by Time</ion-button>
-          </ion-buttons>
+          <div class="sort-buttons-container">
+            <ion-button fill="clear" size="small" (click)="sortTasks('priority')" [class.active-sort]="currentSort === 'priority'">
+                <ion-icon name="list-outline" slot="start"></ion-icon> Priority
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="sortTasks('dueDate')" [class.active-sort]="currentSort === 'dueDate'">
+                <ion-icon name="time-outline" slot="start"></ion-icon> Due Date
+            </ion-button>
+          </div>
         </ion-list-header>
 
         <ng-container *ngFor="let category of getDisplayedCategoriesForStage(stageKey)">
-          <ion-item button detail="false" (click)="toggleCategory(category)" [class.expanded]="category.isExpanded"
-            [class.category-complete]="areAllTasksComplete(category)">
+          <ion-item button detail="false" (click)="toggleCategory(category)" class="category-item"
+            [class.expanded]="category.isExpanded" [class.category-complete]="areAllTasksComplete(category)">
             <ion-label>
               <h2>
-                {{ category.name | titlecase }} ({{ category.tasks.length }})
+                {{ category.name | titlecase }}
+                <span class="task-count">({{ category.tasks.length }})</span>
                 <ion-icon *ngIf="areAllTasksComplete(category)" name="checkmark-circle" color="success"
                   class="category-complete-icon"></ion-icon>
               </h2>
@@ -82,76 +87,74 @@
               [name]="category.isExpanded ? 'chevron-down-outline' : 'chevron-forward-outline'"></ion-icon>
           </ion-item>
 
-          <div *ngIf="category.isExpanded">
-            <ion-item *ngFor="let item of category.tasks;" (click)="showTaskDetails(item)"
-              [class.expanded]="item.isExpanded" [class.is-favorite]="item.isImportant"
-              [class.high-priority-incomplete]="item.priority === 'High' && !item.completed">
-              <ion-checkbox slot="start"
-                (ionChange)="markCheck(item, stageKey, category.name); $event.stopPropagation()"
-                [checked]="getCheckStatus(item)"></ion-checkbox>
-              <ion-label class="ion-text-wrap">
-                <h3 [class.checked]="getCheckStatus(item)">
-                  <ion-icon *ngIf="item.isImportant" name="star" color="warning"
-                    style="margin-right: 5px; vertical-align: middle;"></ion-icon>
-                  {{item.task_description}}
-                </h3>
-                <p>
-                  Priority: <span
-                    [ngClass]="{'high-priority': item.priority === 'High', 'medium-priority': item.priority === 'Medium', 'low-priority': item.priority === 'Low'}">{{item.priority}}</span>
-                  | Due: {{item.due_date}}
-                </p>
+          <div *ngIf="category.isExpanded" class="task-items-container">
+  <ion-item *ngFor="let item of category.tasks;"
+    (click)="handleTaskItemClick(item, $event)"
+    (dblclick)="handleTaskItemDoubleClick(item, stageKey, category.name, $event)"
+    class="task-item"
+    [class.is-favorite]="item.isImportant"
+    [class.high-priority-incomplete]="item.priority === 'High' && !item.completed">
 
-                <div class="task-details" *ngIf="item.isExpanded">
-                  <p class="importance-explanation"><strong>Why this is important:</strong> {{
-                    item.importance_explanation_summary || 'Tap "More Info" for details.' }}</p>
+    <ion-checkbox slot="start" class="task-checkbox"
+      (ionChange)="markCheck(item, stageKey, category.name); $event.stopPropagation()"
+      [checked]="getCheckStatus(item)"></ion-checkbox>
 
-                  <div *ngIf="item.notes" class="task-notes">
-                    <strong>My Notes:</strong>
-                    <p style="white-space: pre-line;">{{ item.notes }}</p>
-                  </div>
+    <ion-label class="ion-text-wrap task-label">
+      <h3 [class.checked]="getCheckStatus(item)">
+        <ion-icon *ngIf="item.isImportant" name="star" color="warning" class="favorite-star-inline"></ion-icon>
+        {{item.task_description}}
+      </h3>
+      <p class="task-meta">
+            <span class="priority-indicator"
+              [ngClass]="{'high-priority': item.priority === 'High', 'medium-priority': item.priority === 'Medium', 'low-priority': item.priority === 'Low'}">
+              <ion-icon [name]="getPriorityIcon(item.priority)" class="priority-icon"></ion-icon>
+              {{item.priority}}
+            </span>
+                  
+            <!-- Inside src/app/tabs/tab_checklist/tab_checklist.page.html -->
+            <span class="due-date-indicator">
+              <ion-icon name="calendar-outline" class="due-date-icon"></ion-icon>
+              Due:
+              <ng-container *ngIf="item.due_date">
+                <ng-container *ngIf="isAbsoluteDate(item.due_date); else showRelativeFormattedStringForNonAbsolute">
+                  {{ formatDateWithOrdinal(item.due_date) }}
+                  <span *ngIf="getRelativeDueDate(item.due_date) as relativeDue" class="relative-due-date">
+                    <ng-container *ngIf="relativeDue && (relativeDue !== formatDateWithOrdinal(item.due_date))">
+                      ({{ relativeDue }})
+                    </ng-container>
+                  </span>
+                </ng-container>
+                <ng-template #showRelativeFormattedStringForNonAbsolute>
+                  {{ getRelativeDueDate(item.due_date) }}
+                </ng-template>
+              </ng-container>
+              <ng-container *ngIf="!item.due_date">
+                N/A
+              </ng-container>
+            </span>
+          </p>
+      <!-- Brief notes preview, if any -->
+      <p *ngIf="item.notes && item.notes.length > 0" class="task-notes-preview">
+          <ion-icon name="document-text-outline"></ion-icon> {{ item.notes | slice:0:50 }}{{ item.notes.length > 50 ? '...' : ''}}
+      </p>
+    </ion-label>
 
-                  <div *ngIf="item.recommended_services && item.recommended_services.length > 0"
-                    class="recommended-services">
-                    <strong>Recommended Services:</strong>
-                    <ion-list lines="none">
-                      <ion-item *ngFor="let service of item.recommended_services" class="service-item"
-                        (click)="$event.stopPropagation()">
-                        <ion-label>
-                          <h4>{{ service.name }}</h4>
-                          <p>{{ service.description }}</p>
-                        </ion-label>
-                        <ion-button slot="end" fill="outline" size="small" [href]="service.url"
-                          target="_blank">Visit</ion-button>
-                      </ion-item>
-                    </ion-list>
-                  </div>
-                  <p *ngIf="!item.recommended_services || item.recommended_services.length === 0">No specific service
-                    recommendations for this task.</p>
-
-                  <div class="task-actions">
-                    <ion-button fill="clear" size="small"
-                      (click)="openDetailedTaskModal(item); $event.stopPropagation()">
-                      <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-                      More Info
-                    </ion-button>
-                    <ion-button fill="clear" size="small"
-                      (click)="toggleImportant(item, stageKey, category.name); $event.stopPropagation()">
-                      <ion-icon slot="icon-only" [name]="item.isImportant ? 'star' : 'star-outline'"
-                        [color]="item.isImportant ? 'warning' : 'medium'"></ion-icon>
-                    </ion-button>
-                  </div>
-                </div>
-              </ion-label>
-              <ion-button color="danger" slot="end"
-                (click)="removeItem(item, stageKey, category.name); $event.stopPropagation()">Remove</ion-button>
-            </ion-item>
-          </div>
+    <ion-buttons slot="end" class="task-actions-end">
+      <!-- The click handler for opening the modal already has $event.stopPropagation() -->
+      <ion-button fill="clear" color="medium" (click)="openDetailedTaskModal(item); $event.stopPropagation()" class="info-button">
+        <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-item>
+</div>
         </ng-container>
       </ion-list>
 
       <div *ngIf="getDisplayedCategoriesForStage(stageKey).length === 0 && isQuestionnaireFilled && !isGeneratingChecklist"
         class="ion-padding ion-text-center empty-list-message">
-        No {{ stageKey | titlecase }} tasks match your current filters.
+        <ion-icon name="search-outline" size="large" color="medium"></ion-icon>
+        <p>No {{ stageKey | titlecase }} tasks match your current filters or search.</p>
+         <ion-button fill="clear" (click)="resetFiltersAndSearch()">Reset Filters</ion-button>
       </div>
     </div>
   </div>
@@ -164,7 +167,7 @@
 
 </ion-content>
 
-<ion-footer *ngIf="isQuestionnaireFilled && !isGeneratingChecklist && totalTasksToGenerate > 0">
+<ion-footer *ngIf="isQuestionnaireFilled && !isGeneratingChecklist && totalTasksToGenerate > 0" class="ion-no-border">
   <ion-toolbar>
     <div class="overall-progress-container ion-padding-horizontal">
       <ion-label>Overall Progress: {{ totalCompletedTasks }} / {{ totalTasksToGenerate }}</ion-label>
@@ -174,9 +177,13 @@
   </ion-toolbar>
 </ion-footer>
 
-<ion-footer *ngIf="isGeneratingChecklist">
+<ion-footer *ngIf="isGeneratingChecklist" class="ion-no-border">
   <ion-toolbar>
-    <ion-progress-bar
-      [value]="totalTasksToGenerate > 0 ? generatedTasksCount / totalTasksToGenerate : 0"></ion-progress-bar>
+     <div class="overall-progress-container ion-padding-horizontal">
+        <ion-label *ngIf="totalTasksToGenerate > 0">Generating: {{ generatedTasksCount }} / {{ totalTasksToGenerate }}</ion-label>
+        <ion-label *ngIf="totalTasksToGenerate === 0">Analyzing requirements...</ion-label>
+        <ion-progress-bar
+        [value]="totalTasksToGenerate > 0 ? generatedTasksCount / totalTasksToGenerate : (generatedTasksCount > 0 ? 0.05 : 0)" [buffer]="totalTasksToGenerate > 0 ? (generatedTasksCount +1 ) / totalTasksToGenerate : 0.1"></ion-progress-bar>
+     </div>
   </ion-toolbar>
 </ion-footer>

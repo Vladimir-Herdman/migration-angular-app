@@ -6,7 +6,6 @@
         Back
       </ion-button>
     </ion-buttons>
-
     <ion-title class="centered-title">Account</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -14,7 +13,7 @@
 <ion-content [fullscreen]="false">
   <div class="content-wrapper">
     <!-- Account Info -->
-    <ion-list>
+    <ion-list lines="full">
       <ion-list-header color="light">
         <ion-label><h1>Account Info</h1></ion-label>
       </ion-list-header>
@@ -25,40 +24,74 @@
       </ion-item>
 
       <ion-item>
-        <ion-button (click)="changePassword()">Change Password</ion-button>
+        <ion-button expand="block" fill="outline" (click)="changePassword()">Change Password</ion-button>
       </ion-item>
     </ion-list>
 
     <!-- Settings -->
-    <ion-list>
+    <ion-list lines="full">
       <ion-list-header color="light">
         <ion-label><h1>Settings</h1></ion-label>
       </ion-list-header>
 
       <ion-item>
         <ion-label>Enable Notifications</ion-label>
-        <ion-checkbox [(ngModel)]="account.settings.notifications" name="notifications" slot="start"></ion-checkbox>
+        <ion-toggle [(ngModel)]="account.settings.notifications" name="notifications" slot="end"></ion-toggle>
       </ion-item>
+      <!-- Add more settings items here as needed -->
     </ion-list>
 
     <!-- Questionnaire -->
-    <h1 [class.hidden]="!canShowQuiz" style="margin: 0">Questionnaire</h1>
     <app-quiz [form]="account.quiz" [class.hidden]="!canShowQuiz"></app-quiz>
+    <!-- The h1 for Questionnaire is removed as app-quiz itself implies what it is,
+         or the accordion header within app-quiz serves this purpose -->
 
-    <!-- Very Intense Buttons -->
-    <div class="button-wrapper">
-      <ion-button expand="block" color="secondary" fill="outline" (click)="handleLogout()">Logout</ion-button>
-      <ion-button expand="block" color="danger" fill="outline" (click)="handleDelete()">Delete Account</ion-button>
-      <ion-button expand="block" color="warning" (click)="clear_cache()">Clear Individual User Cache</ion-button>
-      <ion-button expand="block" color="warning" (click)="clear_cache(true)">Clear All Caches</ion-button>
-    </div>
+    <!-- Actions & Data Management -->
+    <ion-list lines="none" class="actions-list">
+      <ion-list-header color="light">
+        <ion-label><h1>Actions & Data</h1></ion-label>
+      </ion-list-header>
+      <div class="button-group-wrapper">
+        <ion-button expand="block" color="secondary" fill="outline" (click)="handleLogout()">
+          <ion-icon name="log-out-outline" slot="start"></ion-icon>
+          Logout
+        </ion-button>
+      </div>
+
+      <ion-item-divider>
+        <ion-label>Cache Management</ion-label>
+      </ion-item-divider>
+      <div class="button-group-wrapper button-group-horizontal">
+        <ion-button expand="block" color="warning" fill="outline" (click)="clear_cache()">
+          <ion-icon name="trash-bin-outline" slot="start"></ion-icon>
+          Clear My Cache
+        </ion-button>
+        <ion-button expand="block" color="warning" fill="outline" (click)="clear_cache(true)">
+          <ion-icon name="nuclear-outline" slot="start"></ion-icon>
+          Clear All Device Cache
+        </ion-button>
+      </div>
+      
+      <ion-item-divider>
+         <ion-label color="danger">Danger Zone</ion-label>
+      </ion-item-divider>
+      <div class="button-group-wrapper">
+        <ion-button expand="block" color="danger" fill="outline" (click)="handleDelete()">
+          <ion-icon name="trash-outline" slot="start"></ion-icon>
+          Delete Account
+        </ion-button>
+      </div>
+    </ion-list>
   </div>
 </ion-content>
 
-<ion-footer>
+<ion-footer class="ion-no-border">
   <ion-toolbar>
-    <div class="submit-button">
-      <ion-button expand="block" color="primary" (click)="submitForm()">Save Changes</ion-button>
+    <div class="submit-button-container">
+      <ion-button expand="block" color="primary" (click)="submitForm()">
+        <ion-icon name="save-outline" slot="start"></ion-icon>
+        Save Changes
+      </ion-button>
     </div>
   </ion-toolbar>
 </ion-footer>

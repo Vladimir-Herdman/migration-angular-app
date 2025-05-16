@@ -6,32 +6,147 @@
 
 form.content-wrapper {
     padding: 0;
+    width: 100%; // Ensure form takes full width for accordion group
 }
 
-ion-list-header h2 {
-    font-weight: bold;
-    margin: 0;
+ion-accordion-group {
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto 20px auto; // Center the accordion group
+    border-radius: 8px; // Add some rounding to the group
+    overflow: hidden; // Clip child item borders for cleaner look
+    
+    @media (prefers-color-scheme: dark) {
+      background: var(--ion-item-background, #1e1e1e); // Match item background for seamless look
+    }
+    @media (prefers-color-scheme: light) {
+      background: var(--ion-item-background, #ffffff);
+    }
+}
+
+ion-accordion {
+    ion-item[slot="header"] {
+        --background: var(--ion-color-light); // Use a light color for header for contrast
+        --color: var(--ion-text-color); // Ensure text is readable
+        font-weight: bold;
+         border-bottom: 1px solid var(--ion-border-color, var(--ion-color-medium-tint));
+
+
+        @media (prefers-color-scheme: dark) {
+            --background: var(--ion-color-step-150, #363636);
+            --color: var(--ion-text-color, #ffffff);
+            border-bottom: 1px solid var(--ion-border-color, #2f2f2f);
+        }
+    }
+
+    .ion-padding[slot="content"] {
+        // Add padding to content area for better spacing
+        padding-top: 8px;
+        padding-bottom: 16px;
+         background: var(--ion-background-color);
+
+        @media (prefers-color-scheme: dark) {
+             background: var(--ion-background-color);
+        }
+    }
 }
 
 ion-list {
-    width: 90%;
-    max-width: 600px;
-    margin-bottom: 20px;
+    width: 100%; // List inside accordion should take full width of its container
+    max-width: none; // Override previous max-width if any
+    margin-bottom: 0; // No margin for lists inside accordion
+    background: transparent; // Make list background transparent to inherit accordion content background
+    padding: 0 8px; // Add some horizontal padding within the content slot
 }
 
-ion-datetime {
-    margin: 12px;
-    padding: 6px;
-    border-radius: 12px;
+ion-item {
+    --padding-start: 0; // Remove default item padding
+     --inner-padding-end: 0;
 }
 
-ng-country-select .mat-form-field-flex {
-  border: 5px solid red;
-}
-ng-country-select .mat-form-field-underline {
-  border: 5px solid red;
+.question-label {
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--ion-text-color);
+    margin-bottom: 8px; // Add some space below question labels
+    display: block; // Ensure it takes full width
+    white-space: normal; // Allow text wrapping
 }
 
-ng-country-select .mat-form-field-wrapper {
-  border: 5px solid red;
+ion-radio-group ion-item,
+ion-item ion-checkbox {
+    margin-bottom: 8px; // Space between radio/checkbox options
+}
+
+ion-datetime.custom-datetime {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 8px;
+    border: 1px solid var(--ion-border-color, var(--ion-color-medium-tint));
+    border-radius: 8px;
+    background-color: var(--ion-item-background); // Match item background for consistency
+
+    @media (prefers-color-scheme: dark) {
+        border-color: var(--ion-border-color, #2f2f2f);
+        background-color: var(--ion-color-step-100, #2a2a2a);
+    }
+}
+
+.country-select-item {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  // Styles for ng-country-select need to target its internal elements.
+  // Since it's a third-party component, you might need to use ::ng-deep or inspect its structure
+  // For now, remove the red border:
+}
+
+// Remove debug borders
+// ng-country-select .mat-form-field-flex {
+//   border: 5px solid red; // REMOVE THIS
+// }
+// ng-country-select .mat-form-field-underline {
+//   border: 5px solid red; // REMOVE THIS
+// }
+
+// ng-country-select .mat-form-field-wrapper {
+//   border: 5px solid red; // REMOVE THIS
+// }
+
+// Attempt to style ng-country-select, might need ::ng-deep or more specific selectors
+::ng-deep ng-country-select {
+  .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+  }
+  .mat-form-field-infix {
+    border-top: none !important;
+    padding: 0.5em 0 !important;
+  }
+  .mat-form-field-underline {
+    background-color: var(--ion-border-color, var(--ion-color-medium-tint)) !important;
+  }
+  .mat-form-field-label {
+    color: var(--ion-color-medium) !important;
+  }
+  .mat-select-value-text {
+    color: var(--ion-text-color) !important;
+  }
+  .mat-select-arrow {
+    color: var(--ion-color-medium) !important;
+  }
+
+  // Dark mode specific overrides for ng-country-select
+  @media (prefers-color-scheme: dark) {
+    .mat-form-field-underline {
+      background-color: var(--ion-border-color, #505050) !important;
+    }
+    .mat-form-field-label {
+      color: var(--ion-color-step-850, #cccccc) !important;
+    }
+    .mat-select-value-text {
+      color: var(--ion-text-color, #ffffff) !important;
+    }
+    .mat-select-arrow {
+      color: var(--ion-color-step-850, #cccccc) !important;
+    }
+  }
 }

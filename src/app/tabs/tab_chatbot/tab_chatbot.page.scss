@@ -1,14 +1,83 @@
-.messages_area {
-  border: 5px solid red
+ion-content {
+  // Ensure content has a background for contrast with messages
+  --background: var(--ion-background-color);
+}
+
+.messages-area {
+  padding-bottom: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.message { // General appearance/layout of the bubble itself
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  // NO h1, p, ul, etc. styles here if they are in global.scss
+}
+
+.user-side {
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  // ... other user-side specific styles ...
+}
+
+.user-side:after {
+   box-shadow: -14px 6px 0px 5px var(--ion-color-primary);
+   // ...
+}
+
+.bot-side {
+  background: var(--ion-color-light);
+  color: var(--ion-text-color);
+  // ... other bot-side specific styles ...
+}
+
+.bot-side:after {
+   box-shadow: -14px 6px 0px 5px var(--ion-color-light, #f4f5f8);
+    // ...
+}
+
+// Dark mode overrides for bubble appearance (not content)
+@media (prefers-color-scheme: dark) {
+  .message {
+    background: var(--ion-color-step-150, #363636);
+    color: var(--ion-text-color, #ffffff);
+  }
+  .user-side {
+    background: var(--ion-color-primary-shade);
+  }
+  .user-side:after {
+     box-shadow: -14px 6px 0px 5px var(--ion-color-primary-shade);
+   }
+  .bot-side {
+    background: var(--ion-color-step-200);
+  }
+   .bot-side:after {
+     box-shadow: -14px 6px 0px 5px var(--ion-color-step-200); // Match new bot-side background
+   }
 }
 
 ion-footer {
   ion-toolbar {
-    padding: 0 3px;
+    padding: 0 8px; // Add some horizontal padding
+    --min-height: auto; // Allow toolbar to shrink/grow with textarea
     ion-textarea {
-      border: 1px solid var(--ion-color-medium);
+      border: 1px solid var(--ion-border-color, var(--ion-color-medium-tint));
       border-radius: 20px;
-      margin: 0.5vh 0;
+      margin: 8px 0; // Vertical margin for the textarea
+      padding-left: 12px; // Inner padding for text
+      padding-right: 12px;
+      --placeholder-color: var(--ion-color-medium);
+      background: var(--ion-item-background);
+
+       @media (prefers-color-scheme: dark) {
+            border-color: var(--ion-border-color, #2f2f2f);
+            background: var(--ion-color-step-100, #2a2a2a);
+            color: var(--ion-text-color);
+            --placeholder-color: var(--ion-color-step-850, #cccccc);
+       }
+    }
+    ion-fab-button {
+        margin-left: 8px; // Space between textarea and button
     }
   }
 }

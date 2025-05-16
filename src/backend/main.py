@@ -11,7 +11,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import ValidationError
-
+from datetime import datetime, timedelta
 from models import ProcessedRelocationTask, QuizFormData, ServiceRecommendation
 
 load_dotenv()
@@ -23,9 +23,7 @@ FRONTEND_ORIGINS = os.getenv("FRONTEND_ORIGINS", "http://localhost:8100").split(
 
 # Construct absolute paths from the script's location
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-BACKEND_DIR = os.path.join(BASE_DIR, '..', 'Backend')
-
-CHECKLISTS_DIR = os.path.join(BACKEND_DIR, 'Checklists')
+CHECKLISTS_DIR = os.path.join(BASE_DIR, 'Checklists')
 
 SERVICES_DATA_PATH = os.path.join(CHECKLISTS_DIR, 'services.yaml')
 PREDEPART_DATA_PATH = os.path.join(CHECKLISTS_DIR, 'predepart.yaml')
@@ -170,7 +168,9 @@ def check_task_applicability(task_template: Dict[str, Any], quiz_data_dict: Dict
 
 async def personalize_explanation_with_llm(base_explanation: str, task_desc: str, quiz_data: QuizFormData) -> str:
     """Uses LLM to personalize a base explanation. Fallback to base_explanation with simple replacement."""
-    explanation = base_explanation.replace("[Destination Country]", quiz_data.destination)
+    explanation = base_explanation.replace("[Destination Country]", quiz_data.destination or "your destination")
+    explanation = explanation.replace("[Destination City/Region]", quiz_data.destination or "your new city/Region")
+
 
     if not task_desc: # Safety check
         return explanation
@@ -195,39 +195,76 @@ async def personalize_explanation_with_llm(base_explanation: str, task_desc: str
     Task: "{task_desc}"
     Base explanation for this task's importance: "{explanation}"
 
-    Your goal: Briefly (1-2 sentences) refine or add to the base explanation to make it *more directly relevant* to this specific user's situation, highlighting why this task is important *for them*.
-    If the base explanation is already highly relevant and general enough, you can simply state that it's broadly applicable or return it with minimal additions.
+    Your goal: Briefly (up to 6 sentences) refine or add to the base explanation to make it *more directly relevant* to this specific user's situation, highlighting why this task is important *for them*.
+    If the base explanation is already highly relevant and general enough, return it with minimal additions.
     Focus on the "why" for this user.
     
     Output ONLY the personalized explanation text. Do not include preambles like "Here's the personalized explanation:".
     Be concise.
     """
     try:
-        print(f"DEBUG: Sending to LLM for task '{task_desc}'. Prompt (simplified): {prompt[:200]}...") # Log prompt start
+        print(f"DEBUG: Sending to LLM for task '{task_desc}'. Prompt (simplified): {prompt[:200]}...")
         response = await asyncio.to_thread(
             ollama.chat,
             model=LLM_MODEL_NAME,
             messages=[{'role': 'user', 'content': prompt}],
-            options={'temperature': 0.6, 'num_predict': 100} # Adjust temperature, num_predict for conciseness
+            options={'temperature': 0.6}
         )
-        personalized_text = response['message']['content'].strip()
+        raw_personalized_text = response['message']['content'].strip()
         
-        # Clean LLM preambles
-        prefixes_to_remove = [
-            "personalized explanation:", "here is the personalized explanation:", "certainly, here's the refined explanation:",
-            "okay, here's a personalized take:", "the personalized explanation is:", "explanation:"
+        # --- AGGRESSIVE STRIPPING FOR <think> and PREAMBLES ---
+        # Stage 1: Remove <think>...</think> blocks, being very greedy about content and flexible with tags
+        # This regex tries to find <think> (case-insensitive) and then everything up to </think> (case-insensitive)
+        # It also handles potential attributes within the <think ...> tag if any were to appear.
+        text_after_think_strip = re.sub(r"<think[^>]*>.*?</think>\s*", "", raw_personalized_text, flags=re.DOTALL | re.IGNORECASE)
+        
+        # Stage 2: If the above didn't catch it, try a simpler one just in case the content was minimal
+        if "<think>" in text_after_think_strip.lower(): # Check if it's still there
+             text_after_think_strip = re.sub(r"<think>.*?</think>", "", text_after_think_strip, flags=re.DOTALL | re.IGNORECASE)
+
+
+        # Stage 3: Clean common LLM preambles from the result of the think_strip
+        final_personalized_text = text_after_think_strip.strip() # Start with a clean strip
+        
+        # Remove conversational starters that might appear before the actual content
+        # (even after <think> block removal if the think block was the very first thing)
+        common_starters_to_strip = [
+            "Okay, let's see.",
+            "Alright, "
+            # Add any other observed conversational starters
         ]
-        normalized_text = personalized_text.lower()
+        for starter in common_starters_to_strip:
+            if final_personalized_text.lower().startswith(starter.lower()):
+                final_personalized_text = final_personalized_text[len(starter):].strip()
+                break # Only strip one starter
+
+        # Now remove more formal preambles
+        prefixes_to_remove = [
+            "personalized explanation:", "here is the personalized explanation:", 
+            "certainly, here's the refined explanation:", "okay, here's a personalized take:",
+            "the personalized explanation is:", "explanation:",
+            # If the LLM sometimes outputs "Okay, let's see." OUTSIDE the think block,
+            # but before the actual explanation, the common_starters_to_strip should handle it.
+        ]
+        normalized_text_for_prefix_check = final_personalized_text.lower().strip() # Re-normalize and strip before check
         for prefix in prefixes_to_remove:
-            if normalized_text.startswith(prefix):
-                personalized_text = personalized_text[len(prefix):].strip()
-                break # Remove only one prefix
+            if normalized_text_for_prefix_check.startswith(prefix.lower()):
+                final_personalized_text = final_personalized_text[len(prefix):].strip()
+                break 
         
-        print(f"DEBUG: LLM personalized explanation for '{task_desc}': {personalized_text}")
-        return personalized_text if personalized_text else explanation # Fallback if LLM returns empty
+        # Stage 4: Final cleanup of leading/trailing newlines or excessive whitespace
+        final_personalized_text = final_personalized_text.lstrip('\n').strip()
+        # Replace multiple newlines or spaces with a single space if needed (optional, can affect formatting)
+        # final_personalized_text = re.sub(r'\s{2,}', ' ', final_personalized_text) 
+        # --- END OF AGGRESSIVE STRIPPING ---
+
+        print(f"DEBUG: LLM raw explanation for '{task_desc}': {raw_personalized_text}")
+        print(f"DEBUG: LLM text after <think> strip for '{task_desc}': {text_after_think_strip}")
+        print(f"DEBUG: LLM final personalized explanation for '{task_desc}': {final_personalized_text}")
+        return final_personalized_text if final_personalized_text else explanation
     except Exception as e:
         print(f"ERROR personalizing explanation with LLM for task '{task_desc}': {e}. Falling back.")
-        return explanation # Fallback to base explanation (with placeholders replaced)
+        return explanation
 
 def find_matching_services(task_template: Dict[str, Any]) -> List[ServiceRecommendation]:
     """Finds matching services based on direct IDs or keywords from task_template."""
@@ -323,6 +360,12 @@ def find_matching_services(task_template: Dict[str, Any]) -> List[ServiceRecomme
             
     return output_services
 
+# In backend/main.py
+
+def calculate_absolute_due_date(yaml_due_date_str: str, move_date_iso: str) -> str:
+     return yaml_due_date_str.strip() if yaml_due_date_str else ""
+
+
 async def process_single_task_template(task_template: Dict[str, Any], quiz_data: QuizFormData) -> Optional[ProcessedRelocationTask]:
     """Processes a single task template to generate a ProcessedRelocationTask."""
     task_id = task_template.get("task_id", f"unknown_task_{os.urandom(4).hex()}")
@@ -330,7 +373,8 @@ async def process_single_task_template(task_template: Dict[str, Any], quiz_data:
     
     # Get base explanation
     final_explanation = task_template.get("base_importance_explanation", "This task is important for your relocation.")
-    final_explanation = final_explanation.replace("[Destination Country]", quiz_data.destination) # Basic replacement
+    final_explanation = final_explanation.replace("[Destination Country]", quiz_data.destination or "your destination")
+    final_explanation = final_explanation.replace("[Destination City/Region]", quiz_data.destination or "your new city/region")
     
     # Personalize if flagged in YAML
     if task_template.get("personalize_explanation", False):
@@ -339,12 +383,16 @@ async def process_single_task_template(task_template: Dict[str, Any], quiz_data:
     # Get recommended services
     recommended_services = find_matching_services(task_template)
 
+
+    original_yaml_due_date = task_template.get("due_date", "As soon as possible")
+    calculated_due_date_iso = calculate_absolute_due_date(original_yaml_due_date, quiz_data.moveDate) # Pass quiz_data.moveDate
+
     try:
         return ProcessedRelocationTask(
             task_id=task_id,
             task_description=task_desc,
             priority=task_template.get("priority", "Low"),
-            due_date=task_template.get("due_date", "As soon as possible"),
+            due_date=calculated_due_date_iso,
             importance_explanation=final_explanation,
             recommended_services=recommended_services,
             stage=task_template.get("stage", "unknown"), # Should be set during loading

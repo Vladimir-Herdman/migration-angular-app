@@ -31,403 +31,450 @@
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: #12465c;
-  --ion-color-primary-tint: #45798f;
+  --ion-color-primary-tint: #2c6c8a; // Adjusted tint for better visibility in dark mode if used directly
+  
+  // Lighter tints for hover/active states if needed
+  --ion-color-primary-tint-lighter: rgba(var(--ion-color-primary-rgb), 0.15);
+  --ion-color-primary-tint-lightest: rgba(var(--ion-color-primary-rgb), 0.08);
+
+  --ion-color-warning-tint-lightest: rgba(var(--ion-color-warning-rgb), 0.05);
+
 
   --primary-gradient: linear-gradient(167deg,rgba(11, 53, 71, 1) 0%, rgba(35, 121, 158, 1) 66%, rgba(16, 66, 87, 1) 100%);
 
   --ion-text-color: #222428;
   --ion-text-color-rgb: 34, 36, 40;
-  --ion-color-step-850: #3a3a3a;
+  --ion-color-step-850: #555555; // Darker grey for better contrast on light bg
+  --ion-color-medium-shade: #757575; // General medium shade for less important text/icons
 
   --ion-background-color: #f4f5f8;
   --ion-background-color-rgb: 244, 245, 248;
-  --ion-toolbar-background: var(--ion-color-primary); // Default toolbar for light
-  --legal-buttons: #eeeeee;
+  
+  --ion-toolbar-background: var(--ion-color-primary); // Default toolbar for light (can be overridden by gradient)
+  --ion-toolbar-text-color: var(--ion-color-primary-contrast);
+
+  --legal-buttons: #eeeeee; // Keep for legal page if specific styling is intended
   --ion-tab-bar-background: #ffffff;
   --ion-card-background: #ffffff;
   --ion-item-background: #ffffff;
+  --ion-item-background-tint: rgba(0,0,0,0.02); // For subtle background difference like task list container
   --ion-list-header-background: #f0f0f0;
   --ion-list-background: #ffffff;
+  --ion-border-color: #e0e0e0; // Default border color
 
-  --mat-autocomplete-background-color: #fdfdfd;
-  --mat-sys-surface-container: #fdfdfd;
+  --mat-autocomplete-background-color: #fdfdfd; // For ng-country-select
+  --mat-sys-surface-container: #fdfdfd; // For ng-country-select
 }
 
 @media (prefers-color-scheme: dark) {
-
-  /*
-   * Dark Colors
-   * -------------------------------------------
-   */
   body {
-    /*--ion-color-primary: #2bb3a3; // A slightly brighter teal for dark mode
-    --ion-color-primary-rgb: 43, 179, 163;
+    --ion-color-primary: #2c6c8a; // Brighter primary for dark mode
+    --ion-color-primary-rgb: 44, 108, 138;
     --ion-color-primary-contrast: #ffffff;
-    --ion-color-primary-contrast-rgb: 255, 255, 255;
-    --ion-color-primary-shade: #269e90;
-    --ion-color-primary-tint: #40bbab;
+    --ion-color-primary-shade: #255a73;
+    --ion-color-primary-tint: #3f89a7;
 
-    --primary-gradient: linear-gradient(167deg, rgba(23, 88, 115, 1) 0%, rgba(43, 179, 163, 1) 66%, rgba(23, 88, 115, 1) 100%);
+    --ion-color-primary-tint-lighter: rgba(var(--ion-color-primary-rgb), 0.25); // More visible tint on dark
+    --ion-color-primary-tint-lightest: rgba(var(--ion-color-primary-rgb), 0.15);
+    
+    --ion-color-warning-tint-lightest: rgba(var(--ion-color-warning-rgb), 0.1);
 
-    --ion-color-secondary: #50c8ff;
-    --ion-color-secondary-rgb: 80, 200, 255;
-    --ion-color-secondary-contrast: #ffffff;
-    --ion-color-secondary-contrast-rgb: 255, 255, 255;
-    --ion-color-secondary-shade: #46b0e0;
-    --ion-color-secondary-tint: #62ceff;*/
+
+    // Secondary, Tertiary, Status colors are often kept the same or slightly adjusted
+    // --ion-color-secondary: #50c8ff; (Example, if defined)
 
     --ion-color-tertiary: #6a64ff;
-    --ion-color-tertiary-rgb: 106, 100, 255;
-    --ion-color-tertiary-contrast: #ffffff;
-    --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-    --ion-color-tertiary-shade: #5d58e0;
-    --ion-color-tertiary-tint: #7974ff;
-
     --ion-color-success: #2dd36f;
     --ion-color-warning: #ffc409;
     --ion-color-danger: #eb445a;
-    --ion-color-dark: #f4f5f8; // Light text on dark background
-    --ion-color-medium: #989aa2;
-    --ion-color-light: #222428; // Dark elements on light areas within dark mode
+    
+    --ion-color-dark: #f4f5f8; // Light elements on dark backgrounds
+    --ion-color-medium: #989aa2; // Medium elements
+    --ion-color-light: #222428; // Dark elements on light areas within dark mode (e.g. selected card)
 
-    --ion-text-color: #ffffff;
-    --ion-text-color-rgb: 255, 255, 255;
-    --ion-color-step-100: #2a2a2a;
+    --ion-text-color: #e0e0e0; // Main text color, slightly off-white
+    --ion-text-color-rgb: 224, 224, 224;
+    --ion-color-step-100: #2a2a2a; // Darker UI element backgrounds
     --ion-color-step-150: #363636;
     --ion-color-step-200: #414141;
-    --ion-color-step-850: #cccccc; // Lighter text for subtitles
+    --ion-color-step-850: #b0b0b0; // Lighter text for subtitles, placeholder
+    --ion-color-medium-shade: #8a8a8a;
 
     --ion-background-color: #121212;
     --ion-background-color-rgb: 18, 18, 18;
 
     --ion-item-background: #1e1e1e;
-    --ion-toolbar-background: #1f1f1f; // Darker toolbar
-    --legal-buttons: #dddddd;
+    --ion-item-background-tint: rgba(255,255,255,0.03);
+    --ion-toolbar-background: #1f1f1f;
+    --ion-toolbar-text-color: var(--ion-text-color); // General toolbar text in dark mode
+
+    --legal-buttons: #333333; // Darker buttons for legal page
     --ion-tab-bar-background: #1f1f1f;
     --ion-card-background: #1e1e1e;
     --ion-list-header-background: #2a2a2a;
-    --ion-list-background: #1e1e1e;
+    --ion-list-background: #1e1e1e; // Can be same as item background or slightly different
+    --ion-border-color: #383838; // Darker border color
 
-    --ion-border-color: #2f2f2f; // For borders on items, etc.
+    // Material select dark mode (for ng-country-select)
+    --mat-autocomplete-background-color: #303030;
+    --mat-sys-surface-container: #303030;
   }
 
+  // General dark mode overrides for common elements
   ion-content {
     --background: var(--ion-background-color);
   }
 
+  // Login page specific dark mode
   .login-page-wrapper ion-card {
-    background: var(--ion-item-background);
+    background: var(--ion-card-background); // Use card background
   }
-
   .login-page-wrapper h1,
   .login-page-wrapper h3 {
     color: var(--ion-text-color);
   }
-
   .login-page-wrapper h1 span::after,
   .login-page-wrapper h3::before {
     background-color: var(--ion-border-color);
   }
-
   .login-page-wrapper .additional-signin svg {
-    fill: var(--ion-color-step-850);
-
+    fill: var(--ion-color-medium);
     &:hover {
       fill: var(--ion-text-color);
     }
   }
 
-  .account-page-wrapper ion-list-header,
-  app-account ion-list-header {
-    background-color: var(--ion-list-header-background);
-    color: var(--ion-text-color);
+  // Account page specific dark mode
+  app-account ion-list-header { // Target component directly
+    --background: var(--ion-list-header-background);
+    h1 { color: var(--ion-color-step-850); }
   }
-
-  .account-page-wrapper ion-item,
   app-account ion-item {
     --background: var(--ion-item-background);
+  }
+  app-account ion-label, app-account ion-input, app-account ion-toggle {
     color: var(--ion-text-color);
   }
-
-  .account-page-wrapper ion-label,
-  app-account ion-label {
-    color: var(--ion-text-color);
+   app-account ion-item-divider {
+    --background: var(--ion-background-color);
+    --color: var(--ion-color-step-850);
   }
 
+
+  // Legal popup specific dark mode
   app-legal-popup ion-header ion-toolbar {
     --background: var(--ion-toolbar-background);
-    color: var(--ion-text-color);
+    ion-title { color: var(--ion-toolbar-text-color); }
   }
-
   app-legal-popup ion-content {
     --background: var(--ion-background-color);
     color: var(--ion-text-color);
+    h1 { color: var(--ion-text-color); }
   }
+   app-legal-popup ion-footer ion-toolbar {
+     --background: var(--ion-toolbar-background);
+   }
+   app-legal-popup .choices ion-button {
+     --background: var(--legal-buttons);
+     --color: var(--ion-text-color); // Text on buttons
+   }
 
-  app-legal-popup h1 {
-    color: var(--ion-text-color);
-  }
 
-
+  // Tabs specific dark mode
   ion-tab-bar {
     --background: var(--ion-tab-bar-background);
+    border-top: 1px solid var(--ion-border-color); // Add subtle top border
   }
-
   ion-tab-button {
     --color: var(--ion-color-medium);
-    --color-selected: var(--ion-color-primary);
+    --color-selected: var(--ion-color-primary); // Use dark mode primary
   }
 
-  ion-tab-button ion-label {
-    color: var(--color, var(--ion-color-medium));
-  }
+  // Chatbot specific dark mode is handled in its component SCSS
 
-  ion-tab-button.tab-selected ion-label {
-    color: var(--color-selected, var(--ion-color-primary));
-  }
+  // Checklist specific dark mode is handled in its component SCSS
 
-
-  .message {
-    background: var(--ion-color-primary);
-    color: var(--ion-color-primary-contrast);
-  }
-
-  .user-side:after {
-    box-shadow: -14px 6px 0px 5px var(--ion-color-primary);
-  }
-
-  .bot-side:after {
-    box-shadow: -14px 6px 0px 5px var(--ion-color-primary);
-  }
-
-  app-tab_chatbot ion-footer ion-toolbar {
-    --background: var(--ion-toolbar-background);
-  }
-
-  app-tab_chatbot ion-footer ion-toolbar ion-textarea {
-    border-color: var(--ion-border-color);
-    color: var(--ion-text-color);
-    --placeholder-color: var(--ion-color-medium);
-  }
-
-  app-tab_checklist ion-header {
-    --background: var(--primary-gradient);
-
-    ion-toolbar {
-      --color: var(--ion-color-primary-contrast);
-    }
-
-    ion-segment-button {
-      --color-checked: var(--ion-color-primary-contrast);
-      --color: var(--ion-color-step-850);
-    }
-  }
-
-  app-tab_checklist ion-item {
-    --background: var(--ion-item-background);
-
-    &.expanded {
-      --background: var(--ion-item-background);
-    }
-  }
-
-  app-tab_checklist ion-label h3 {
-    color: var(--ion-text-color);
-
-    &::after {
-      background-color: var(--ion-text-color);
-    }
-
-    &.checked {
-      color: var(--ion-color-medium);
-    }
-  }
-
-  app-tab_checklist .task-details {
-    border-top-color: var(--ion-border-color);
-  }
-
-  app-tab_checklist .task-details .service-item {
-    background: transparent;
-  }
-
-  app-tab_checklist .task-details .service-item ion-label h4 {
-    color: var(--ion-text-color);
-  }
-
-  app-tab_quiz ion-header ion-toolbar {
-    --background: var(--primary-gradient);
-    color: var(--ion-color-primary-contrast);
-  }
-
-  app-tab_quiz ion-list-header {
-    color: var(--ion-text-color);
-  }
-
-  app-tab_quiz ion-item {
-    --background: var(--ion-item-background);
-  }
-
-  app-tab_quiz ion-radio-group ion-label,
-  app-tab_quiz ion-checkbox+ion-label {
-    color: var(--ion-text-color);
-  }
-
-  app-tab_quiz ion-input,
-  app-tab_quiz ion-datetime {
-    color: var(--ion-text-color);
-    --placeholder-color: var(--ion-color-medium);
-  }
-
-  app-tab_quiz ion-datetime {
-    background: var(--ion-item-background);
-    border: 1px solid var(--ion-border-color);
-  }
-
+  // Quiz specific dark mode is handled in its component SCSS
 }
 
+// Global Message Area Styles (Chatbot)
 .messages-area {
   padding-bottom: 10px;
 }
 
 .message {
-  max-width: 70%;
+  max-width: 75%; // Slightly wider max-width
   word-wrap: break-word;
   white-space: normal;
   width: fit-content;
-  height: fit-content;
   position: relative;
-  padding: 10px;
-  padding-bottom: 12px;
-  color: white;
-  background: var(--ion-color-primary);
-  border-radius: 12px;
-  z-index: 2;
+  padding: 10px 14px; // Adjust padding
+  border-radius: 18px; // Softer radius
+  z-index: 2; // Keep for tail
   opacity: 0;
-  transition: opacity 0.4s ease;
-  margin-bottom: 8px;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  transform: translateY(10px); // Initial state for animation
+  margin-bottom: 10px; // Increased spacing
+
+    h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.8em;
+    margin-bottom: 0.4em;
+    line-height: 1.2;
+    font-weight: 600; // Or your theme's heading weight
+    color: inherit;   // Inherit color from the .message bubble (user or bot side)
+  }
+  // You can adjust specific heading sizes if needed
+  h1 { font-size: 1.5em; }  // Example
+  h2 { font-size: 1.3em; }  // Example
+  h3 { font-size: 1.15em; } // Example
+  h4 { font-size: 1.05em; }
+  h5 { font-size: 1em; }
+  h6 { font-size: 0.9em; }
+
+  p { // Paragraphs within the markdown content
+    margin-top: 0;
+    margin-bottom: 0.6em; // Slightly more space between paragraphs
+    line-height: 1.5;
+     &:last-child {
+      margin-bottom: 0; // No bottom margin for the last paragraph in a message
+    }
+  }
+
+  ul, ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.8em; // More space after lists
+    padding-left: 25px;   // Standard list indentation
+  }
+
+  li {
+    margin-bottom: 0.3em;
+    line-height: 1.5;
+  }
+
+  strong, b {
+    font-weight: bold; // Or your theme's bold weight: var(--ion-font-weight-bold);
+  }
+
+  em, i {
+    font-style: italic;
+  }
+
+  code { // Inline code
+    font-family: monospace; // Or your preferred monospace font: var(--ion-font-family-monospace);
+    background-color: var(--ion-color-step-100, rgba(128, 128, 128, 0.1)); // Use theme steps
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: inherit; // Ensure it uses text color of the bubble
+  }
+
+  pre { // Code blocks
+    background-color: var(--ion-color-step-100, rgba(128, 128, 128, 0.1));
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto; // Allow horizontal scrolling for long code lines
+    margin-top: 0.5em;
+    margin-bottom: 0.8em;
+    font-size: 0.9em;
+
+    code { // Code inside pre should not have its own background or padding
+      background-color: transparent;
+      padding: 0;
+      border-radius: 0;
+      font-size: 1em; // Inherit pre's font size
+    }
+  }
+
+  hr { // For the "---" lines (horizontal rule)
+    border: 0;
+    height: 1px;
+    background-color: var(--ion-border-color); // Use your app's border color
+    margin-top: 1.2em;
+    margin-bottom: 1.2em;
+  }
+
+  a {
+    color: var(--ion-color-primary); // Use your app's primary color for links
+    text-decoration: underline;
+    &:hover {
+      text-decoration: none; // Or a different hover effect
+    }
+  }
+
+  blockquote {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 1em;
+    border-left: 4px solid var(--ion-color-medium-tint, #ccc);
+    color: var(--ion-color-medium-shade, #555);
+    font-style: italic;
+    margin-top: 0.5em;
+    margin-bottom: 0.8em;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: auto; // Or 100% if you want full-width tables within messages
+    margin-top: 0.5em;
+    margin-bottom: 0.8em;
+    th, td {
+      border: 1px solid var(--ion-border-color);
+      padding: 6px 10px;
+      text-align: left;
+    }
+    th {
+      background-color: var(--ion-color-step-50, #f9f9f9); // Light background for table headers
+      font-weight: 600;
+    }
+  }
 }
 
-.appear {
+@media (prefers-color-scheme: dark) {
+  .message {
+    code { // Inline code in dark mode
+      background-color: var(--ion-color-step-200, rgba(255, 255, 255, 0.15));
+    }
+    pre { // Code blocks in dark mode
+      background-color: var(--ion-color-step-200, rgba(255, 255, 255, 0.15));
+    }
+    blockquote {
+      border-left-color: var(--ion-color-medium, #777);
+      color: var(--ion-color-step-850, #aaa);
+    }
+    table {
+      th {
+        background-color: var(--ion-color-step-150, #333);
+      }
+    }
+  }
+}
+
+.message.appear { // Renamed class for clarity
   opacity: 1;
+  transform: translateY(0);
 }
 
-.shake {
-  animation: gelatine 0.5s 1;
-}
-
-@keyframes gelatine {
-
-  from,
-  to {
-    transform: scale(1, 1);
-  }
-
-  25% {
-    transform: scale(0.95, 1.05);
-  }
-
-  50% {
-    transform: scale(1.05, 0.95);
-  }
-
-  75% {
-    transform: scale(0.95, 1.05);
-  }
-}
+// Remove shake animation - it's often distracting for chat
+// .shake { animation: gelatine 0.5s 1; }
+// @keyframes gelatine { ... }
 
 .user-side {
   margin-left: auto;
-  margin-right: 20px;
+  margin-right: 10px; // Consistent spacing
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  border-bottom-right-radius: 6px; // Tail effect adjustment
 }
-
 .user-side:after {
   content: '';
-  bottom: 5px;
-  right: -19px;
+  bottom: 0px; // Align with bottom
+  right: -8px; // Closer to bubble
   position: absolute;
-  border: 0px solid;
-  display: block;
-  width: 20px;
-  height: 12px;
+  width: 15px; // Smaller tail
+  height: 15px;
   background-color: transparent;
-  border-bottom-left-radius: 50%;
-  border-bottom-right-radius: 50%;
-  box-shadow: -14px 6px 0px 5px var(--ion-color-primary);
+  border-bottom-left-radius: 10px;
+  box-shadow: -5px 5px 0px 0px var(--ion-color-primary); // Simpler tail
   z-index: 1;
 }
 
 .bot-side {
   margin-right: auto;
-  margin-left: 20px;
+  margin-left: 10px;
+  background: var(--ion-item-background); // Consistent with item backgrounds
+  color: var(--ion-text-color);
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
-
 .bot-side:after {
   content: '';
-  bottom: 5px;
-  left: -19px;
+  bottom: 0px;
+  left: -8px;
   position: absolute;
-  border: 0px solid;
-  display: block;
-  width: 20px;
-  height: 12px;
+  width: 15px;
+  height: 15px;
   background-color: transparent;
-  border-bottom-left-radius: 50%;
-  border-bottom-right-radius: 50%;
-  box-shadow: -14px 6px 0px 5px var(--ion-color-primary);
-  transform: scaleX(-1);
+  border-bottom-right-radius: 10px;
+  box-shadow: 5px 5px 0px 0px var(--ion-item-background);
   z-index: 1;
 }
 
+@media (prefers-color-scheme: dark) {
+  .bot-side {
+    background: var(--ion-color-step-150);
+    color: var(--ion-text-color);
+  }
+   .bot-side:after {
+     box-shadow: 5px 5px 0px 0px var(--ion-color-step-150);
+   }
+}
+
+
+// Global Header Styles
+ion-header {
+  // Ensure gradient is applied if this is the primary header style
+  // Individual pages might override this if they need a solid color.
+  // background: var(--primary-gradient); // Default gradient for all headers
+  // color: var(--ion-color-primary-contrast);
+
+  // ion-toolbar {
+  //   --background: transparent; // Make toolbars transparent to show gradient
+  //   color: var(--ion-color-primary-contrast);
+  // }
+  // ion-title.centered-title, .header-button {
+  //   color: var(--ion-color-primary-contrast);
+  // }
+}
+// This ^ was commented out because individual pages (checklist, quiz) set their header gradient.
+// Login page uses a different gradient. Dashboard/Chatbot use solid primary. This approach is fine.
+
 .centered-title {
-  position: absolute;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
   text-align: center;
-  color: white;
+  // Removed absolute positioning for more robust centering with flex, handled by Ionic slots
 }
 
 .header-button {
-  color: white;
+  // color is set by toolbar context or can be explicit
 }
 
+// Global Content & Button Wrappers
 .content-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin: 20px 0 0;
+  padding: 16px; // Add global padding to content wrappers
+  box-sizing: border-box;
 }
 
-.button-wrapper {
-  width: 90%;
-  max-width: 600px;
+.button-wrapper { // Used in Quiz
+  width: 100%; // Takes width from parent (.content-wrapper)
+  max-width: 600px; // Consistent max-width
+  margin-top: 20px;
   margin-bottom: 20px;
-}
-
-ion-header {
-  --background: var(--primary-gradient);
-  background: var(--primary-gradient);
-  color: white;
-
-  ion-toolbar {
-    --background: transparent;
-    background: transparent;
-  }
 }
 
 .hidden {
   display: none !important;
 }
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+// Alert Controller Button Styling (more globally)
+.alert-button-cancel {
+  // Standard cancel button styling (often less prominent)
+}
+.alert-button-confirm {
+  // Standard confirm button styling
+}
+.alert-button-destructive {
+  color: var(--ion-color-danger) !important; // Ensure destructive color is applied
+}
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+// Custom Toast Styling (Example)
+.custom-toast {
+  // --background: var(--ion-color-dark);
+  // --color: var(--ion-color-light);
+  // font-size: 0.9rem;
+}
+
+/* Ionic Dark Mode - System preference */
 @import "@ionic/angular/css/palettes/dark.system.css";

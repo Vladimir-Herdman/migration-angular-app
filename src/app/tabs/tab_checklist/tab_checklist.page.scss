@@ -1,402 +1,359 @@
 // src/app/tabs/tab_checklist/tab_checklist.page.scss
-.header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-left: 10px;
-}
-
-#title {
-  margin-right: 10px;
-}
-
 ion-header {
-  ion-segment ion-segment-button {
-    --color-checked: #ffffff;
-    --color: #cccccc;
+  ion-toolbar {
+    --background: var(--primary-gradient); // Applied globally in global.scss, ensure it's consistent
+    color: var(--ion-color-primary-contrast); // White text on gradient
+
+    ion-button { // Ensure header buttons are visible
+      color: var(--ion-color-primary-contrast);
+    }
   }
 
-  ion-toolbar {
-    --color: white;
-    --background: transparent; // For toolbars within the gradient header
-    background: transparent;
-
-    &:last-of-type {
-      // Target the segment toolbar specifically if needed
-      // background: var(--ion-toolbar-background); // Or a solid color for segment toolbar
+  ion-toolbar:not(:first-of-type) { // Toolbars for search, segment
+    --background: var(--ion-toolbar-background); // Solid color for these toolbars
+     background: var(--ion-toolbar-background);
+    
+    @media (prefers-color-scheme: light){
+      --background: #f9f9f9; // A slightly off-white for light mode
+      background: #f9f9f9;
+    }
+     @media (prefers-color-scheme: dark){
+      --background: var(--ion-color-step-100);
+      background: var(--ion-color-step-100);
     }
   }
 
   ion-searchbar {
-    --background: rgba(255, 255, 255, 0.15);
-    --color: white;
-    --placeholder-color: #e0e0e0;
-    --icon-color: white;
-    --clear-button-color: white;
+    --background: var(--ion-item-background); // Match item backgrounds
+    --color: var(--ion-text-color);
+    --placeholder-color: var(--ion-color-medium);
+    --icon-color: var(--ion-color-medium);
+    --clear-button-color: var(--ion-color-medium);
     border-radius: 8px;
-    margin: 0 8px 8px 8px;
+    margin: 8px; // Consistent margin
     padding: 0 8px;
-  }
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 
+     @media (prefers-color-scheme: dark) {
+      --background: var(--ion-color-step-150);
+      box-shadow: none;
+    }
+  }
 
   ion-segment {
     ion-segment-button {
-      --color-checked: #ffffff;
-      --indicator-color: #ffffff; // Color of the bottom line for selected segment
-      --color: #cccccc;
+      --color-checked: var(--ion-color-primary);
+      --indicator-color: var(--ion-color-primary);
+      --color: var(--ion-color-medium);
+      font-weight: 500;
 
       &.segment-button-checked {
-        font-weight: bold;
+        font-weight: 600;
+      }
+       @media (prefers-color-scheme: dark) {
+        --color-checked: var(--ion-color-primary-tint);
+        --indicator-color: var(--ion-color-primary-tint);
+        --color: var(--ion-color-step-850);
       }
     }
   }
 }
 
-.stage-select-list {
-  /* This class seems unused, can be removed if not needed */
-  padding: 0;
-  margin: 0;
+.checklist-content {
+  --padding-bottom: 70px; // Space for FAB and footer
+}
 
-  ion-item {
-    --padding-start: 0;
-    --inner-padding-end: 0;
-    --min-height: auto;
+ion-list-header.stage-list-header {
+  --background: var(--ion-background-color);
+  border-bottom: 1px solid var(--ion-border-color);
+  padding-bottom: 4px; // Reduce padding
+  padding-top: 12px; // Increase top padding for breathing room
+
+  ion-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ion-text-color);
   }
 }
 
-ion-select {
-  /* This global style for ion-select might be too broad */
-  --padding-top: 10px;
-  --padding-bottom: 0;
-  --padding-start: 8px;
-  --padding-end: 8px;
-  display: flex;
-  align-items: center;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: var(--ion-color-primary);
+.sort-buttons-container {
+    display: flex;
+    gap: 0px; // Minimal gap
+    ion-button {
+        --padding-start: 6px;
+        --padding-end: 6px;
+        font-size: 0.8rem;
+        text-transform: none;
+        color: var(--ion-color-medium);
+        &.active-sort {
+            color: var(--ion-color-primary);
+            font-weight: bold;
+        }
+         @media (prefers-color-scheme: dark) {
+            color: var(--ion-color-step-850);
+             &.active-sort {
+                color: var(--ion-color-primary-tint);
+            }
+        }
+    }
 }
 
-ion-list {
-  padding: 0;
-  margin: 0;
-}
 
-ion-item[button] {
-  // Category Item Styling
+ion-item.category-item {
   --inner-border-width: 0 0 1px 0;
-  --border-color: var(--ion-color-medium-tint);
-  cursor: pointer;
+  --border-color: var(--ion-border-color);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --min-height: 50px; // Slightly reduced category item height
   transition: background-color 0.2s ease-in-out;
+  --background: var(--ion-item-background);
 
   ion-label h2 {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding: 8px 0;
-    display: flex; // For aligning icon with text
-    align-items: center; // For aligning icon with text
+    font-size: 1.05rem; // Slightly larger category titles
+    font-weight: 600; // Bold category titles
+    margin: 0;
+    padding: 10px 0; // Vertical padding for label
+    display: flex;
+    align-items: center;
+    color: var(--ion-text-color);
+  }
+
+  .task-count {
+    font-size: 0.85rem;
+    font-weight: normal;
+    color: var(--ion-color-medium);
+    margin-left: 8px;
   }
 
   &:hover {
-    background-color: rgba(var(--ion-color-primary-rgb), 0.05);
+    --background: var(--ion-color-primary-tint-lighter, rgba(var(--ion-color-primary-rgb), 0.05));
   }
 
   &.expanded {
-    background-color: rgba(var(--ion-color-primary-rgb), 0.08);
-    --border-color: var(--ion-color-primary);
-  }
-
-  &.category-complete ion-label h2 {
-    // color: var(--ion-color-medium); // Example: dim text
+    --background: var(--ion-color-primary-tint-lightest, rgba(var(--ion-color-primary-rgb), 0.08));
+    ion-label h2 {
+        color: var(--ion-color-primary);
+         @media (prefers-color-scheme: dark) {
+             color: var(--ion-color-primary-tint);
+        }
+    }
   }
 
   .category-complete-icon {
     margin-left: 8px;
-    font-size: 1.2em; // Make it slightly larger
+    font-size: 1.2em;
+  }
+   @media (prefers-color-scheme: dark) {
+    --border-color: var(--ion-color-step-200);
+    --background: var(--ion-color-step-100);
+     &:hover {
+        --background: rgba(var(--ion-color-primary-rgb), 0.15);
+     }
+     &.expanded {
+        --background: rgba(var(--ion-color-primary-rgb), 0.2);
+     }
   }
 }
 
-ion-item:not([button]) {
-  // Task Item Styling
-  --inner-border-width: 0 0 1px 0;
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --min-height: 60px;
-  align-items: flex-start;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+.task-items-container {
+    background-color: var(--ion-item-background-tint, rgba(0,0,0,0.02)); // Slightly different background for task items within category
+     @media (prefers-color-scheme: dark) {
+       background-color: rgba(var(--ion-color-light-rgb), 0.03);
+    }
+}
 
-  &.expanded {
-    --background: rgba(var(--ion-color-primary-rgb), 0.03);
-  }
-
-  &:hover:not(.expanded) {
-    background-color: rgba(var(--ion-color-medium-rgb), 0.05);
-  }
+ion-item.task-item {
+  --inner-border-width: 0; // Remove inner border for tasks, rely on container
+  --padding-start: 16px; // Align with category item
+  --padding-end: 8px; // Less padding on the end to accommodate action button
+  --min-height: auto; // Auto height based on content
+  align-items: flex-start; // Align checkbox with top of text
+  padding-top: 12px; // Increased padding
+  padding-bottom: 12px;
+  cursor: default; // Default cursor as click opens modal
+  --background: transparent; // Inherit from .task-items-container
 
   &.is-favorite {
-    border-left: 4px solid var(--ion-color-warning);
-    // Adjust padding if border is on the left and you want consistent inner spacing
-    // --padding-start: calc(16px - 4px); // if original padding-start was 16px
+    // Subtle favorite indication, star icon is primary
+    --background: var(--ion-color-warning-tint-lightest, rgba(var(--ion-color-warning-rgb), 0.05));
+    border-left: 3px solid var(--ion-color-warning);
+    padding-left: calc(16px - 3px);
+     @media (prefers-color-scheme: dark) {
+       --background: rgba(var(--ion-color-warning-rgb), 0.1);
+       border-left-color: var(--ion-color-warning-shade);
+    }
   }
 
-  &.high-priority-incomplete {
-    border-right: 4px solid var(--ion-color-danger-tint, var(--ion-color-danger));
+  &.high-priority-incomplete:not(.is-favorite) { // Avoid double background if also favorite
+    border-right: 3px solid var(--ion-color-danger);
+    padding-right: calc(8px - 3px);
     // --background: rgba(var(--ion-color-danger-rgb), 0.03);
+     @media (prefers-color-scheme: dark) {
+       border-right-color: var(--ion-color-danger-shade);
+    }
   }
-
 }
 
-ion-label {
-  margin-top: 0;
-  margin-bottom: 0;
-  width: 100%;
+.task-checkbox {
+    margin-right: 12px; // Space between checkbox and label
+    margin-top: 2px; // Align with first line of text better
+}
 
-  h2 {
-    // Category Title
-    font-size: 1rem;
-    font-weight: bold;
-    margin-top: 0;
-    margin-bottom: 4px;
-  }
-
-  h3 {
-    // Task Description
-    position: relative;
+.task-label {
+  flex: 1;
+  h3 { // Task Description
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0 0 6px 0;
+    display: flex; // For star alignment
+    align-items: center;
     color: var(--ion-text-color);
-    font-size: 1rem;
-    font-weight: normal;
-    margin-top: 0;
-    margin-bottom: 4px;
-    width: fit-content;
-    transition: all 0.45s ease;
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background-color: var(--ion-text-color);
-      z-index: 2;
-      transition: all 0.45s ease;
-    }
-
-    &.checked {
+    &.checked { // Strikethrough is good
       color: var(--ion-color-medium);
-
-      &::after {
-        width: 100%;
-      }
+      text-decoration: line-through;
     }
   }
-
-  p {
-    // Task Meta (Priority, Due Date)
-    font-size: 0.9rem;
-    color: var(--ion-color-medium);
-    margin: 0;
+  .favorite-star-inline {
+    margin-right: 6px;
+    font-size: 1.1em; // Slightly larger star
+    vertical-align: text-bottom;
   }
 }
 
-.high-priority {
-  font-weight: bold;
-  color: var(--ion-color-danger);
+.task-meta {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin: 0 0 4px 0;
+  display: flex;
+  flex-wrap: wrap; // Allow wrapping if space is tight
+  gap: 4px 12px; // Row and column gap
+  align-items: center;
+   .due-date-indicator {
+    // ... existing styles ...
+    .relative-due-date {
+      margin-left: 5px; // Add some space
+      font-style: italic;
+      // color: var(--ion-color-medium-shade); // Optional: different color
+    }
+  }
 }
 
-.medium-priority {
-  font-weight: bold;
-  color: var(--ion-color-warning);
+.priority-indicator, .due-date-indicator {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    // background-color: rgba(var(--ion-color-medium-rgb), 0.1);
+}
+.priority-icon, .due-date-icon {
+    margin-right: 4px;
+    font-size: 0.9em;
 }
 
-.low-priority {
-  font-weight: normal;
-  color: var(--ion-color-success);
+.priority-indicator.high-priority { color: var(--ion-color-danger); /* background-color: rgba(var(--ion-color-danger-rgb),0.1); */}
+.priority-indicator.medium-priority { color: var(--ion-color-warning); /* background-color: rgba(var(--ion-color-warning-rgb),0.1); */}
+.priority-indicator.low-priority { color: var(--ion-color-success); /* background-color: rgba(var(--ion-color-success-rgb),0.1); */}
+
+.task-notes-preview {
+    font-size: 0.75rem;
+    color: var(--ion-color-medium-shade);
+    margin-top: 4px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    ion-icon {
+        margin-right: 4px;
+        font-size: 0.9em;
+    }
 }
+
+.task-actions-end {
+    ion-button.info-button {
+        --padding-start: 4px;
+        --padding-end: 4px;
+        height: 30px; // Smaller touch target, ensure it's still accessible
+        width: 30px;
+        font-size: 1.2rem; // Icon size
+    }
+}
+
 
 .empty-list-message {
   color: var(--ion-color-medium);
-  font-style: italic;
-  margin-top: 20px;
+  font-style: normal; // Not italic
+  margin-top: 40px; // More margin
+  text-align: center;
 
   ion-icon {
-    font-size: 48px;
+    font-size: 56px; // Larger icon
     margin-bottom: 16px;
   }
-
   p {
     font-size: 1.1rem;
     margin-bottom: 16px;
   }
-}
-
-.task-details {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--ion-border-color);
-  font-size: 0.9rem;
-  width: 100%;
-
-  .importance-explanation {
-    margin-bottom: 10px;
-    white-space: pre-line;
-    color: var(--ion-color-step-850);
-  }
-
-  .task-notes {
-    margin-top: 10px;
-    margin-bottom: 10px;
-
-    strong {
-      display: block;
-      margin-bottom: 4px;
-      font-weight: 500;
-    }
-
-    p {
-      white-space: pre-line;
-      color: var(--ion-color-step-850);
-      background-color: rgba(var(--ion-color-medium-rgb), 0.05);
-      padding: 8px;
-      border-radius: 4px;
-    }
-  }
-
-  .recommended-services {
+  ion-button { // Style the reset button
     margin-top: 8px;
-    padding-left: 0;
-
-    strong {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: var(--ion-text-color);
-    }
-
-    ion-list {
-      margin-top: 0;
-      padding: 0;
-      background: transparent;
-    }
-
-    .service-item {
-      --padding-start: 0;
-      --inner-padding-end: 0;
-      --min-height: auto;
-      align-items: flex-start;
-      padding-top: 8px;
-      padding-bottom: 8px;
-      --inner-border-width: 0;
-      cursor: initial;
-      border-radius: 6px;
-      margin-bottom: 8px;
-
-      ion-label {
-        margin-right: 10px;
-
-        h4 {
-          font-size: 0.95rem;
-          font-weight: 500;
-          margin: 0 0 4px 0;
-          color: var(--ion-color-primary);
-        }
-
-        p {
-          font-size: 0.85rem;
-          margin-top: 2px;
-          color: var(--ion-color-step-850);
-          white-space: normal;
-        }
-      }
-
-      ion-button {
-        --padding-start: 8px;
-        --padding-end: 8px;
-        font-size: 0.75rem;
-        height: 28px;
-      }
-    }
-  }
-
-  .task-actions {
-    margin-top: 12px;
-    display: flex;
-    gap: 10px;
-    justify-content: flex-start;
   }
 }
 
-ion-footer ion-toolbar ion-progress-bar {
-  width: 100%;
-  height: 5px;
-  --background: #e0e0e0;
-  --progress-background: var(--ion-color-primary);
-}
 
-.overall-progress-container {
+ion-footer ion-toolbar .overall-progress-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  width: 100%; // Ensure it takes full width
 
   ion-label {
     font-size: 0.9em;
-    color: var(--ion-text-color); // Ensure visibility in dark mode
+    color: var(--ion-text-color);
+  }
+   ion-progress-bar {
+    height: 6px; // Slightly thicker progress bar
+    border-radius: 3px;
+  }
+   @media (prefers-color-scheme: dark) {
+     ion-label {
+        color: var(--ion-color-primary-contrast);
+     }
   }
 }
 
-
+// Ensure dark mode styles for task items are distinct
 @media (prefers-color-scheme: dark) {
-  ion-header ion-searchbar {
-    --background: rgba(var(--ion-color-step-150-rgb), 0.5); // Darker background for search
-    --placeholder-color: var(--ion-color-step-850);
-  }
-
-  ion-footer ion-toolbar ion-progress-bar {
-    --background: var(--ion-color-step-200);
-  }
-
-  .overall-progress-container ion-label {
-    color: var(--ion-color-primary-contrast); // White text on dark footer
-  }
-
-  ion-item[button] {
-    --border-color: var(--ion-border-color);
-
-    &:hover {
-      background-color: rgba(var(--ion-color-primary-rgb), 0.1);
+  ion-item.category-item {
+    --border-color: var(--ion-color-step-200);
+    ion-label h2 {
+      color: var(--ion-text-color);
     }
-
-    &.expanded {
-      background-color: rgba(var(--ion-color-primary-rgb), 0.15);
-      --border-color: var(--ion-color-primary);
+    &.expanded ion-label h2 {
+      color: var(--ion-color-primary-tint);
     }
   }
 
-  ion-item:not([button]) {
-    &.expanded {
-      --background: rgba(var(--ion-color-primary-rgb), 0.08);
-    }
-
-    &:hover:not(.expanded) {
-      background-color: rgba(var(--ion-color-medium-rgb), 0.1);
-    }
-
+  .task-items-container {
+    background-color: rgba(var(--ion-color-light-rgb), 0.05);
+  }
+  
+  ion-item.task-item {
     &.is-favorite {
       border-left-color: var(--ion-color-warning-shade);
     }
-
-    &.high-priority-incomplete {
-      border-right-color: var(--ion-color-danger-shade, var(--ion-color-danger));
+    &.high-priority-incomplete:not(.is-favorite) {
+      border-right-color: var(--ion-color-danger-shade);
     }
   }
-
-  .task-notes p {
-    background-color: rgba(var(--ion-color-light-rgb), 0.1); // Lighter background for notes paragraph
+  .task-label h3 {
+    color: var(--ion-text-color);
+    &.checked {
+      color: var(--ion-color-medium);
+    }
+  }
+  .task-meta {
+    color: var(--ion-color-step-850);
+  }
+  .priority-indicator, .due-date-indicator {
+    // background-color: rgba(var(--ion-color-step-850-rgb), 0.15);
   }
 }

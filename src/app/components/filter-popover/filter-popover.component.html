@@ -1,3 +1,64 @@
-<p>
-  filter-popover works!
-</p>
+<ion-list>
+  <ion-list-header>
+    <ion-label>Filter Options</ion-label>
+  </ion-list-header>
+
+  <ion-item-divider>
+    <ion-label>Status</ion-label>
+  </ion-item-divider>
+  <ion-radio-group [(ngModel)]="filters.status" (ionChange)="onFilterChange()">
+    <ion-item>
+      <ion-label>All</ion-label>
+      <ion-radio slot="start" value="all"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Incomplete</ion-label>
+      <ion-radio slot="start" value="incomplete"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Completed</ion-label>
+      <ion-radio slot="start" value="completed"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+
+  <ion-item-divider>
+    <ion-label>Priority</ion-label>
+  </ion-item-divider>
+  <ion-radio-group [(ngModel)]="filters.priority" (ionChange)="onFilterChange()">
+    <ion-item>
+      <ion-label>All</ion-label>
+      <ion-radio slot="start" value="all"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>High</ion-label>
+      <ion-radio slot="start" value="High"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Medium</ion-label>
+      <ion-radio slot="start" value="Medium"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Low</ion-label>
+      <ion-radio slot="start" value="Low"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+
+  <ion-item-divider>
+    <ion-label>Favorites</ion-label>
+  </ion-item-divider>
+  <ion-item>
+    <ion-label>Show Only Favorites</ion-label>
+    <ion-toggle [(ngModel)]="filters.favorites" (ionChange)="onFilterChange()"></ion-toggle>
+  </ion-item>
+</ion-list>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="resetFilters()">Reset</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="applyFilters()">Apply</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
