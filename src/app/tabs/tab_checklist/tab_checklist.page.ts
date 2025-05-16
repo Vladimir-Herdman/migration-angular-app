@@ -637,6 +637,10 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
       const completed = this.getCompletedTasksCountForStage(stageKey);
       // Only update current counts, leave totals as they are
       this.stageProgress[stageKey].current = completed;
+      
+      // Also update the StageManagementService for each stage
+      // This is critical for progress bars to reflect the correct values
+      this.stageManagementService.updateCompletedTasks(stageKey, completed);
     });
   }
 
@@ -991,10 +995,17 @@ applyFiltersAndSearch() {
         if (this.stageProgress[stageKeyStr]) {
           const completedCount = this.getCompletedTasksCountForStage(stageKeyStr);
           this.stageProgress[stageKeyStr].current = completedCount;
+          
+          // Critical: Update the stage management service with the new completion count
+          // This ensures the progress bars and UI elements update correctly
+          this.stageManagementService.updateCompletedTasks(stageKeyStr, completedCount);
         }
         
         // Save the updated state to cache
         this.saveChecklistToCache();
+        
+        // Update stage labels to reflect new completion counts
+        this.updateStageLabels();
         
         // For better UX, force update the UI to reflect changes immediately
         this.changeDetectorRef.detectChanges();
