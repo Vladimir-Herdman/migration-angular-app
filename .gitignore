@@ -18,7 +18,6 @@ Thumbs.db
 UserInterfaceState.xcuserstate
 .vscode/
 .idea/
-.env
 .venv/
 __pycache__/
 

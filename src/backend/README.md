@@ -38,10 +38,8 @@ Ensure the model name in your `.env` file matches the one you pul*
 
 **Alternative Model (If Performance is an Issue):**
 
-If the `q5_K_M` model runs too slowly or uses too much memory on your hardware, you can try the `q4_K_M` quantization.
-
 ```bash
-ollama pull llama3.1:8b-instruct-q4_k_m
+ollama pull qwen3:1.7b
 ```
 
 Remember to update the `LLM_MODEL_NAME` variable in your `.env` file if you use a different model or quantization.
