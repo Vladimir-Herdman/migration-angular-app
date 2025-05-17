@@ -20,14 +20,15 @@ export class FormDataService {
 
   async init() {
     this._storage = await this.storage.create();
-    const savedForm = await this._storage.get('formData');
+    const savedForm = await this._storage.get(`${this._email_key}_formData`);
     if (savedForm) {
       this.formDataSubject.next(savedForm);
     }
   }
 
   isFilled(form: any): boolean {
-    return !!(form && form.moveType && form.destination && form.moveDate);
+    const isFull = !!(form && form.moveType && form.destination && form.moveDate);
+    return isFull;
   }
 
   async setForm(data: any) {
@@ -42,7 +43,11 @@ export class FormDataService {
   public getDefaultForm() {
     return {
       moveType: '',
-      destination: '',
+      destination: {
+        alpha1: '',
+        alpha2: '',
+        translations: {en: ''},
+      },
       moveDate: '',
       family: {
         children: false,

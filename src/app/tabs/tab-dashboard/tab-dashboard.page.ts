@@ -17,6 +17,7 @@ export class TabDashboardPage implements OnInit {
 
   async goToRelocation() {
     const form = await this.formDataService.getForm();
+    console.log("quiz on cache: ", form);
     let quizDone = this.formDataService.isFilled(form);
     let nextTab = quizDone ? 'checklist' : 'quiz';
     this.router.navigateByUrl(`/tabs/tab_${nextTab}`, { replaceUrl: false });

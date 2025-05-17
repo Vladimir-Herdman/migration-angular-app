@@ -20,7 +20,10 @@ export class AuthService {
     };
     public registration_info = this.defaultRegistrationInfo();
 
-    public email_key: string = ''
+    public _email_key: string = ''
+        public set email_key(email: string) {this._email_key = email;}
+        public get email_key(): string {return this._email_key.replace(/[^a-zA-Z0-9]/g, '_');}
+
 
     constructor(private auth: Auth, private firestore: Firestore) {}
 

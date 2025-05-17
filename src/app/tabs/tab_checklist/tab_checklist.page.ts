@@ -268,11 +268,13 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
   }
 
   async loadCachedChecklistOrGenerate(currentForm: any) {
+    if (currentForm?.destination?.translations) {currentForm.destination = currentForm.destination.translations.en;}
     try {
       const [cachedChecklist, cachedFormData] = await Promise.all([
         this.storage.get(this.CACHED_CHECKLIST_KEY),
         this.storage.get(this.CACHED_FORM_DATA_KEY)
       ]);
+      if (cachedFormData?.destination?.translations) {cachedFormData.destination = cachedFormData.destination.translations.en;}
       
       this.cachedFormData = cachedFormData;
       const formDataChanged = JSON.stringify(currentForm) !== JSON.stringify(this.cachedFormData);
@@ -351,6 +353,7 @@ public getTotalDisplayedTasksForStage(stageKey: string): number {
   }
 
   async generateChecklist(form: any) {
+    if (form?.destination?.translations) {form.destination = form.destination.translations.en;}
     this.isGeneratingChecklist = true;
     this.clearChecklist();
     

@@ -34,8 +34,8 @@ export class QuizComponent implements OnInit {
   }
 
   public handleSelection(event: any) {
-    const country = event.translations.en;
-    this.form.destination = country;
+    //const country = event.translations.en;
+    this.form.destination = event;
     this.triggerAutoSave();
   }
 
